@@ -134,7 +134,7 @@ class ThrowableFormatterTest extends TestCase
                         ', \$file = ".+"',
                         ', \$line = \d+',
                         ', \$message = "bar"',
-                        ', \$previous = \\\\LogicException \*\* OMITTED \*\* \(maximum depth of 1 reached\)',
+                        ', \$previous = \\\\LogicException: \*\* OMITTED \*\* \(maximum depth of 1 reached\)',
                     '\}',
                 '\}',
                 '$',
