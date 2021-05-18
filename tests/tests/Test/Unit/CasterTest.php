@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Eboreum\Caster\Test\Unit;
+namespace Test\Unit\Eboreum\Caster;
 
 use Eboreum\Caster\Abstraction\Formatter\AbstractArrayFormatter;
 use Eboreum\Caster\Abstraction\Formatter\AbstractFormatter;

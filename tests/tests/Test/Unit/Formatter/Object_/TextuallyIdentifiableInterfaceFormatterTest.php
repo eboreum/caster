@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace Eboreum\Caster\Test\Unit\Formatter\Object_;
+namespace Test\Unit\Eboreum\Caster\Formatter\Object_;
 
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Collection\Formatter\ObjectFormatterCollection;

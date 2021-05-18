@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Eboreum\Caster\Test\Unit\Formatter;
+namespace Test\Unit\Eboreum\Caster\Formatter;
 
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Common\DataType\Integer\PositiveInteger;

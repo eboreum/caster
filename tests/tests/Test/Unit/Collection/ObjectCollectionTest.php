@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Eboreum\Caster\Test\Unit\Collection;
+namespace Test\Unit\Eboreum\Caster\Collection;
 
 use Eboreum\Caster\Abstraction\Collection\AbstractObjectCollection;
 use Eboreum\Caster\Caster;

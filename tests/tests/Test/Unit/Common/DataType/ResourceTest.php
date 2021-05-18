@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Eboreum\Caster\Test\Unit\Common\DataType;
+namespace Test\Unit\Eboreum\Caster\Common\DataType;
 
 use Eboreum\Caster\Common\DataType\Resource;
 use PHPUnit\Framework\TestCase;

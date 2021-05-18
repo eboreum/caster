@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Eboreum\Caster\Test\Unit\Common\DataType\String_;
+namespace Test\Unit\Eboreum\Caster\Common\DataType\String_;
 
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\CharacterEncoding;
