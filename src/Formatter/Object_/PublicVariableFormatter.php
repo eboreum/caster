@@ -43,7 +43,7 @@ class PublicVariableFormatter extends AbstractObjectFormatter
     }
 
     /**
-     * @return array<string, array<\ReflectionProperty>>
+     * @return array<string, \ReflectionProperty>
      */
     protected function getPropertyNameToReflectionProperty(\ReflectionObject $reflectionObject): array
     {

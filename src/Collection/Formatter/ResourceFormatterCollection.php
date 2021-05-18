@@ -7,6 +7,7 @@ namespace Eboreum\Caster\Collection\Formatter;
 use Eboreum\Caster\Abstraction\Collection\AbstractObjectCollection;
 use Eboreum\Caster\Contract\Collection\Formatter\FormatterCollectionInterface;
 use Eboreum\Caster\Contract\Formatter\ResourceFormatterInterface;
+use Eboreum\Caster\Exception\RuntimeException;
 
 class ResourceFormatterCollection extends AbstractObjectCollection implements FormatterCollectionInterface
 {
@@ -23,6 +24,16 @@ class ResourceFormatterCollection extends AbstractObjectCollection implements Fo
     public function __construct(ResourceFormatterInterface ...$elements)
     {
         parent::__construct(...$elements);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return \ArrayIterator<int, ResourceFormatterInterface>
+     */
+    public function getIterator(): \ArrayIterator
+    {
+        return parent::getIterator();
     }
 
     /**

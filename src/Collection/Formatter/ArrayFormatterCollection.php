@@ -7,6 +7,7 @@ namespace Eboreum\Caster\Collection\Formatter;
 use Eboreum\Caster\Abstraction\Collection\AbstractObjectCollection;
 use Eboreum\Caster\Contract\Collection\Formatter\FormatterCollectionInterface;
 use Eboreum\Caster\Contract\Formatter\ArrayFormatterInterface;
+use Eboreum\Caster\Exception\RuntimeException;
 
 class ArrayFormatterCollection extends AbstractObjectCollection implements FormatterCollectionInterface
 {
@@ -33,6 +34,16 @@ class ArrayFormatterCollection extends AbstractObjectCollection implements Forma
     public function toArray(): array
     {
         return $this->elements;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return \ArrayIterator<int, ArrayFormatterInterface>
+     */
+    public function getIterator(): \ArrayIterator
+    {
+        return parent::getIterator();
     }
 
     /**

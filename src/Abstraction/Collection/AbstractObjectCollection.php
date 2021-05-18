@@ -86,6 +86,9 @@ abstract class AbstractObjectCollection implements ObjectCollectionInterface
         return $this->elements;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function toTextualIdentifier(CasterInterface $caster): string
     {
         return sprintf(
