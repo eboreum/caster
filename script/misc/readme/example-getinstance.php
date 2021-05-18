@@ -6,6 +6,7 @@ namespace My\Application;
 
 use Eboreum\Caster\Abstraction\Formatter\AbstractArrayFormatter;
 use Eboreum\Caster\Caster as EboreumCaster;
+use Eboreum\Caster\CharacterEncoding;
 use Eboreum\Caster\Collection\Formatter\ArrayFormatterCollection;
 use Eboreum\Caster\Contract\CasterInterface;
 
@@ -18,7 +19,7 @@ class Caster extends EboreumCaster
     public static function getInstance(): Caster // PHP 7.4 Liskov substitution will allow this
     {
         if (null === self::$instance) {
-            self::$instance = static::create();
+            self::$instance = new self(CharacterEncoding::getInstance());
 
             self::$instance = self::$instance->withCustomArrayFormatterCollection(new ArrayFormatterCollection(...[
                 new class extends AbstractArrayFormatter

@@ -302,7 +302,7 @@ class Caster implements CasterInterface
 
             if ($caster->getDepthCurrent()->toInteger() > $caster->getDepthMaximum()->toInteger()) {
                 $return = sprintf(
-                    "[%s]",
+                    "[%s] %s",
                     $caster->getSampleEllipsis(),
                     $caster->getOmittedMaximumDepthOfXReachedMessage(),
                 );
@@ -367,6 +367,11 @@ class Caster implements CasterInterface
 
             return $return;
         }
+
+        throw new RuntimeException(sprintf(
+            "Uncovered case for type %s",
+            $this->quoteAndEscape(gettype($value))
+        ));
     }
 
     /**
@@ -986,7 +991,7 @@ class Caster implements CasterInterface
             $characterEncoding = CharacterEncoding::getInstance();
         }
 
-        return new static($characterEncoding);
+        return new self($characterEncoding);
     }
 
     public static function makeNormalizedClassName(\ReflectionClass $reflectionClass): string

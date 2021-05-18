@@ -18,12 +18,12 @@ use Eboreum\Caster\Caster;
 class Resource
 {
     /**
-     * @var resource
+     * A resource.
      */
     protected $resource;
 
     /**
-     * @param resource
+     * Argument $resource must be a resource.
      * @throws \InvalidArgumentException
      */
     public function __construct($resource)
@@ -39,7 +39,7 @@ class Resource
     }
 
     /**
-     * @return resource
+     * Returns a resource.
      */
     public function getResource()
     {

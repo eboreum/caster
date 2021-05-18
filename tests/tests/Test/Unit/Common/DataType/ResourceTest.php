@@ -51,17 +51,14 @@ class ResourceTest extends TestCase
             $exceptionCurrent = $e;
             $this->assertSame("InvalidArgumentException", get_class($exceptionCurrent));
             $this->assertMatchesRegularExpression(
-                sprintf(
-                    implode("", [
-                        '/',
-                        '^',
-                        'Expects argument \$resource to be a resource, but it is not\.',
-                        ' Found: \(int\) 42',
-                        '$',
-                        '/',
-                    ]),
-                    preg_quote(UnsignedInteger::class, "/"),
-                ),
+                implode("", [
+                    '/',
+                    '^',
+                    'Expects argument \$resource to be a resource, but it is not\.',
+                    ' Found: \(int\) 42',
+                    '$',
+                    '/',
+                ]),
                 $exceptionCurrent->getMessage(),
             );
 

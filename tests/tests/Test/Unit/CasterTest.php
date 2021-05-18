@@ -1183,7 +1183,7 @@ class CasterTest extends TestCase
                         "\\%s {\$code = %s, \$file = %s, \$line = %s, \$message = %s}",
                         get_class($object),
                         $caster->cast($object->getCode()),
-                        $caster->cast($object->getFile(), false),
+                        $caster->cast($object->getFile()),
                         $caster->cast($object->getLine()),
                         $caster->cast($object->getMessage())
                     );
@@ -1504,7 +1504,7 @@ class CasterTest extends TestCase
 
         $this->assertSame(
             sprintf(
-                '["foo" => ["bar" => [%s]]]',
+                '["foo" => ["bar" => [%s] ** OMITTED ** (maximum depth of 2 reached)]]',
                 $caster->getSampleEllipsis(),
             ),
             $caster->cast($array),
@@ -1514,7 +1514,13 @@ class CasterTest extends TestCase
 
         $this->assertSame(
             sprintf(
-                '(array(1)) [(string(3)) "foo" => (array(1)) [(string(3)) "bar" => (array(1)) [%s]]]',
+                implode("", [
+                    '(array(1)) [',
+                        '(string(3)) "foo" => (array(1)) [',
+                            '(string(3)) "bar" => (array(1)) [%s] ** OMITTED ** (maximum depth of 2 reached)',
+                        ']',
+                    ']',
+                ]),
                 $caster->getSampleEllipsis(),
             ),
             $caster->cast($array),
@@ -1760,7 +1766,7 @@ class CasterTest extends TestCase
                  */
                 public function format(CasterInterface $caster, array $array): ?string
                 {
-
+                    return null;
                 }
 
                 /**
@@ -1768,7 +1774,7 @@ class CasterTest extends TestCase
                  */
                 public function isHandling(array $array): bool
                 {
-
+                    return true;
                 }
             }
         ]);
@@ -1810,7 +1816,7 @@ class CasterTest extends TestCase
                  */
                 public function format(CasterInterface $caster, object $object): ?string
                 {
-
+                    return null;
                 }
 
                 /**
@@ -1818,7 +1824,7 @@ class CasterTest extends TestCase
                  */
                 public function isHandling(object $object): bool
                 {
-
+                    return true;
                 }
             }
         ]);
@@ -1860,7 +1866,7 @@ class CasterTest extends TestCase
                  */
                 public function format(CasterInterface $caster, Resource $resource): ?string
                 {
-
+                    return null;
                 }
 
                 /**
@@ -1868,7 +1874,7 @@ class CasterTest extends TestCase
                  */
                 public function isHandling(Resource $resource): bool
                 {
-
+                    return true;
                 }
             }
         ]);
@@ -1910,7 +1916,7 @@ class CasterTest extends TestCase
                  */
                 public function format(CasterInterface $caster, string $string): ?string
                 {
-
+                    return null;
                 }
 
                 /**
@@ -1918,7 +1924,7 @@ class CasterTest extends TestCase
                  */
                 public function isHandling(string $string): bool
                 {
-
+                    return true;
                 }
             }
         ]);

@@ -25,8 +25,6 @@ interface CollectionInterface
 
     /**
      * {@inheritDoc}
-     *
-     * @return \Traversable<int|string, ElementInterface>
      */
     public function getIterator(): \ArrayIterator;
 

@@ -6,6 +6,7 @@ namespace Eboreum\Caster\Collection;
 
 use Eboreum\Caster\Abstraction\Collection\AbstractObjectCollection;
 use Eboreum\Caster\EncryptedString;
+use Eboreum\Caster\Exception\RuntimeException;
 
 class EncryptedStringCollection extends AbstractObjectCollection
 {

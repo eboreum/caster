@@ -155,6 +155,7 @@ namespace My\Application;
 
 use Eboreum\Caster\Abstraction\Formatter\AbstractArrayFormatter;
 use Eboreum\Caster\Caster as EboreumCaster;
+use Eboreum\Caster\CharacterEncoding;
 use Eboreum\Caster\Collection\Formatter\ArrayFormatterCollection;
 use Eboreum\Caster\Contract\CasterInterface;
 
@@ -165,7 +166,7 @@ class Caster extends EboreumCaster
     public static function getInstance(): Caster // PHP 7.4 Liskov substitution will allow this
     {
         if (null === self::$instance) {
-            self::$instance = static::create();
+            self::$instance = new self(CharacterEncoding::getInstance());
 
             self::$instance = self::$instance->withCustomArrayFormatterCollection(new ArrayFormatterCollection(...[
                 new class extends AbstractArrayFormatter
@@ -697,6 +698,7 @@ echo $caster->castTyped("0123456789") . "\n"; // Notice: 3456 are masked because
 ```json
 "doctrine/common": "^3.1",
 "nikic/php-parser": "^4.10",
+"phpstan/phpstan": "^0.12.88",
 "phpunit/phpunit": "^9.5"
 ```
 

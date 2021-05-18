@@ -88,13 +88,14 @@ class DefaultArrayFormatterTest extends TestCase
             ],
             [
                 "A multidimensional array, being restricted by maximum depth",
-                '/^\["foo" =\> \["bar" =\> \[\.\.\.\]\]\]$/',
+                '/^\["foo" =\> \["bar" =\> \[\.\.\.\] \*\* OMITTED \*\* \(maximum depth of 1 reached\)\]\]$/',
                 implode("", [
                     '/',
                     '^',
                     '\[',
                         '\(string\(3\)\) "foo" =\> \(array\(1\)\) \[',
                             '\(string\(3\)\) "bar" =\> \(array\(1\)\) \[\.\.\.\]',
+                            ' \*\* OMITTED \*\* \(maximum depth of 1 reached\)',
                         '\]',
                     '\]',
                     '$',
