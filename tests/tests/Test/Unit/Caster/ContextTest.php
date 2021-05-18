@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Eboreum\Caster\Test\Unit\Caster;
+namespace Test\Unit\Eboreum\Caster\Caster;
 
 use Eboreum\Caster\Caster\Context;
 use PHPUnit\Framework\TestCase;

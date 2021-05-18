@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Eboreum\Caster\Test\Unit\Common\DataType\Integer;
+namespace Test\Unit\Eboreum\Caster\Common\DataType\Integer;
 
 use Eboreum\Caster\Common\DataType\Integer\UnsignedInteger;
 use Eboreum\Caster\Exception\RuntimeException;

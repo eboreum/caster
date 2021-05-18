@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Eboreum\Caster\Test\Unit\Formatter\Object_;
+namespace Test\Unit\Eboreum\Caster\Formatter\Object_;
 
 use Eboreum\Caster\Annotation\DebugIdentifier;
 use Eboreum\Caster\Caster;
@@ -10,8 +10,8 @@ use Eboreum\Caster\Collection\Formatter\ObjectFormatterCollection;
 use Eboreum\Caster\Contract\DebugIdentifierAnnotationInterface;
 use Eboreum\Caster\Formatter\Object_\DebugIdentifierAnnotationInterfaceFormatter;
 use PHPUnit\Framework\TestCase;
-use Eboreum\Caster\TestResource\Unit\Formatter\Object_\DebugIdentifierAnnotationInterfaceFormatterTest\testFormatWorksWithAOjectWithAParentButWithNoConflictingProperties;
-use Eboreum\Caster\TestResource\Unit\Formatter\Object_\DebugIdentifierAnnotationInterfaceFormatterTest\testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities;
+use TestResource\Unit\Eboreum\Caster\Formatter\Object_\DebugIdentifierAnnotationInterfaceFormatterTest\testFormatWorksWithAOjectWithAParentButWithNoConflictingProperties;
+use TestResource\Unit\Eboreum\Caster\Formatter\Object_\DebugIdentifierAnnotationInterfaceFormatterTest\testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities;
 
 class DebugIdentifierAnnotationInterfaceFormatterTest extends TestCase
 {

@@ -1,13 +1,13 @@
 <?php
 declare(strict_types = 1);
 
-namespace Eboreum\Caster\Test\Unit\Formatter\Object_;
+namespace Test\Unit\Eboreum\Caster\Formatter\Object_;
 
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Collection\Formatter\ObjectFormatterCollection;
 use Eboreum\Caster\Formatter\Object_\PublicVariableFormatter;
-use Eboreum\Caster\TestResource\Unit\Formatter\Object_\PublicVariableFormatterTest\testFormatWorksWhenObjectHasMultipleSameNamePublicVariables;
 use PHPUnit\Framework\TestCase;
+use TestResource\Unit\Eboreum\Caster\Formatter\Object_\PublicVariableFormatterTest\testFormatWorksWhenObjectHasMultipleSameNamePublicVariables;
 
 class PublicVariableFormatterTest extends TestCase
 {
