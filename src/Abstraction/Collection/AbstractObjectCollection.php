@@ -35,7 +35,10 @@ abstract class AbstractObjectCollection implements ObjectCollectionInterface
                 $className = static::getHandledClassName();
 
                 foreach ($elements as $k => $element) {
-                    if (false === is_object($element) || false === ($element instanceof $className)) {
+                    if (
+                        false == is_object($element)
+                        || false === ($element instanceof $className)
+                    ) {
                         $invalids[$k] = $element;
                     }
                 }
