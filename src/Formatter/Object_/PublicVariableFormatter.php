@@ -67,7 +67,7 @@ class PublicVariableFormatter extends AbstractObjectFormatter
         return $propertyNameToReflectionProperty;
     }
 
-    protected function getPropertySequenceAsString(Caster $caster, object $object): string
+    protected function getPropertySequenceAsString(CasterInterface $caster, object $object): string
     {
         $reflectionObject = new \ReflectionObject($object);
         $propertyNameToReflectionProperty = $this->getPropertyNameToReflectionProperty($reflectionObject);
