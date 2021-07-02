@@ -59,7 +59,7 @@ class PublicVariableFormatterTest extends TestCase
 
         $object = new class
         {
-            public $foo = "bar";
+            public string $foo = "bar";
         };
 
         $this->assertTrue($publicVariableFormatter->isHandling($object));
@@ -84,11 +84,11 @@ class PublicVariableFormatterTest extends TestCase
 
         $object = new class
         {
-            public $foo = 1;
-            public $bar = null;
-            public $baz = "hmm";
-            private $private = null;
-            protected $protected = null;
+            public int $foo = 1;
+            public ?string $bar = null;
+            public string $baz = "hmm";
+            private ?string $private = null;
+            protected ?string $protected = null;
         };
 
         $this->assertTrue($publicVariableFormatter->isHandling($object));

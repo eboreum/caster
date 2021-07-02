@@ -128,6 +128,9 @@ class CharacterTest extends TestCase
         $this->fail("Exception was never thrown.");
     }
 
+    /**
+     * @return array<int, array{0: string, 1: string, 2: string, 3: string, 4: null|CharacterEncoding}>
+     */
     public function dataProvider_testConstructorThrowsExceptionWhenArgumentCharacterIsInvalid(): array
     {
         return [

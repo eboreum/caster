@@ -35,6 +35,8 @@ class ThrowableFormatter extends AbstractObjectFormatter
             return null; // Pass on
         }
 
+        assert($object instanceof \Throwable);
+
         if (1 === $caster->getContext()->count()) {
             /*
              * Don't omit previous throwables after rather few of them (e.g. merely 3).

@@ -25,7 +25,11 @@ class BogusScannerTest extends TestCase
             \Eboreum\Caster\rglob(TEST_ROOT_PATH . "/tests/*Test.php"),
         );
 
-        $composerJsonArray = json_decode(file_get_contents(dirname(TEST_ROOT_PATH) . "/composer.json"), true);
+        $contents = file_get_contents(dirname(TEST_ROOT_PATH) . "/composer.json");
+
+        assert(is_string($contents));
+
+        $composerJsonArray = json_decode($contents, true);
 
         $authorNames = [];
 
@@ -66,6 +70,8 @@ class BogusScannerTest extends TestCase
             }
 
             $contents = file_get_contents($filePath);
+
+            assert(is_string($contents));
 
             foreach ($authorNames as $authorName) {
                 preg_match_all(
@@ -137,6 +143,10 @@ class BogusScannerTest extends TestCase
         $this->assertCount(0, $errorMessages);
     }
 
+    /**
+     * @param array<\PhpParser\Node> $ast
+     * @return array<\PhpParser\Comment>
+     */
     private function _recursivelyFindAllCommentsInPHPFileAST(array $ast): array
     {
         $comments = [];
@@ -151,6 +161,9 @@ class BogusScannerTest extends TestCase
         return $comments;
     }
 
+    /**
+     * @return array<\PhpParser\Comment>
+     */
     private function _handleNode(\PhpParser\Node $node): array
     {
         $comments = $node->getComments();

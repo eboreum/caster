@@ -23,6 +23,8 @@ class TextuallyIdentifiableInterfaceFormatter extends AbstractObjectFormatter
             return null; // Pass on
         }
 
+        assert($object instanceof TextuallyIdentifiableInterface);
+
         return $object->toTextualIdentifier($caster);
     }
 

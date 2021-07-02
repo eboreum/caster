@@ -23,6 +23,8 @@ class DateTimeInterfaceFormatter extends AbstractObjectFormatter
             return null;
         }
 
+        assert($object instanceof \DateTimeInterface);
+
         return sprintf(
             "%s (%s)",
             Caster::makeNormalizedClassName(new \ReflectionObject($object)),

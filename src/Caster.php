@@ -13,7 +13,7 @@ use Eboreum\Caster\Collection\Formatter\StringFormatterCollection;
 use Eboreum\Caster\Common\DataType\Integer\PositiveInteger;
 use Eboreum\Caster\Common\DataType\Integer\UnsignedInteger;
 use Eboreum\Caster\Common\DataType\String_\Character;
-use Eboreum\Caster\Common\DataType\Resource;
+use Eboreum\Caster\Common\DataType\Resource_;
 use Eboreum\Caster\Contract\Collection\CollectionInterface;
 use Eboreum\Caster\Contract\Caster\ContextInterface;
 use Eboreum\Caster\Contract\CasterInterface;
@@ -347,7 +347,7 @@ class Caster implements CasterInterface
 
         if (is_resource($value)) {
             foreach ($this->customResourceFormatterCollection as $resourceFormatter) {
-                $return = $resourceFormatter->format($this, new Resource($value));
+                $return = $resourceFormatter->format($this, new Resource_($value));
 
                 if (is_string($return)) {
                     break;
@@ -355,7 +355,7 @@ class Caster implements CasterInterface
             }
 
             if (null === $return) {
-                $return = strval($this->getDefaultResourceFormatter()->format($this, new Resource($value)));
+                $return = strval($this->getDefaultResourceFormatter()->format($this, new Resource_($value)));
             }
 
             if ($this->isPrependingType()) {
@@ -479,6 +479,8 @@ class Caster implements CasterInterface
                     $str,
                     -1,
                 );
+
+                assert(is_array($split));
 
                 if (count($split) > 1) {
                     $split = array_values($split);
@@ -994,9 +996,14 @@ class Caster implements CasterInterface
         return new self($characterEncoding);
     }
 
+    /**
+     * @param \ReflectionClass<object> $reflectionClass
+     */
     public static function makeNormalizedClassName(\ReflectionClass $reflectionClass): string
     {
         if ($reflectionClass->isAnonymous()) {
+            assert(is_string($reflectionClass->getFileName()));
+
             return sprintf(
                 "class@anonymous/in/%s:%d",
                 preg_replace(

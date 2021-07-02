@@ -30,6 +30,9 @@ class NegativeIntegerTest extends TestCase
         $this->assertFalse($negativeIntegerA->isSame($negativeIntegerC));
     }
 
+    /**
+     * @return array<int, array{0: int}>
+     */
     public function dataProvider_testBasics(): array
     {
         return [

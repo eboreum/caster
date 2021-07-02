@@ -42,6 +42,9 @@ class DefaultStringFormatterTest extends TestCase
         );
     }
 
+    /**
+     * @return array<int, array{0: string, 1: string, 2: string, 3: Caster, 4: string}>
+     */
     public function dataProvier_testBasics(): array
     {
         return [
@@ -75,6 +78,9 @@ class DefaultStringFormatterTest extends TestCase
         );
     }
 
+    /**
+     * @return array<int, array{0: string, 1: UnsignedInteger, 2: string}>
+     */
     public function dataProvider_testFormatWorksWithEllipsis(): array
     {
         return [

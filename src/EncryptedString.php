@@ -84,13 +84,17 @@ class EncryptedString implements ImmutableObjectInterface, ElementInterface
             $this->salt = $saltVariation;
             $this->encryptionMethod = $encryptionMethodVariant;
             $this->initializationVectorBase = self::generateRandomSalt() . \spl_object_hash($this);
-            $this->encryptedString = \openssl_encrypt(
+            $encryptedString = \openssl_encrypt(
                 $string,
                 $this->encryptionMethod,
                 $this->salt,
                 0,
                 $this->_getInitializationVector()
             );
+
+            assert(is_string($encryptedString));
+
+            $this->encryptedString = $encryptedString;
         } catch (\Throwable $t) {
             $argumentSegments = [];
             $argumentSegments[] = "\$string = ** HIDDEN **";
@@ -113,13 +117,17 @@ class EncryptedString implements ImmutableObjectInterface, ElementInterface
      */
     public function decrypt(): string
     {
-        return \openssl_decrypt(
+        $decrypted = \openssl_decrypt(
             $this->encryptedString,
             $this->encryptionMethod,
             $this->salt,
             0,
             $this->_getInitializationVector(),
         );
+
+        assert(is_string($decrypted));
+
+        return $decrypted;
     }
 
     /**
@@ -153,13 +161,17 @@ class EncryptedString implements ImmutableObjectInterface, ElementInterface
             $clone = clone $this;
             $clone->encryptionMethod = $encryptionMethod;
             $clone->initializationVectorBase = self::generateRandomSalt() . \spl_object_hash($clone);
-            $clone->encryptedString = \openssl_encrypt(
+            $encryptedString = \openssl_encrypt(
                 $this->decrypt(),
                 $clone->encryptionMethod,
                 $clone->salt,
                 0,
                 $clone->_getInitializationVector(),
             );
+
+            assert(is_string($encryptedString));
+
+            $clone->encryptedString = $encryptedString;
         } catch (\Throwable $t) {
             $argumentsAsStrings = [];
             $argumentsAsStrings[] = sprintf(

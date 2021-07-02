@@ -37,6 +37,16 @@ class EncryptedStringCollection extends AbstractObjectCollection
 
     /**
      * {@inheritDoc}
+     *
+     * @return \ArrayIterator<int, EncryptedString>
+     */
+    public function getIterator(): \ArrayIterator
+    {
+        return new \ArrayIterator($this->elements);
+    }
+
+    /**
+     * {@inheritDoc}
      */
     public static function getHandledClassName(): string
     {

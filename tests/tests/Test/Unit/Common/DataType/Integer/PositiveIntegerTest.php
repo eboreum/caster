@@ -30,6 +30,9 @@ class PositiveIntegerTest extends TestCase
         $this->assertFalse($positiveIntegerA->isSame($positiveIntegerC));
     }
 
+    /**
+     * @return array<int, array{0: int}>
+     */
     public function dataProvider_testBasics(): array
     {
         return [

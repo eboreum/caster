@@ -14,6 +14,7 @@ class DefaultArrayFormatterTest extends TestCase
 {
     /**
      * @dataProvider dataProvier_testBasics
+     * @param array<string|array> $array
      */
     public function testBasics(
         string $message,
@@ -42,6 +43,9 @@ class DefaultArrayFormatterTest extends TestCase
         );
     }
 
+    /**
+     * @return array<int, array{0: string, 1: string, 2: string, 3: Caster, 4: array}>
+     */
     public function dataProvier_testBasics(): array
     {
         return [

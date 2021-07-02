@@ -23,6 +23,8 @@ class DatePeriodFormatter extends AbstractObjectFormatter
             return null;
         }
 
+        assert($object instanceof \DatePeriod);
+
         return sprintf(
             "%s (start: %s, end: %s, recurrences: %s, interval: %s)",
             Caster::makeNormalizedClassName(new \ReflectionObject($object)),

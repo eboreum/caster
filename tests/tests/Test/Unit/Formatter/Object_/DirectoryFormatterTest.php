@@ -28,6 +28,8 @@ class DirectoryFormatterTest extends TestCase
 
         $object = dir(__DIR__);
 
+        assert($object instanceof \Directory);
+
         $this->assertTrue($directoryFormatter->isHandling($object));
         $this->assertMatchesRegularExpression(
             '/^\\\\Directory \{\$path = "(.+)"\}$/',

@@ -9,6 +9,9 @@ use Eboreum\Caster\Contract\Collection\Formatter\FormatterCollectionInterface;
 use Eboreum\Caster\Contract\Formatter\StringFormatterInterface;
 use Eboreum\Caster\Exception\RuntimeException;
 
+/**
+ * {@inheritDoc}
+ */
 class StringFormatterCollection extends AbstractObjectCollection implements FormatterCollectionInterface
 {
     /**
@@ -43,7 +46,7 @@ class StringFormatterCollection extends AbstractObjectCollection implements Form
      */
     public function getIterator(): \ArrayIterator
     {
-        return parent::getIterator();
+        return new \ArrayIterator($this->elements);
     }
 
     /**

@@ -7,7 +7,7 @@ use Eboreum\Caster\Abstraction\Formatter\AbstractResourceFormatter;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\CharacterEncoding;
 use Eboreum\Caster\Collection\Formatter\ResourceFormatterCollection;
-use Eboreum\Caster\Common\DataType\Resource;
+use Eboreum\Caster\Common\DataType\Resource_;
 use Eboreum\Caster\Contract\CasterInterface;
 
 require_once dirname(__DIR__, 2) . "/bootstrap.php"; // README.md.remove
@@ -20,7 +20,7 @@ $caster = $caster->withCustomResourceFormatterCollection(new ResourceFormatterCo
         /**
          * {@inheritDoc}
          */
-        public function format(CasterInterface $caster, Resource $resource): ?string
+        public function format(CasterInterface $caster, Resource_ $resource): ?string
         {
             if (false === $this->isHandling($resource)) {
                 return null; // Pass on to next formatter or lastly DefaultResourceFormatter
@@ -45,7 +45,7 @@ $caster = $caster->withCustomResourceFormatterCollection(new ResourceFormatterCo
         /**
          * {@inheritDoc}
          */
-        public function format(CasterInterface $caster, Resource $resource): ?string
+        public function format(CasterInterface $caster, Resource_ $resource): ?string
         {
             if (false === $this->isHandling($resource)) {
                 return null; // Pass on to next formatter or lastly DefaultResourceFormatter

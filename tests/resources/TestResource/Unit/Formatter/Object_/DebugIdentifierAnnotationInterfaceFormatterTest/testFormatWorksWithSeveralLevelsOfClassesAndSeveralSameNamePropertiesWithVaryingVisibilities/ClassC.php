@@ -98,9 +98,18 @@ abstract class ClassC implements DebugIdentifierAnnotationInterface
      */
     private string $onlyInBAndCPrivatePrivate = "c";
 
+    /**
+     * @var mixed
+     */
     public $publicDoNotIncludeMe;
 
+    /**
+     * @var mixed
+     */
     protected $protectedDoNotIncludeMe;
 
+    /**
+     * @var mixed
+     */
     protected $privateDoNotIncludeMe;
 }

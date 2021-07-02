@@ -15,20 +15,22 @@ use Eboreum\Caster\Caster;
  *
  * To be able to utilize type hints for resources, this wrapper class was implemented.
  */
-class Resource
+class Resource_
 {
     /**
-     * A resource.
+     * @var resource $resource
      */
     protected $resource;
 
     /**
      * Argument $resource must be a resource.
+     *
+     * @param resource $resource
      * @throws \InvalidArgumentException
      */
     public function __construct($resource)
     {
-        if (false === is_resource($resource)) {
+        if (false == is_resource($resource)) {
             throw new \InvalidArgumentException(sprintf(
                 "Expects argument \$resource to be a resource, but it is not. Found: %s",
                 Caster::getInternalInstance()->castTyped($resource),
@@ -39,7 +41,7 @@ class Resource
     }
 
     /**
-     * Returns a resource.
+     * @return resource
      */
     public function getResource()
     {

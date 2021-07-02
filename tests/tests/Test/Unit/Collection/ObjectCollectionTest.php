@@ -9,12 +9,14 @@ use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\Collection\ElementInterface;
 use Eboreum\Caster\Contract\Collection\ObjectCollectionInterface;
 use Eboreum\Caster\Exception\RuntimeException;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ObjectCollectionTest extends TestCase
 {
     /**
      * @dataProvider genericDataProvider_getAllObjectCollectionClasses
+     * @param \ReflectionClass<ObjectCollectionInterface<ElementInterface>> $reflectionClassCollection
      */
     public function testBasics(
         string $message,
@@ -22,7 +24,13 @@ class ObjectCollectionTest extends TestCase
     ): void
     {
         $handledClassNameCollection = $reflectionClassCollection->getName();
-        $reflectionClassHandledClass = new \ReflectionClass($handledClassNameCollection::getHandledClassName());
+
+        $handledClassName = $handledClassNameCollection::getHandledClassName();
+
+        assert(is_string($handledClassName));
+        assert(class_exists($handledClassName) || interface_exists($handledClassName));
+
+        $reflectionClassHandledClass = new \ReflectionClass($handledClassName);
 
         $collectionA = new $handledClassNameCollection();
 
@@ -33,6 +41,10 @@ class ObjectCollectionTest extends TestCase
             $this->_mockHandledClass($reflectionClassHandledClass),
             $this->_mockHandledClass($reflectionClassHandledClass),
         ];
+
+        assert($elements[0] instanceof ElementInterface);
+        assert($elements[1] instanceof ElementInterface);
+        assert($elements[2] instanceof ElementInterface);
 
         $collectionB = new $handledClassNameCollection(...$elements);
 
@@ -61,9 +73,6 @@ class ObjectCollectionTest extends TestCase
         );
 
         $this->assertTrue($handledClassNameCollection::isElementAccepted($elements[0]), $message);
-        $this->assertFalse($handledClassNameCollection::isElementAccepted(new \stdClass), $message);
-        $this->assertNull($handledClassNameCollection::validateIsElementAccepted($elements[0]), $message);
-        $this->assertIsObject($handledClassNameCollection::validateIsElementAccepted(new \stdClass), $message);
     }
 
     public function testConstructorThrowsExceptionWhenArgumentElementsContainsInvalidElements(): void
@@ -160,14 +169,19 @@ class ObjectCollectionTest extends TestCase
 
     /**
      * @throws \RuntimeException
+     * @return array<int, array{0: string, 1: \ReflectionClass<ObjectCollectionInterface>}>
      */
     public function genericDataProvider_getAllObjectCollectionClasses(): array
     {
         $cases = [];
+
         $srcDirectory = dir(sprintf(
             "%s/src",
             dirname(TEST_ROOT_PATH),
         ));
+
+        assert($srcDirectory instanceof \Directory);
+
         $pattern = sprintf(
             "%s/Collection/*.php",
             $srcDirectory->path,
@@ -208,7 +222,10 @@ class ObjectCollectionTest extends TestCase
         return $cases;
     }
 
-    private function _mockHandledClass(\ReflectionClass $reflectionClassHandledClass)
+    /**
+     * @param \ReflectionClass<object> $reflectionClassHandledClass
+     */
+    private function _mockHandledClass(\ReflectionClass $reflectionClassHandledClass): MockObject
     {
         return $this
             ->getMockBuilder($reflectionClassHandledClass->getName())

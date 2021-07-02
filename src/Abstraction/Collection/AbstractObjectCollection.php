@@ -12,6 +12,8 @@ use Eboreum\Caster\Exception\RuntimeException;
 use Eboreum\Caster\Formatter\DefaultObjectFormatter;
 
 /**
+ * {@inheritDoc}
+ *
  * An array collection which holds objects of a certain class, exclusively. The class is deterined by the method
  * `getHandledClassName`.
  */
@@ -35,10 +37,7 @@ abstract class AbstractObjectCollection implements ObjectCollectionInterface
                 $className = static::getHandledClassName();
 
                 foreach ($elements as $k => $element) {
-                    if (
-                        false == is_object($element)
-                        || false === ($element instanceof $className)
-                    ) {
+                    if (false === static::isElementAccepted($element)) {
                         $invalids[$k] = $element;
                     }
                 }
@@ -122,27 +121,12 @@ abstract class AbstractObjectCollection implements ObjectCollectionInterface
      */
     public static function isElementAccepted($element): bool
     {
-        $className = static::getHandledClassName();
+        if (is_object($element)) {
+            $className = static::getHandledClassName();
 
-        return (
-            is_object($element)
-            && ($element instanceof $className)
-        );
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public static function validateIsElementAccepted($element): ?\InvalidArgumentException
-    {
-        if (false === static::isElementAccepted($element)) {
-            return new \InvalidArgumentException(sprintf(
-                "Argument \$element must be an object, instance of \\%s, but it is not. Found: %s",
-                static::getHandledClassName(),
-                Caster::create()->castTyped($element)
-            ));
+            return ($element instanceof $className);
         }
 
-        return null;
+        return false;
     }
 }

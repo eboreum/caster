@@ -10,6 +10,8 @@ use Eboreum\Caster\Exception\CollectionException;
 
 /**
  * {@inheritDoc}
+ *
+ * @extends \IteratorAggregate<int, ElementInterface>
  */
 interface CollectionInterface
     extends
@@ -25,6 +27,8 @@ interface CollectionInterface
 
     /**
      * {@inheritDoc}
+     *
+     * @return \ArrayIterator<int, ElementInterface>
      */
     public function getIterator(): \ArrayIterator;
 
@@ -37,13 +41,8 @@ interface CollectionInterface
     /**
      * Must return true when the $element argument is accepted by the implementing class.
      * Otherwise, must return false.
+     *
+     * @param mixed $element
      */
-    public static function isElementAccepted(ElementInterface $element): bool;
-
-    /**
-     * Must validate whether the provided argument $element is accepted by the implementing collection class.
-     * Must return an \InvalidArgumentException when the $element argument is NOT valid.
-     * Otherwise, must return null.
-     */
-    public static function validateIsElementAccepted(ElementInterface $element): ?\InvalidArgumentException;
+    public static function isElementAccepted($element): bool;
 }

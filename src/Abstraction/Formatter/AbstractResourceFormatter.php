@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace Eboreum\Caster\Abstraction\Formatter;
 
 use Eboreum\Caster\Caster;
-use Eboreum\Caster\Common\DataType\Resource;
+use Eboreum\Caster\Common\DataType\Resource_;
 use Eboreum\Caster\Contract\Formatter\ResourceFormatterInterface;
 
 abstract class AbstractResourceFormatter extends AbstractFormatter implements ResourceFormatterInterface
@@ -13,7 +13,7 @@ abstract class AbstractResourceFormatter extends AbstractFormatter implements Re
     /**
      * {@inheritDoc}
      */
-    public function isHandling(Resource $resource): bool
+    public function isHandling(Resource_ $resource): bool
     {
         return true;
     }

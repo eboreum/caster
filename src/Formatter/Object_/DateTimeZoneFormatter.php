@@ -23,6 +23,8 @@ class DateTimeZoneFormatter extends AbstractObjectFormatter
             return null;
         }
 
+        assert($object instanceof \DateTimeZone);
+
         return sprintf(
             "%s (name: %s)",
             Caster::makeNormalizedClassName(new \ReflectionObject($object)),

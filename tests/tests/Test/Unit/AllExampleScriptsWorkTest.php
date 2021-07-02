@@ -13,9 +13,13 @@ class AllExampleScriptsWorkTest extends TestCase
      */
     public function testAllExampleScriptsWork(): void
     {
+        $globbedFilePaths = glob(TEST_ROOT_PATH . "/../script/misc/readme/example-*.php");
+
+        assert(is_array($globbedFilePaths));
+
         $filePaths = [];
 
-        foreach (glob(TEST_ROOT_PATH . "/../script/misc/readme/example-*.php") as $filePath) {
+        foreach ($globbedFilePaths as $filePath) {
             if (false === is_file($filePath)) {
                 continue;
             }
@@ -30,6 +34,8 @@ class AllExampleScriptsWorkTest extends TestCase
             include $filePath;
             $output = ob_get_contents();
             ob_end_clean();
+
+            assert(is_string($output));
 
             $this->assertGreaterThan(0, mb_strlen($output), "File: {$filePath}");
         }

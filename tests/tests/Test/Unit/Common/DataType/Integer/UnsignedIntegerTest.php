@@ -30,6 +30,9 @@ class UnsignedIntegerTest extends TestCase
         $this->assertFalse($unsignedIntegerA->isSame($unsignedIntegerC));
     }
 
+    /**
+     * @return array<int, array{0: int}>
+     */
     public function dataProvider_testBasics(): array
     {
         return [

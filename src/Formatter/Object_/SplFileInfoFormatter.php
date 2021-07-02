@@ -23,6 +23,9 @@ class SplFileInfoFormatter extends AbstractObjectFormatter
             return null; // Pass on
         }
 
+        assert($object instanceof \SplFileInfo);
+        assert(is_string($object->getRealPath()));
+
         return sprintf(
             "%s (%s)",
             Caster::makeNormalizedClassName(new \ReflectionObject($object)),
