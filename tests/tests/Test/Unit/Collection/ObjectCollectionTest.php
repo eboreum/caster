@@ -72,7 +72,12 @@ class ObjectCollectionTest extends TestCase
             $message,
         );
 
+        $arrayIterator = $collectionB->getIterator();
+        $this->assertSame($elements[0], $arrayIterator->current());
+
         $this->assertTrue($handledClassNameCollection::isElementAccepted($elements[0]), $message);
+        $this->assertFalse($handledClassNameCollection::isElementAccepted(new \stdClass), $message);
+        $this->assertFalse($handledClassNameCollection::isElementAccepted(null), $message);
     }
 
     public function testConstructorThrowsExceptionWhenArgumentElementsContainsInvalidElements(): void
@@ -86,6 +91,14 @@ class ObjectCollectionTest extends TestCase
         try {
             new class (...$elements) extends AbstractObjectCollection
             {
+                /**
+                 * {@inheritDoc}
+                 */
+                public function getIterator(): \ArrayIterator
+                {
+                    return new \ArrayIterator($this->elements);
+                }
+
                 /**
                  * {@inheritDoc}
                  */
@@ -155,6 +168,14 @@ class ObjectCollectionTest extends TestCase
 
         $collection = new class (...$elements) extends AbstractObjectCollection
         {
+            /**
+             * {@inheritDoc}
+             */
+            public function getIterator(): \ArrayIterator
+            {
+                return new \ArrayIterator($this->elements);
+            }
+
             /**
              * {@inheritDoc}
              */
