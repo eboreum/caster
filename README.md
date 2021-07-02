@@ -16,7 +16,7 @@ With Eboreum/Caster, you will be able to provide excellent information about all
 
 Additionally, Eboreum/Caster **gives you -- the developer -- the ultimate power** to control how output is handled, parsed and presented through opt-in utilization of custom formatters.
 
-Lastly, you may provide a series of **sensitive text strings** like passwords, authentication tokens, social security numbers, and similar, preventing these from being output inside strings. Wouldn't want these to show up in error logs, emails, and what have you. Upon encountering sensitive strings, said sensitive substrings will be masked, instead showing a static length string replacement (like `******`) instead.
+Lastly, you may provide a series of **sensitive text strings** like passwords, authentication tokens, social security numbers, and similar, preventing these from being output inside strings. Wouldn't want these to show up in error logs, emails, and what have you. Upon encountering sensitive strings, said sensitive substrings will be masked, instead showing a static length string replacement (like `******`).
 
 <a name="requirements"></a>
 # Requirements
