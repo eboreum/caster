@@ -103,14 +103,6 @@ abstract class AbstractObjectCollection implements ObjectCollectionInterface
     /**
      * {@inheritDoc}
      */
-    public function getIterator(): \ArrayIterator
-    {
-        return new \ArrayIterator($this->elements);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function isEmpty(): bool
     {
         return empty($this->elements);
