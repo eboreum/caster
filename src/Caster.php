@@ -14,7 +14,6 @@ use Eboreum\Caster\Common\DataType\Integer\PositiveInteger;
 use Eboreum\Caster\Common\DataType\Integer\UnsignedInteger;
 use Eboreum\Caster\Common\DataType\String_\Character;
 use Eboreum\Caster\Common\DataType\Resource_;
-use Eboreum\Caster\Contract\Collection\CollectionInterface;
 use Eboreum\Caster\Contract\Caster\ContextInterface;
 use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\Contract\CharacterEncodingInterface;
@@ -203,7 +202,6 @@ class Caster implements CasterInterface
         }
 
         if (is_string($value)) {
-            $stringFormatter = null;
             $valueMasked = $this->maskString($value);
 
             foreach ($this->customStringFormatterCollection as $stringFormatter) {
@@ -488,7 +486,7 @@ class Caster implements CasterInterface
                     $segments = [];
                     $maskingString = $this->getMaskingString();
 
-                    for ($i=0; $i<=$max; $i++) {
+                    for ($i = 0; $i <= $max; $i++) {
                         if ($i > 0) {
                             $segments[] = $maskingString;
                         }
