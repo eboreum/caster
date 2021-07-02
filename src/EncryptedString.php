@@ -4,10 +4,10 @@ declare(strict_types = 1);
 
 namespace Eboreum\Caster;
 
-use Eboreum\Caster\Caster;
 use Eboreum\Caster\Exception\RuntimeException;
 use Eboreum\Caster\Contract\Collection\ElementInterface;
 use Eboreum\Caster\Contract\ImmutableObjectInterface;
+use Exception;
 
 /**
  * {@inheritDoc}
@@ -201,6 +201,9 @@ class EncryptedString implements ImmutableObjectInterface, ElementInterface
         return substr(\hash("sha256", $this->initializationVectorBase), 0, 16);
     }
 
+    /**
+     * @throws Exception
+     */
     public static function generateRandomSalt(): string
     {
         return \bin2hex(\random_bytes(64));
