@@ -23,6 +23,8 @@ class DirectoryFormatter extends AbstractObjectFormatter
             return null; // Pass on
         }
 
+        assert($object instanceof \Directory);
+
         return sprintf(
             "%s {\$path = %s}",
             Caster::makeNormalizedClassName(new \ReflectionObject($object)),

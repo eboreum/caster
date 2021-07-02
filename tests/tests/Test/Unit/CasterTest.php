@@ -20,7 +20,7 @@ use Eboreum\Caster\Collection\Formatter\StringFormatterCollection;
 use Eboreum\Caster\Collection\EncryptedStringCollection;
 use Eboreum\Caster\Common\DataType\Integer\PositiveInteger;
 use Eboreum\Caster\Common\DataType\Integer\UnsignedInteger;
-use Eboreum\Caster\Common\DataType\Resource;
+use Eboreum\Caster\Common\DataType\Resource_;
 use Eboreum\Caster\Common\DataType\String_\Character;
 use Eboreum\Caster\Contract\Caster\ContextInterface;
 use Eboreum\Caster\Contract\CasterInterface;
@@ -122,13 +122,14 @@ class CasterTest extends TestCase
 
     /**
      * @dataProvider dataProvider_testCastWorks
+     * @param mixed $value
      */
     public function testCastWorks(
         string $message,
         string $expected,
         $value,
         Caster $caster
-    )
+    ): void
     {
         $this->assertMatchesRegularExpression(
             $expected,
@@ -137,6 +138,9 @@ class CasterTest extends TestCase
         );
     }
 
+    /**
+     * @return array<int, array{0: string, 1: string, 2: mixed, 3: Caster}>
+     */
     public function dataProvider_testCastWorks(): array
     {
         return [
@@ -279,7 +283,7 @@ class CasterTest extends TestCase
                     /**
                      * @DebugIdentifier
                      */
-                    private $foo = "bar";
+                    private string $foo = "bar";
                 },
                 (function(){
                     $caster = Caster::create();
@@ -327,6 +331,9 @@ class CasterTest extends TestCase
 
                     protected ?float $baz = null;
 
+                    /**
+                     * @var array<mixed>
+                     */
                     protected array $bim = [];
                 },
                 (function(){
@@ -560,12 +567,13 @@ class CasterTest extends TestCase
 
     /**
      * @dataProvider dataProvider_testCastWorksWithArrayLargerThanSampleSize
+     * @param array<mixed> $array
      */
     public function testCastWorksWithArrayLargerThanSampleSize(
         string $message,
         string $expected,
         array $array
-    )
+    ): void
     {
         $this->assertSame(
             $expected,
@@ -574,6 +582,9 @@ class CasterTest extends TestCase
         );
     }
 
+    /**
+     * @return array<int, array{0: string, 1: string, array<mixed>}>
+     */
     public function dataProvider_testCastWorksWithArrayLargerThanSampleSize(): array
     {
         return [
@@ -667,12 +678,13 @@ class CasterTest extends TestCase
 
     /**
      * @dataProvider dataProvider_testCastOnMaskedStringsWillNotCauseMaskingToBePartOfOtherMaskings
+     * @param EncryptedStringCollection<int, EncryptedString> $encryptedStringCollection
      */
     public function testCastOnMaskedStringsWillNotCauseMaskingToBePartOfOtherMaskings(
         string $expected,
         string $input,
         EncryptedStringCollection $encryptedStringCollection
-    )
+    ): void
     {
         $caster = Caster::create();
         $caster = $caster->withMaskedEncryptedStringCollection($encryptedStringCollection);
@@ -680,6 +692,9 @@ class CasterTest extends TestCase
         $this->assertSame($expected, $caster->cast($input));
     }
 
+    /**
+     * @return array<int, array{0: string, 1: string, 2: EncryptedStringCollection}>
+     */
     public function dataProvider_testCastOnMaskedStringsWillNotCauseMaskingToBePartOfOtherMaskings()
     {
         return [
@@ -747,6 +762,7 @@ class CasterTest extends TestCase
 
     /**
      * @dataProvider dataProvider_testCastWorksWithTypePrepended
+     * @param mixed $value
      */
     public function testCastWorksWithTypePrepended(
         string $message,
@@ -772,6 +788,9 @@ class CasterTest extends TestCase
         );
     }
 
+    /**
+     * @return array<int, array{0: string, 1: string, 2: mixed, 3: Caster}>
+     */
     public function dataProvider_testCastWorksWithTypePrepended(): array
     {
         return [
@@ -914,7 +933,7 @@ class CasterTest extends TestCase
                     /**
                      * @DebugIdentifier
                      */
-                    private $foo = "bar";
+                    private string $foo = "bar";
                 },
                 (function(){
                     $caster = Caster::create();
@@ -962,6 +981,9 @@ class CasterTest extends TestCase
 
                     protected ?float $baz = null;
 
+                    /**
+                     * @var array<mixed>
+                     */
                     protected array $bim = [];
                 },
                 (function(){
@@ -1153,6 +1175,8 @@ class CasterTest extends TestCase
                         return null;
                     }
 
+                    assert($object instanceof \DateTimeInterface);
+
                     return sprintf(
                         "\\%s (%s)",
                         get_class($object),
@@ -1179,6 +1203,8 @@ class CasterTest extends TestCase
                         return null;
                     }
 
+                    assert($object instanceof \Throwable);
+
                     return sprintf(
                         "\\%s {\$code = %s, \$file = %s, \$line = %s, \$message = %s}",
                         get_class($object),
@@ -1204,7 +1230,7 @@ class CasterTest extends TestCase
                 /**
                  * {@inheritDoc}
                  */
-                public function format(CasterInterface $caster, Resource $resource): ?string
+                public function format(CasterInterface $caster, Resource_ $resource): ?string
                 {
                     if (false === $this->isHandling($resource)) {
                         return null;
@@ -1216,7 +1242,7 @@ class CasterTest extends TestCase
                 /**
                  * {@inheritDoc}
                  */
-                public function isHandling(Resource $resource): bool
+                public function isHandling(Resource_ $resource): bool
                 {
                     return ("stream" === get_resource_type($resource->getResource()));
                 }
@@ -1383,20 +1409,37 @@ class CasterTest extends TestCase
 
     /**
      * @dataProvider dataProvider_testCastWorksWithPrependedTypeAndWithArrayLargerThanSampleSize
+     * @param array<mixed> $array
      */
-    public function testCastWorksWithPrependedTypeAndWithArrayLargerThanSampleSize(string $expected, array $array)
+    public function testCastWorksWithPrependedTypeAndWithArrayLargerThanSampleSize(
+        string $message,
+        string $expected,
+        array $array
+    ): void
     {
         $this->assertSame(
             $expected,
             Caster::create()->withIsMakingSamples(true)->withIsPrependingType(true)->cast($array),
+            $message,
         );
     }
 
+    /**
+     * @return array<int, array{0: string, 1: string, 2: array<mixed>}>
+     */
     public function dataProvider_testCastWorksWithPrependedTypeAndWithArrayLargerThanSampleSize(): array
     {
         return [
-            ['(array(4)) [(int) 0 => (string(3)) "foo", (int) 1 => (int) 42, (int) 2 => (null) null, ... and 1 more element] (sample)', ["foo", 42, null, false]], // Singular "element"
-            ['(array(100)) [(int) 0 => (int) 1, (int) 1 => (int) 1, (int) 2 => (int) 1, ... and 97 more elements] (sample)', array_fill(0, 100, 1)], // Plural "elements"
+            [
+                "Singular \"element\"",
+                '(array(4)) [(int) 0 => (string(3)) "foo", (int) 1 => (int) 42, (int) 2 => (null) null, ... and 1 more element] (sample)',
+                ["foo", 42, null, false],
+            ],
+            [
+                "Plural \"elements\"",
+                '(array(100)) [(int) 0 => (int) 1, (int) 1 => (int) 1, (int) 2 => (int) 1, ... and 97 more elements] (sample)',
+                array_fill(0, 100, 1),
+            ],
         ];
     }
 
@@ -1534,11 +1577,7 @@ class CasterTest extends TestCase
 
         $context = $this->_mockContextInterface();
 
-        $context
-            ->expects($this->exactly(2))
-            ->method("hasVisitedObject")
-            ->with($object)
-            ->willReturn(true);
+        $context->expects($this->exactly(2))->method("hasVisitedObject")->with($object)->willReturn(true); /** @phpstan-ignore-line */
 
         $caster = $caster->withContext($context);
 
@@ -1583,11 +1622,14 @@ class CasterTest extends TestCase
     /**
      * @dataProvider dataProvider_testEscapeWorks
      */
-    public function testEscapeWorks(string $expected, string $str)
+    public function testEscapeWorks(string $expected, string $str): void
     {
         $this->assertSame($expected, Caster::create()->escape($str));
     }
 
+    /**
+     * @return array<int, array{0: string, 1: string}>
+     */
     public function dataProvider_testEscapeWorks(): array
     {
         return [
@@ -1606,11 +1648,14 @@ class CasterTest extends TestCase
         string $expected,
         Caster $caster,
         string $str
-    )
+    ): void
     {
         $this->assertSame($expected, $caster->maskString($str), $message);
     }
 
+    /**
+     * @return array<int, array{0: string, 1: string, 2: Caster, 3: string}>
+     */
     public function dataProvider_testMaskStringWorks(): array
     {
         return [
@@ -1864,7 +1909,7 @@ class CasterTest extends TestCase
                 /**
                  * {@inheritDoc}
                  */
-                public function format(CasterInterface $caster, Resource $resource): ?string
+                public function format(CasterInterface $caster, Resource_ $resource): ?string
                 {
                     return null;
                 }
@@ -1872,7 +1917,7 @@ class CasterTest extends TestCase
                 /**
                  * {@inheritDoc}
                  */
-                public function isHandling(Resource $resource): bool
+                public function isHandling(Resource_ $resource): bool
                 {
                     return true;
                 }

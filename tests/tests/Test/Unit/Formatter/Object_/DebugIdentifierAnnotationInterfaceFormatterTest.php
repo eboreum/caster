@@ -438,7 +438,7 @@ class DebugIdentifierAnnotationInterfaceFormatterTest extends TestCase
 
         $object = new class implements DebugIdentifierAnnotationInterface
         {
-            private $foo = "a";
+            private string $foo = "a";
         };
 
         $this->assertMatchesRegularExpression(

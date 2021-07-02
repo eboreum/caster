@@ -29,21 +29,21 @@ class ResourceFormatterCollection extends AbstractObjectCollection implements Fo
     /**
      * {@inheritDoc}
      *
-     * @return \ArrayIterator<int, ResourceFormatterInterface>
-     */
-    public function getIterator(): \ArrayIterator
-    {
-        return parent::getIterator();
-    }
-
-    /**
-     * {@inheritDoc}
-     *
      * @return array<int, ResourceFormatterInterface>
      */
     public function toArray(): array
     {
         return $this->elements;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return \ArrayIterator<int, ResourceFormatterInterface>
+     */
+    public function getIterator(): \ArrayIterator
+    {
+        return new \ArrayIterator($this->elements);
     }
 
     /**

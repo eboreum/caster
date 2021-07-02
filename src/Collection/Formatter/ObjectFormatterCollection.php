@@ -43,7 +43,7 @@ class ObjectFormatterCollection extends AbstractObjectCollection implements Form
      */
     public function getIterator(): \ArrayIterator
     {
-        return parent::getIterator();
+        return new \ArrayIterator($this->elements);
     }
 
     /**

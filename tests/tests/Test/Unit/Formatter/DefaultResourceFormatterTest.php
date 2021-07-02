@@ -7,7 +7,7 @@ namespace Test\Unit\Eboreum\Caster\Formatter;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Common\DataType\Integer\PositiveInteger;
 use Eboreum\Caster\Common\DataType\Integer\UnsignedInteger;
-use Eboreum\Caster\Common\DataType\Resource;
+use Eboreum\Caster\Common\DataType\Resource_;
 use Eboreum\Caster\Formatter\DefaultResourceFormatter;
 use PHPUnit\Framework\TestCase;
 
@@ -21,7 +21,7 @@ class DefaultResourceFormatterTest extends TestCase
         string $expected,
         string $expectedWithType,
         Caster $caster,
-        Resource $resource
+        Resource_ $resource
     ): void
     {
         $defaultResourceFormatter = new DefaultResourceFormatter;
@@ -43,6 +43,9 @@ class DefaultResourceFormatterTest extends TestCase
         );
     }
 
+    /**
+     * @return array<int, array{0: string, 1: string, 2: string, 3: Caster, 4: Resource_}>
+     */
     public function dataProvier_testBasics(): array
     {
         return [
@@ -51,7 +54,7 @@ class DefaultResourceFormatterTest extends TestCase
                 '/^`xml` Resource id #\d+$/',
                 '/^`xml` Resource id #\d+$/',
                 Caster::getInstance(),
-                new Resource(\xml_parser_create("UTF-8")),
+                new Resource_(\xml_parser_create("UTF-8")),
             ],
         ];
     }

@@ -4,10 +4,10 @@ declare(strict_types = 1);
 
 namespace Test\Unit\Eboreum\Caster\Common\DataType;
 
-use Eboreum\Caster\Common\DataType\Resource;
+use Eboreum\Caster\Common\DataType\Resource_;
 use PHPUnit\Framework\TestCase;
 
-class ResourceTest extends TestCase
+class Resource_Test extends TestCase
 {
     /**
      * @dataProvider dataProvider_testBasics
@@ -18,7 +18,7 @@ class ResourceTest extends TestCase
         ?\Closure $takeDownCallback
     ): void
     {
-        $resourceObject = new Resource($resource);
+        $resourceObject = new Resource_($resource);
 
         $this->assertSame($resource, $resourceObject->getResource());
 
@@ -27,6 +27,9 @@ class ResourceTest extends TestCase
         }
     }
 
+    /**
+     * @return array<int, array{0: mixed, 1: null|callable}>
+     */
     public function dataProvider_testBasics(): array
     {
         return [
@@ -36,7 +39,7 @@ class ResourceTest extends TestCase
             ],
             [
                 \fopen(__FILE__, "r"),
-                function(Resource $resource){
+                function(Resource_ $resource){
                     fclose($resource->getResource());
                 },
             ],
@@ -46,7 +49,7 @@ class ResourceTest extends TestCase
     public function testConstructorThrowsExceptionWhenArgumentResourceIsInvalid(): void
     {
         try {
-            new Resource(42);
+            new Resource_(42); /** @phpstan-ignore-line */
         } catch (\Exception $e) {
             $exceptionCurrent = $e;
             $this->assertSame("InvalidArgumentException", get_class($exceptionCurrent));

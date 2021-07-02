@@ -43,7 +43,7 @@ class ArrayFormatterCollection extends AbstractObjectCollection implements Forma
      */
     public function getIterator(): \ArrayIterator
     {
-        return parent::getIterator();
+        return new \ArrayIterator($this->elements);
     }
 
     /**

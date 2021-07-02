@@ -1,16 +1,7 @@
 parameters:
-    level: 5
+    level: 7
     paths:
         - src
         - tests
     bootstrapFiles:
         - tests/phpunit.bootstrap.php
-    ignoreErrors:
-        -
-            # phpstan is wrong; it's a phpunit mock, which does indeed have the method "expects"
-            message: '/^Call to an undefined method Eboreum\\Caster\\Contract\\Caster\\ContextInterface::expects\(\)\.$/'
-            path: tests/tests/Test/Unit/CasterTest.php
-        -
-            # phpstan cannot resolve the class names, but it works, becuase it is in a unit test
-            message: '/^Call to an undefined static method object::(getHandledClassName|isElementAccepted|isElementAccepted|validateIsElementAccepted|validateIsElementAccepted)\(\)\.$/'
-            path: tests/tests/Test/Unit/Collection/ObjectCollectionTest.php

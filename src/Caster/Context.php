@@ -11,7 +11,10 @@ use Eboreum\Caster\Contract\Caster\ContextInterface;
  */
 class Context implements ContextInterface
 {
-    protected $visitedObjectStack = [];
+    /**
+     * @var array<string, object>
+     */
+    protected array $visitedObjectStack = [];
 
     /**
      * {@inheritDoc}

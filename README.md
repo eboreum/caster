@@ -53,7 +53,7 @@ The data types are converted as illustrated in the table below.
 |Strings|As is or as a sample (substring).|`"foo"`<br>`"bar ..." (sample)`|If you wish to control how strings are presented or apply conditions, you may do so by providing an instance of `\Eboreum\Caster\Contract\Formatter\StringFormatterInterface`. More on this interface and implementation <a href="#usage--type-specific-formatters--custom-string-formatter">further down</a>.|
 |Arrays|As is or as a sample.|`[0 => "foo"]`<br><br>`[0 => "bar" ... and 9 more elements]`|**Sub-arrays**<br>By default, no sub-arrays are displayed; i.e. the depth is zero. However, a custom depth may be specified.<br>Sub-arrays with depth 0 (zero) may appear as such: `[0 => (array(1)) [...]]`<br>Sub-arrays with depth 1 may appear as such: `[0 => (array(1)) ["foo"]]`<br><br>**Sampling and sample size**<br>By default, a maximum of 3 elements are displayed, before the " ... and X more elements" message is displayed. This number is also customizible.<br><br>**Custom array-to-string conversion**<br>If you wish to customize how arrays are being converted to a string, you may do so by providing an instance of `\Eboreum\Caster\Contract\Formatter\ArrayFormatterInterface`. More on this interface and implementation <a href="#usage--type-specific-formatters--custom-array-formatter">further down</a>.|
 |Objects|Class namespace with leading backslash.|`\stdClass`<br><br>`class@anonymous/in/foo/bar/baz.php:22`|Objects are rather complex types. As such, something sensible besides its class name cannot be reliably displayed. Not even using `__toString` or similar methods.<br><br>**Custom object-to-string conversion**<br>If you wish to customize how objects are being converted to a string, you may do so by providing an instance of `\Eboreum\Caster\Contract\Formatter\ObjectFormatterInterface`. More on this interface and implementation <a href="#usage--type-specific-formatters--custom-object-formatter">further down</a>.<br>This is especially useful for displaying relevant information in classes such as IDs in [Doctrine ORM entities](https://github.com/doctrine/orm).|
-|Resource|A text and the resource's ID.|`#Resource id #2`|Resources can be many different things. A file pointer, database connection, image canvas, etc. As such, only the bare minimum of information is displayed.<br><br>**Custom resource-to-string conversion**<br>If you wish to customize how resources are being converted to a string, you may do so by providing an instance of `\Eboreum\Caster\Contract\Formatter\ResourceFormatterInterface`. More on this interface and implementation <a href="#usage--type-specific-formatters--custom-resource-formatter">further down</a>.|
+|Resource_|A text and the resource's ID.|`#Resource id #2`|Resources can be many different things. A file pointer, database connection, image canvas, etc. As such, only the bare minimum of information is displayed.<br><br>**Custom resource-to-string conversion**<br>If you wish to customize how resources are being converted to a string, you may do so by providing an instance of `\Eboreum\Caster\Contract\Formatter\ResourceFormatterInterface`. More on this interface and implementation <a href="#usage--type-specific-formatters--custom-resource-formatter">further down</a>.|
 
 # Output examples
 
@@ -514,7 +514,7 @@ use Eboreum\Caster\Abstraction\Formatter\AbstractResourceFormatter;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\CharacterEncoding;
 use Eboreum\Caster\Collection\Formatter\ResourceFormatterCollection;
-use Eboreum\Caster\Common\DataType\Resource;
+use Eboreum\Caster\Common\DataType\Resource_;
 use Eboreum\Caster\Contract\CasterInterface;
 
 $caster = Caster::create();
@@ -525,7 +525,7 @@ $caster = $caster->withCustomResourceFormatterCollection(new ResourceFormatterCo
         /**
          * {@inheritDoc}
          */
-        public function format(CasterInterface $caster, Resource $resource): ?string
+        public function format(CasterInterface $caster, Resource_ $resource): ?string
         {
             if (false === $this->isHandling($resource)) {
                 return null; // Pass on to next formatter or lastly DefaultResourceFormatter
@@ -550,7 +550,7 @@ $caster = $caster->withCustomResourceFormatterCollection(new ResourceFormatterCo
         /**
          * {@inheritDoc}
          */
-        public function format(CasterInterface $caster, Resource $resource): ?string
+        public function format(CasterInterface $caster, Resource_ $resource): ?string
         {
             if (false === $this->isHandling($resource)) {
                 return null; // Pass on to next formatter or lastly DefaultResourceFormatter
@@ -698,7 +698,7 @@ echo $caster->castTyped("0123456789") . "\n"; // Notice: 3456 are masked because
 ```json
 "doctrine/common": "^3.1",
 "nikic/php-parser": "^4.10",
-"phpstan/phpstan": "^0.12.88",
+"phpstan/phpstan": "0.12.90",
 "phpunit/phpunit": "^9.5"
 ```
 

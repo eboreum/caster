@@ -32,6 +32,9 @@ class EncryptedStringTest extends TestCase
         $this->assertNotSame($value, $encryptedString);
     }
 
+    /**
+     * @return array<int, array{0: string, 1: string, 2: null|string, 3: null|string}>
+     */
     public function dataProvider_testBasics(): array
     {
         return [

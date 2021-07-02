@@ -14,12 +14,16 @@ interface ArrayFormatterInterface extends DimensionalFormatterInterface
      *
      * When `null` is returned, the next custom array formatter is called. If all custom array formatters return `null`,
      * the default array-to-string logic (`DefaultArrayFormatter`) is applied.
+     *
+     * @param array<mixed> $array
      */
     public function format(CasterInterface $caster, array $array): ?string;
 
     /**
      * Whether or not the $array argument is qualified to be handled by the formatter class implementing this
      * interface.
+     *
+     * @param array<mixed> $array
      */
     public function isHandling(array $array): bool;
 }
