@@ -23,7 +23,8 @@ Lastly, you may provide a series of **sensitive text strings** like passwords, a
 
 ```json
 "php": ">=7.4",
-"ext-mbstring": ">=7.4"
+"ext-mbstring": ">=7.4",
+"ext-openssl": "*"
 ```
 
 For more information, see the [`composer.json`](composer.json) file.
