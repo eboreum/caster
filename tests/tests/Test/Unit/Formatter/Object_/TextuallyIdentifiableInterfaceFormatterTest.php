@@ -51,7 +51,7 @@ class TextuallyIdentifiableInterfaceFormatterTest extends TestCase
             implode("", [
                 '/',
                 '^',
-                '\\\\class@anonymous\/in\/.+\/TextuallyIdentifiableInterfaceFormatterTest\.php:\d+\: \{',
+                'class@anonymous\/in\/.+\/TextuallyIdentifiableInterfaceFormatterTest\.php:\d+\: \{',
                     '\$id = 22',
                 '\}',
                 '$',
