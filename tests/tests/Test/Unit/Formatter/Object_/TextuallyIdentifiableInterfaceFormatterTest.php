@@ -40,8 +40,7 @@ class TextuallyIdentifiableInterfaceFormatterTest extends TestCase
             public function toTextualIdentifier(CasterInterface $caster): string
             {
                 return sprintf(
-                    "%s {\$id = %s}",
-                    Caster::makeNormalizedClassName(new \ReflectionObject($this)),
+                    "{\$id = %s}",
                     $caster->cast($this->id),
                 );
             }
@@ -52,7 +51,7 @@ class TextuallyIdentifiableInterfaceFormatterTest extends TestCase
             implode("", [
                 '/',
                 '^',
-                'class@anonymous\/in\/.+\/TextuallyIdentifiableInterfaceFormatterTest\.php:\d+ \{',
+                '\\\\class@anonymous\/in\/.+\/TextuallyIdentifiableInterfaceFormatterTest\.php:\d+\: \{',
                     '\$id = 22',
                 '\}',
                 '$',
