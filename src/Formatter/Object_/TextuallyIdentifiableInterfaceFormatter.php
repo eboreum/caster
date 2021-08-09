@@ -27,7 +27,7 @@ class TextuallyIdentifiableInterfaceFormatter extends AbstractObjectFormatter
         assert($object instanceof TextuallyIdentifiableInterface);
 
         return sprintf(
-            "\\%s: %s",
+            "%s: %s",
             Caster::makeNormalizedClassName(new \ReflectionObject($object)),
             $object->toTextualIdentifier($caster),
         );

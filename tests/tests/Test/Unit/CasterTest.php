@@ -370,7 +370,7 @@ class CasterTest extends TestCase
             ],
             [
                 "TextuallyIdentifiableInterfaceFormatter",
-                '/^\\\\class@anonymous\/in\/.+\/CasterTest\.php\:\d+\: AnonymousClass$/',
+                '/^class@anonymous\/in\/.+\/CasterTest\.php\:\d+\: AnonymousClass$/',
                 new class implements TextuallyIdentifiableInterface
                 {
                     public function toTextualIdentifier(CasterInterface $caster): string
@@ -1020,7 +1020,7 @@ class CasterTest extends TestCase
             ],
             [
                 "TextuallyIdentifiableInterfaceFormatter",
-                '/^\(object\) \\\\class@anonymous\/in\/.+\/CasterTest\.php\:\d+\: AnonymousClass$/',
+                '/^\(object\) class@anonymous\/in\/.+\/CasterTest\.php\:\d+\: AnonymousClass$/',
                 new class implements TextuallyIdentifiableInterface
                 {
                     public function toTextualIdentifier(CasterInterface $caster): string
