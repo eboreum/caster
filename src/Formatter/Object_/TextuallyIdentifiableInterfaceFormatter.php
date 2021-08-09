@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Eboreum\Caster\Formatter\Object_;
 
 use Eboreum\Caster\Abstraction\Formatter\AbstractObjectFormatter;
+use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\Contract\TextuallyIdentifiableInterface;
 use Eboreum\Caster\Formatter\DefaultObjectFormatter;
@@ -25,7 +26,11 @@ class TextuallyIdentifiableInterfaceFormatter extends AbstractObjectFormatter
 
         assert($object instanceof TextuallyIdentifiableInterface);
 
-        return $object->toTextualIdentifier($caster);
+        return sprintf(
+            "\\%s: %s",
+            Caster::makeNormalizedClassName(new \ReflectionObject($object)),
+            $object->toTextualIdentifier($caster),
+        );
     }
 
     /**
