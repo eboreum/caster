@@ -42,6 +42,7 @@ use Eboreum\Caster\Formatter\Object_\TextuallyIdentifiableInterfaceFormatter;
 use Eboreum\Caster\Formatter\Object_\ThrowableFormatter;
 use Eboreum\Caster\Formatter\Object_\ZipArchiveFormatter;
 use Eboreum\Caster\EncryptedString;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class CasterTest extends TestCase
@@ -1577,7 +1578,11 @@ class CasterTest extends TestCase
 
         $context = $this->_mockContextInterface();
 
-        $context->expects($this->exactly(2))->method("hasVisitedObject")->with($object)->willReturn(true); /** @phpstan-ignore-line */
+        $context
+            ->expects($this->exactly(2))
+            ->method("hasVisitedObject")
+            ->with($object)
+            ->willReturn(true);
 
         $caster = $caster->withContext($context);
 
@@ -2447,6 +2452,9 @@ class CasterTest extends TestCase
         $this->assertInstanceOf(Caster::class, $caster);
     }
 
+    /**
+     * @return ContextInterface&MockObject
+     */
     private function _mockContextInterface(): ContextInterface
     {
         return $this
