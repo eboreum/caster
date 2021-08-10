@@ -9,8 +9,8 @@
     },
     "require-dev": {
         "doctrine/common": "^3.1",
-        "nikic/php-parser": "^4.10",
-        "phpstan/phpstan": "0.12.90",
+        "nikic/php-parser": "^4.12",
+        "phpstan/phpstan": "0.12.94",
         "phpunit/phpunit": "^9.5"
     },
     "license": "MIT",
