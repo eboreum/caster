@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Eboreum\Caster;
 
@@ -32,7 +32,7 @@ class CharacterEncoding implements CharacterEncodingInterface
                     implode(
                         ", ",
                         array_map(
-                            function(string $name){
+                            function (string $name) {
                                 return escapeshellarg($name);
                             },
                             mb_list_encodings(),
