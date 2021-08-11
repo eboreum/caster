@@ -9,5 +9,4 @@ namespace Eboreum\Caster\Exception;
  */
 class RuntimeException extends \RuntimeException
 {
-
 }

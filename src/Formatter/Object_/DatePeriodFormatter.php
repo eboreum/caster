@@ -1,13 +1,12 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Eboreum\Caster\Formatter\Object_;
 
 use Eboreum\Caster\Abstraction\Formatter\AbstractObjectFormatter;
-use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\Caster;
-use Eboreum\Caster\Formatter\DefaultObjectFormatter;
+use Eboreum\Caster\Contract\CasterInterface;
 
 /**
  * Formatter for \DatePeriod.

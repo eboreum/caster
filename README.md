@@ -716,6 +716,12 @@ php ../vendor/bin/phpunit
 
 See [`LICENSE`](LICENSE) file. Basically: Use this library at your own risk.
 
+# Contributing
+
+We prefer that you create a ticket and or a pull request, and have a discussion about a feature or bug there.
+
+Please do **not** require https://packagist.org/packages/eboreum/exceptional back into this project. We do not want a bidirectional dependency as eboreum/exceptional utilizes eboreum/caster.
+
 # Credits
 
 ## Authors
