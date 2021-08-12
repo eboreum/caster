@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Eboreum\Caster;
+namespace Eboreum\Caster\functions;
 
 /**
  * Returns an array of file paths.

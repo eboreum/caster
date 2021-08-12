@@ -19,10 +19,10 @@ class BogusScannerTest extends TestCase
         $errorMessages = [];
 
         $filePaths = array_merge(
-            \Eboreum\Caster\rglob(dirname(TEST_ROOT_PATH) . "/src/*.php"),
-            \Eboreum\Caster\rglob(dirname(TEST_ROOT_PATH) . "/script/misc/readme/*.php"),
-            \Eboreum\Caster\rglob(TEST_ROOT_PATH . "/resources"),
-            \Eboreum\Caster\rglob(TEST_ROOT_PATH . "/tests/*Test.php"),
+            \Eboreum\Caster\functions\rglob(dirname(TEST_ROOT_PATH) . "/src/*.php"),
+            \Eboreum\Caster\functions\rglob(dirname(TEST_ROOT_PATH) . "/script/misc/readme/*.php"),
+            \Eboreum\Caster\functions\rglob(TEST_ROOT_PATH . "/resources"),
+            \Eboreum\Caster\functions\rglob(TEST_ROOT_PATH . "/tests/*Test.php"),
         );
 
         $contents = file_get_contents(dirname(TEST_ROOT_PATH) . "/composer.json");
