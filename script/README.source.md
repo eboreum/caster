@@ -1,6 +1,8 @@
 Eboreum/Caster: A PHP type formatter
 ===============================
 
+> **CAUTION:** This library has not yet reached major version 1.
+
 %composer.json.description%
 
 **Why use Eboreum/Caster instead things like [XDebug](https://xdebug.org/), [`symfony/var-dumper`](https://packagist.org/packages/symfony/var-dumper), and similar libraries?**
