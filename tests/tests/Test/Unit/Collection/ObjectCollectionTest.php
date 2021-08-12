@@ -208,7 +208,7 @@ class ObjectCollectionTest extends TestCase
             $srcDirectory->path,
         );
 
-        foreach (\Eboreum\Caster\rglob($pattern) as $filePath) {
+        foreach (\Eboreum\Caster\functions\rglob($pattern) as $filePath) {
             $className = "Eboreum\\Caster\\" . str_replace(
                 "/",
                 "\\",
