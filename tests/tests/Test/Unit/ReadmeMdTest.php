@@ -17,6 +17,8 @@ class ReadmeMdTest extends TestCase
         $this->assertTrue(is_file($readmeFilePath), "README.md does not exist!");
 
         $this->contents = file_get_contents($readmeFilePath);
+
+        $this->assertIsString($this->contents);
     }
 
     /**
