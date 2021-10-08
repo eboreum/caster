@@ -19,6 +19,8 @@ class ReadmeMdTest extends TestCase
         $contents = file_get_contents($readmeFilePath);
 
         $this->assertIsString($contents);
+
+        $this->contents = $contents;
     }
 
     /**
