@@ -24,8 +24,8 @@ Lastly, you may provide a series of **sensitive text strings** like passwords, a
 # Requirements
 
 ```json
-"php": ">=7.4",
-"ext-mbstring": ">=7.4",
+"php": "^7.4 || ^8.0",
+"ext-mbstring": "*",
 "ext-openssl": "*"
 ```
 
