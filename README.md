@@ -3,6 +3,10 @@ Eboreum/Caster: A PHP type formatter
 
 > **CAUTION:** This library has not yet reached major version 1.
 
+![License](https://img.shields.io/packagist/l/eboreum/caster.svg)
+![Build Status](https://app.travis-ci.com/eboreum/caster.svg?branch=main)
+![codecov](https://codecov.io/gh/eboreum/caster/branch/main/graph/badge.svg)
+
 Cast any PHP value to a sensible, human readable string. Great for type-safe outputs, exception messages, transparency during debugging, and similar things. Also helps avoiding innate problems such as printing endless, circular referencing objects (endless recursion), limits the output for large arrays and long strings, and prevents (opt-in) the outputting of sensitive strings like passwords.
 
 [comment]: # (The README.md is generated using `script/generate-readme.php`)
