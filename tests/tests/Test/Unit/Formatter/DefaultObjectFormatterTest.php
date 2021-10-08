@@ -40,6 +40,8 @@ class DefaultObjectFormatterTest extends TestCase
             $defaultObjectFormatter->format($caster, $object),
             $message,
         );
+
+        $this->assertFalse($defaultObjectFormatter->isAppendingSplObjectHash());
     }
 
     /**
@@ -56,5 +58,34 @@ class DefaultObjectFormatterTest extends TestCase
                 new \stdClass,
             ],
         ];
+    }
+
+    public function testWithIsAppendingSplObjectHashWorks(): void
+    {
+        $caster = Caster::getInstance();
+        $object = new \DateTimeImmutable;
+
+        $defaultObjectFormatterA = new DefaultObjectFormatter;
+        $defaultObjectFormatterB = $defaultObjectFormatterA->withIsAppendingSplObjectHash(false);
+        $defaultObjectFormatterC = $defaultObjectFormatterA->withIsAppendingSplObjectHash(true);
+
+        $this->assertNotSame($defaultObjectFormatterA, $defaultObjectFormatterB);
+        $this->assertNotSame($defaultObjectFormatterA, $defaultObjectFormatterC);
+        $this->assertNotSame($defaultObjectFormatterB, $defaultObjectFormatterC);
+        $this->assertFalse($defaultObjectFormatterA->isAppendingSplObjectHash());
+        $this->assertMatchesRegularExpression(
+            '/^\\\\DateTimeImmutable$/',
+            $defaultObjectFormatterA->format($caster, $object),
+        );
+        $this->assertFalse($defaultObjectFormatterB->isAppendingSplObjectHash());
+        $this->assertMatchesRegularExpression(
+            '/^\\\\DateTimeImmutable$/',
+            $defaultObjectFormatterB->format($caster, $object),
+        );
+        $this->assertTrue($defaultObjectFormatterC->isAppendingSplObjectHash());
+        $this->assertMatchesRegularExpression(
+            '/^\\\\DateTimeImmutable \([0-9a-f]+\)$/',
+            $defaultObjectFormatterC->format($caster, $object),
+        );
     }
 }
