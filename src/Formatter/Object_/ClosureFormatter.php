@@ -41,7 +41,10 @@ class ClosureFormatter extends AbstractObjectFormatter
 
             if ($reflectionParameter->hasType()) {
                 $reflectionType = $reflectionParameter->getType();
-                $typeText = (string)$reflectionType;
+
+                assert($reflectionType instanceof \ReflectionNamedType);
+
+                $typeText = $reflectionType->getName();
 
                 if (class_exists($typeText)) {
                     $typeText = "\\{$typeText}";
