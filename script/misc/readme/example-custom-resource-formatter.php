@@ -32,7 +32,7 @@ $caster = $caster->withCustomResourceFormatterCollection(new ResourceFormatterCo
                     preg_replace(
                         '/^(Resource id) #\d+$/',
                         '$1 #42',
-                        $resource->getResource(),
+                        (string)$resource->getResource(),
                     ),
                 );
             }
@@ -68,5 +68,3 @@ $caster = $caster->withCustomResourceFormatterCollection(new ResourceFormatterCo
 ]));
 
 echo $caster->cast(fopen(__FILE__, "r+")) . "\n";
-
-echo $caster->cast(\xml_parser_create("UTF-8")) . "\n";

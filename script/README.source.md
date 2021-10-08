@@ -171,7 +171,6 @@ The following object formatters are readily available. You may use them as-is or
 |`SplFileInfoFormater`|Formats `\SplFileInfo` objects.|`\SplFileInfo ("/my/system/foo.txt")`|
 |`TextuallyIdentifiableInterfaceFormatter`|Formats objects, which implement the interface `\Eboreum\Caster\Contract\TextuallyIdentifiableInterface`.|`\MyUserClass (USER.ID = 22)`|
 |`ThrowableFormatter`|Formats instances of `\Throwable`.<br><br>**Caution:** The output is greatly simplified compared to properly dumping a `\Throwable` with stack trace and everything else.|`\RuntimeException {$code = 0, $file = "/foo.php", $line = 22, $message = "bar", $previous = null}`|
-|`ZipArchiveFormatter`|Formats `\ZipArchive` objects.|`\ZipArchive {$status = 0, $statusSys = 0, $numFiles = 1, $filename = "", $comment = ""}`|
 
 <a name="usage--type-specific-formatters--custom-array-formatter"></a>
 ### Custom array formatter

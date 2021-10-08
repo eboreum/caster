@@ -40,7 +40,6 @@ use Eboreum\Caster\Formatter\Object_\PublicVariableFormatter;
 use Eboreum\Caster\Formatter\Object_\SplFileInfoFormatter;
 use Eboreum\Caster\Formatter\Object_\TextuallyIdentifiableInterfaceFormatter;
 use Eboreum\Caster\Formatter\Object_\ThrowableFormatter;
-use Eboreum\Caster\Formatter\Object_\ZipArchiveFormatter;
 use Eboreum\Caster\EncryptedString;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -435,33 +434,6 @@ class CasterTest extends TestCase
                 })(),
             ],
             [
-                "ZipArchiveFormatter",
-                implode("", [
-                    '/',
-                    '^',
-                    '\\\\ZipArchive \{',
-                        '\$status = 0',
-                        ', \$statusSys = 0',
-                        ', \$numFiles = 0',
-                        ', \$filename = ""',
-                        ', \$comment = ""',
-                    '\}',
-                    '$',
-                    '/',
-                ]),
-                new \ZipArchive,
-                (function(){
-                    $caster = Caster::create();
-                    $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection(...[
-                            new ZipArchiveFormatter,
-                        ]),
-                    );
-
-                    return $caster;
-                })(),
-            ],
-            [
                 "An array",
                 '/^\[0 \=\> "foo", 1 \=\> 42\]$/',
                 ["foo", 42],
@@ -469,8 +441,8 @@ class CasterTest extends TestCase
             ],
             [
                 "A resource",
-                '/^`xml` Resource id #\d+$/',
-                \xml_parser_create("UTF-8"),
+                '/^`stream` Resource id #\d+$/',
+                \fopen(__FILE__, 'r+'),
                 Caster::create(),
             ],
         ];
@@ -1085,33 +1057,6 @@ class CasterTest extends TestCase
                 })(),
             ],
             [
-                "ZipArchiveFormatter",
-                implode("", [
-                    '/',
-                    '^',
-                    '\(object\) \\\\ZipArchive \{',
-                        '\$status = \(int\) 0',
-                        ', \$statusSys = \(int\) 0',
-                        ', \$numFiles = \(int\) 0',
-                        ', \$filename = \(string\(\d+\)\) ""',
-                        ', \$comment = \(string\(\d+\)\) ""',
-                    '\}',
-                    '$',
-                    '/',
-                ]),
-                new \ZipArchive,
-                (function(){
-                    $caster = Caster::create();
-                    $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection(...[
-                            new ZipArchiveFormatter,
-                        ]),
-                    );
-
-                    return $caster;
-                })(),
-            ],
-            [
                 "An array",
                 implode("", [
                     '/',
@@ -1128,8 +1073,8 @@ class CasterTest extends TestCase
             ],
             [
                 "A resource",
-                '/^\(resource\) `xml` Resource id #\d+$/',
-                \xml_parser_create("UTF-8"),
+                '/^\(resource\) `stream` Resource id #\d+$/',
+                \fopen(__FILE__, 'r+'),
                 Caster::create(),
             ],
         ];
@@ -1283,10 +1228,6 @@ class CasterTest extends TestCase
         $this->assertMatchesRegularExpression(
             '/^\\\\RuntimeException \{\$code = 1, \$file = "(.+)", \$line = \d+, \$message = "test"\}$/',
             $caster->cast(new \RuntimeException("test", 1))
-        );
-        $this->assertMatchesRegularExpression(
-            '/^`xml` Resource id #\d+$/',
-            $caster->cast(\xml_parser_create("UTF-8")),
         );
         $this->assertSame("YOLO", $caster->cast(\fopen(__FILE__, "r+")));
         $this->assertSame('"baz"', $caster->cast("baz"));

@@ -317,7 +317,6 @@ The following object formatters are readily available. You may use them as-is or
 |`SplFileInfoFormater`|Formats `\SplFileInfo` objects.|`\SplFileInfo ("/my/system/foo.txt")`|
 |`TextuallyIdentifiableInterfaceFormatter`|Formats objects, which implement the interface `\Eboreum\Caster\Contract\TextuallyIdentifiableInterface`.|`\MyUserClass (USER.ID = 22)`|
 |`ThrowableFormatter`|Formats instances of `\Throwable`.<br><br>**Caution:** The output is greatly simplified compared to properly dumping a `\Throwable` with stack trace and everything else.|`\RuntimeException {$code = 0, $file = "/foo.php", $line = 22, $message = "bar", $previous = null}`|
-|`ZipArchiveFormatter`|Formats `\ZipArchive` objects.|`\ZipArchive {$status = 0, $statusSys = 0, $numFiles = 1, $filename = "", $comment = ""}`|
 
 <a name="usage--type-specific-formatters--custom-array-formatter"></a>
 ### Custom array formatter
@@ -540,7 +539,7 @@ $caster = $caster->withCustomResourceFormatterCollection(new ResourceFormatterCo
                     preg_replace(
                         '/^(Resource id) #\d+$/',
                         '$1 #42',
-                        $resource->getResource(),
+                        (string)$resource->getResource(),
                     ),
                 );
             }
@@ -577,15 +576,12 @@ $caster = $caster->withCustomResourceFormatterCollection(new ResourceFormatterCo
 
 echo $caster->cast(fopen(__FILE__, "r+")) . "\n";
 
-echo $caster->cast(\xml_parser_create("UTF-8")) . "\n";
-
 ```
 
 **Output:**
 
 ```php
 opendir/fopen/tmpfile/popen/fsockopen/pfsockopen Resource id #42
-XML Resource id #42
 
 ```
 

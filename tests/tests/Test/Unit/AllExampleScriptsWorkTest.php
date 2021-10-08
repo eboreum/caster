@@ -30,10 +30,17 @@ class AllExampleScriptsWorkTest extends TestCase
         $this->assertGreaterThan(0, count($filePaths));
 
         foreach ($filePaths as $filePath) {
-            ob_start();
-            include $filePath;
-            $output = ob_get_contents();
-            ob_end_clean();
+            try {
+                ob_start();
+                include $filePath;
+                $output = ob_get_contents();
+                ob_end_clean();
+            } catch (\Throwable $t) {
+                throw new \RuntimeException(sprintf(
+                    "Failure when processing file: %s",
+                    $filePath,
+                ), 0, $t);
+            }
 
             assert(is_string($output));
 

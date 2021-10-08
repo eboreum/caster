@@ -50,11 +50,11 @@ class DefaultResourceFormatterTest extends TestCase
     {
         return [
             [
-                "xml_parser_create",
-                '/^`xml` Resource id #\d+$/',
-                '/^`xml` Resource id #\d+$/',
+                "fopen",
+                '/^`stream` Resource id #\d+$/',
+                '/^`stream` Resource id #\d+$/',
                 Caster::getInstance(),
-                new Resource_(\xml_parser_create("UTF-8")),
+                new Resource_(\fopen(__FILE__ ,'r+')),
             ],
         ];
     }

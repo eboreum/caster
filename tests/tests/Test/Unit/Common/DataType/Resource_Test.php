@@ -34,10 +34,6 @@ class Resource_Test extends TestCase
     {
         return [
             [
-                \xml_parser_create("UTF-8"),
-                null,
-            ],
-            [
                 \fopen(__FILE__, "r"),
                 function(Resource_ $resource){
                     fclose($resource->getResource());
