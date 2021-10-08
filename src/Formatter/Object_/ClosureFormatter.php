@@ -22,6 +22,8 @@ class ClosureFormatter extends AbstractObjectFormatter
             return null; // Pass on
         }
 
+        assert($object instanceof \Closure);
+
         $arguments = [];
 
         $reflectionFunction = new \ReflectionFunction($object);
@@ -39,7 +41,7 @@ class ClosureFormatter extends AbstractObjectFormatter
 
             if ($reflectionParameter->hasType()) {
                 $reflectionType = $reflectionParameter->getType();
-                $typeText = $reflectionType->getName();
+                $typeText = (string)$reflectionType;
 
                 if (class_exists($typeText)) {
                     $typeText = "\\{$typeText}";

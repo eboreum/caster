@@ -16,9 +16,9 @@ class ReadmeMdTest extends TestCase
 
         $this->assertTrue(is_file($readmeFilePath), "README.md does not exist!");
 
-        $this->contents = file_get_contents($readmeFilePath);
+        $contents = file_get_contents($readmeFilePath);
 
-        $this->assertIsString($this->contents);
+        $this->assertIsString($contents);
     }
 
     /**
@@ -42,6 +42,8 @@ class ReadmeMdTest extends TestCase
         $rootPath = dirname(TEST_ROOT_PATH);
 
         $split = preg_split('/([\\\\\/])/', $rootPath);
+
+        assert(is_array($split));
 
         $rootPathRegex = sprintf(
             '/%s/',
