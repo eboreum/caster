@@ -97,16 +97,6 @@ class ClosureFormatterTest extends TestCase
                 "int \$a, string \$b, bool \$c",
             ],
             [
-                "\Closure with 3 arguments. With 1 default value.",
-                function(int $a = 42, string $b, bool $c){},
-                "int \$a = 42, string \$b, bool \$c",
-            ],
-            [
-                "\Closure with 3 arguments. With 2 default values.",
-                function(int $a = 42, string $b = "foo", bool $c){},
-                "int \$a = 42, string \$b = \"foo\", bool \$c",
-            ],
-            [
                 "\Closure with 3 arguments. With 3 default values.",
                 function(int $a = 42, string $b = "foo", bool $c = true){},
                 "int \$a = 42, string \$b = \"foo\", bool \$c = true",

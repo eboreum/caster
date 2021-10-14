@@ -18,7 +18,7 @@ class ReadmeMdTest extends TestCase
 
         $contents = file_get_contents($readmeFilePath);
 
-        $this->assertIsString($contents);
+        assert(is_string($contents));
 
         $this->contents = $contents;
     }
@@ -41,24 +41,35 @@ class ReadmeMdTest extends TestCase
 
     public function testDoesReadmeMdContainLocalFilePaths(): void
     {
-        $rootPath = dirname(TEST_ROOT_PATH);
+        $split = preg_split('/([\\\\\/])/', PROJECT_ROOT_DIRECTORY_PATH);
 
-        $split = preg_split('/([\\\\\/])/', $rootPath);
+        $this->assertIsArray($split);
+        assert(is_array($split)); // Make phpstan happy
 
-        assert(is_array($split));
+        if ("" === ($split[0] ?? null)) {
+            array_shift($split);
+        }
 
-        $rootPathRegex = sprintf(
-            '/%s/',
-            implode(
-                '(\\\\+\/|\\\\+|\/)', // Handle both Windows and Unix
-                array_map(
-                    function(string $v){
-                        return preg_quote($v, "/");
-                    },
-                    $split,
+        $wrapAndImplode = function(... $strings){
+            $inner = '(\\\\+\/|\\\\+|\/)'; // Handle both Windows and Unix
+
+            return sprintf(
+                '/%s%s%s/',
+                $inner,
+                implode(
+                    $inner,
+                    array_map(
+                        function(string $v){
+                            return preg_quote($v, "/");
+                        },
+                        $strings,
+                    ),
                 ),
-            ),
-        );
+                $inner,
+            );;
+        };
+
+        $rootPathRegex = $wrapAndImplode(...$split);
 
         $this->assertSame(
             0,

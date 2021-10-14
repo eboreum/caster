@@ -54,7 +54,13 @@ class DefaultResourceFormatterTest extends TestCase
                 '/^`stream` Resource id #\d+$/',
                 '/^`stream` Resource id #\d+$/',
                 Caster::getInstance(),
-                new Resource_(\fopen(__FILE__ ,'r+')),
+                (function(){
+                    $resource = \fopen(__FILE__ ,'r+');
+
+                    assert(is_resource($resource));
+
+                    return new Resource_($resource);
+                })(),
             ],
         ];
     }

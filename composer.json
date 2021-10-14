@@ -9,6 +9,7 @@
     },
     "require-dev": {
         "doctrine/common": "^3.1",
+        "nette/neon": "^3.2",
         "nikic/php-parser": "^4.12",
         "phpstan/phpstan": "0.12.94",
         "phpunit/phpunit": "^9.5"

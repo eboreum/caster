@@ -40,7 +40,7 @@ class DefaultObjectFormatter extends AbstractObjectFormatter
     /**
      * Must return a clone.
      */
-    public function withIsAppendingSplObjectHash(bool $isAppendingSplObjectHash): ObjectFormatterInterface
+    public function withIsAppendingSplObjectHash(bool $isAppendingSplObjectHash): DefaultObjectFormatter
     {
         $clone = clone $this;
         $clone->isAppendingSplObjectHash = $isAppendingSplObjectHash;
