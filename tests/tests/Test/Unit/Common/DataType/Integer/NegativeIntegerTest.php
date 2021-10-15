@@ -8,6 +8,10 @@ use Eboreum\Caster\Common\DataType\Integer\NegativeInteger;
 use Eboreum\Caster\Exception\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class NegativeIntegerTest extends TestCase
 {
     /**
@@ -57,16 +61,16 @@ class NegativeIntegerTest extends TestCase
             $this->assertSame(RuntimeException::class, get_class($exceptionCurrent));
             $this->assertMatchesRegularExpression(
                 sprintf(
-                    implode("", [
+                    implode('', [
                         '/',
                         '^',
                         'Failed to construct \\\\%s with arguments \{',
-                            '\$integer = \(int\) 0',
+                        '\$integer = \(int\) 0',
                         '\}',
                         '$',
                         '/',
                     ]),
-                    preg_quote(NegativeInteger::class, "/"),
+                    preg_quote(NegativeInteger::class, '/'),
                 ),
                 $exceptionCurrent->getMessage(),
             );
@@ -75,7 +79,7 @@ class NegativeIntegerTest extends TestCase
             $this->assertSame(RuntimeException::class, get_class($exceptionCurrent));
             $this->assertMatchesRegularExpression(
                 sprintf(
-                    implode("", [
+                    implode('', [
                         '/',
                         '^',
                         'Argument \$integer must be \<= the maximum limit of %d, but it is not\.',
@@ -89,12 +93,12 @@ class NegativeIntegerTest extends TestCase
             );
 
             $exceptionCurrent = $exceptionCurrent->getPrevious();
-            $this->assertTrue(is_null($exceptionCurrent));
+            $this->assertTrue(null === $exceptionCurrent);
 
             return;
         }
 
-        $this->fail("Exception was never thrown.");
+        $this->fail('Exception was never thrown.');
     }
 
     public function testGetMaximumLimitWorks(): void

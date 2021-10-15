@@ -43,6 +43,7 @@ class StringFormatterCollection extends AbstractObjectCollection implements Form
      * {@inheritDoc}
      *
      * @phpstan-ignore-next-line
+     *
      * @return \ArrayIterator<int, StringFormatterInterface>
      */
     public function getIterator(): \ArrayIterator

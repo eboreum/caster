@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Eboreum\Caster\Contract;
 
-use Eboreum\Caster\Contract\CasterInterface;
-
 interface TextuallyIdentifiableInterface
 {
     /**

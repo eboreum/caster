@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Eboreum\Caster\Contract\DataType\Integer;
 
-use Eboreum\Caster\Contract\ImmutableObjectInterface;
 use Eboreum\Caster\Contract\DebugIdentifierAnnotationInterface;
+use Eboreum\Caster\Contract\ImmutableObjectInterface;
 
 /**
  * Denotes that the implementing class contains an integer of some special sort.

@@ -1,21 +1,25 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Test\Unit\Eboreum\Caster\Formatter\Object_;
 
 use Eboreum\Caster\Caster;
-use Eboreum\Caster\Collection\Formatter\ObjectFormatterCollection;
 use Eboreum\Caster\Formatter\Object_\PublicVariableFormatter;
 use PHPUnit\Framework\TestCase;
 use TestResource\Unit\Eboreum\Caster\Formatter\Object_\PublicVariableFormatterTest\testFormatWorksWhenObjectHasMultipleSameNamePublicVariables;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class PublicVariableFormatterTest extends TestCase
 {
     public function testIsSkippedWhenObjectHasNoPublicVariables(): void
     {
         $caster = Caster::create();
-        $publicVariableFormatter = new PublicVariableFormatter;
-        $object = new \stdClass;
+        $publicVariableFormatter = new PublicVariableFormatter();
+        $object = new \stdClass();
 
         $this->assertFalse($publicVariableFormatter->isHandling($object));
         $this->assertNull($publicVariableFormatter->format($caster, $object));
@@ -24,9 +28,9 @@ class PublicVariableFormatterTest extends TestCase
     public function testFormatWorksWhenObjectHasOnePublicInjectedVariable(): void
     {
         $caster = Caster::create();
-        $publicVariableFormatter = new PublicVariableFormatter;
-        $object = new \stdClass;
-        $object->foo = "bar";
+        $publicVariableFormatter = new PublicVariableFormatter();
+        $object = new \stdClass();
+        $object->foo = 'bar';
 
         $this->assertTrue($publicVariableFormatter->isHandling($object));
         $this->assertSame(
@@ -38,12 +42,12 @@ class PublicVariableFormatterTest extends TestCase
     public function testFormatWorksWhenObjectHasMultiplePublicInjectedVariables(): void
     {
         $caster = Caster::create();
-        $publicVariableFormatter = new PublicVariableFormatter;
+        $publicVariableFormatter = new PublicVariableFormatter();
 
-        $object = new \stdClass;
+        $object = new \stdClass();
         $object->foo = 1;
         $object->bar = null;
-        $object->baz = "hmm";
+        $object->baz = 'hmm';
 
         $this->assertTrue($publicVariableFormatter->isHandling($object));
         $this->assertSame(
@@ -55,20 +59,19 @@ class PublicVariableFormatterTest extends TestCase
     public function testFormatWorksWhenObjectHasOnePublicVariable(): void
     {
         $caster = Caster::create();
-        $publicVariableFormatter = new PublicVariableFormatter;
+        $publicVariableFormatter = new PublicVariableFormatter();
 
-        $object = new class
-        {
-            public string $foo = "bar";
+        $object = new class() {
+            public string $foo = 'bar';
         };
 
         $this->assertTrue($publicVariableFormatter->isHandling($object));
         $this->assertMatchesRegularExpression(
-            implode("", [
+            implode('', [
                 '/',
                 '^',
                 'class@anonymous\/in\/.+\/PublicVariableFormatterTest\.php:\d+ \{',
-                    '\$foo = "bar"',
+                '\$foo = "bar"',
                 '\}',
                 '$',
                 '/',
@@ -80,26 +83,25 @@ class PublicVariableFormatterTest extends TestCase
     public function testFormatWorksWhenObjectHasMultiplePublicVariables(): void
     {
         $caster = Caster::create();
-        $publicVariableFormatter = new PublicVariableFormatter;
+        $publicVariableFormatter = new PublicVariableFormatter();
 
-        $object = new class
-        {
+        $object = new class() {
             public int $foo = 1;
             public ?string $bar = null;
-            public string $baz = "hmm";
+            public string $baz = 'hmm';
             private ?string $private = null;
             protected ?string $protected = null;
         };
 
         $this->assertTrue($publicVariableFormatter->isHandling($object));
         $this->assertMatchesRegularExpression(
-            implode("", [
+            implode('', [
                 '/',
                 '^',
                 'class@anonymous\/in\/.+\/PublicVariableFormatterTest\.php:\d+ \{',
-                    '\$foo = 1',
-                    ', \$bar = null',
-                    ', \$baz = "hmm"',
+                '\$foo = 1',
+                ', \$bar = null',
+                ', \$baz = "hmm"',
                 '\}',
                 '$',
                 '/',
@@ -111,23 +113,23 @@ class PublicVariableFormatterTest extends TestCase
     public function testFormatWorksWhenObjectHasMultipleSameNamePublicVariables(): void
     {
         $caster = Caster::create();
-        $publicVariableFormatter = new PublicVariableFormatter;
+        $publicVariableFormatter = new PublicVariableFormatter();
 
-        $object = new testFormatWorksWhenObjectHasMultipleSameNamePublicVariables\ClassA;
+        $object = new testFormatWorksWhenObjectHasMultipleSameNamePublicVariables\ClassA();
 
         $this->assertTrue($publicVariableFormatter->isHandling($object));
         $this->assertMatchesRegularExpression(
             sprintf(
-                implode("", [
+                implode('', [
                     '/',
                     '^',
                     '\\\\%s \{',
-                        '\$foo = "a"',
+                    '\$foo = "a"',
                     '\}',
                     '$',
                     '/',
                 ]),
-                preg_quote(testFormatWorksWhenObjectHasMultipleSameNamePublicVariables\ClassA::class, "/"),
+                preg_quote(testFormatWorksWhenObjectHasMultipleSameNamePublicVariables\ClassA::class, '/'),
             ),
             $publicVariableFormatter->format($caster, $object),
         );

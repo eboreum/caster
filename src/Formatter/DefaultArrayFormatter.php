@@ -17,7 +17,7 @@ class DefaultArrayFormatter extends AbstractArrayFormatter
         $arraySampleSize = $caster->getArraySampleSize()->toInteger();
         $depthCurrent = $caster->getDepthCurrent()->toInteger();
         $depthMaximum = $caster->getDepthMaximum()->toInteger();
-        $return = "";
+        $return = '';
         $isSample = false;
 
         if ($arraySampleSize > 0) {
@@ -26,7 +26,7 @@ class DefaultArrayFormatter extends AbstractArrayFormatter
 
             foreach ($array as $k => $v) {
                 $segments[] = sprintf(
-                    "%s => %s",
+                    '%s => %s',
                     $caster->cast($k),
                     $caster->cast($v),
                 );
@@ -35,29 +35,29 @@ class DefaultArrayFormatter extends AbstractArrayFormatter
                     break;
                 }
 
-                $index++;
+                ++$index;
             }
-            $return = "[" . implode(", ", $segments);
+            $return = '[' . implode(', ', $segments);
             $surplusCount = (count($array) - $arraySampleSize);
             $isSample = ($surplusCount > 0);
 
             if ($isSample) {
                 $return .= sprintf(
-                    ", %s and %d more %s",
+                    ', %s and %d more %s',
                     $caster->getSampleEllipsis(),
                     $surplusCount,
-                    (1 === $surplusCount ? "element" : "elements")
+                    (1 === $surplusCount ? 'element' : 'elements')
                 );
             }
 
-            $return .= "]";
+            $return .= ']';
         } else {
-            $return = sprintf("[%s]", $caster->getSampleEllipsis());
+            $return = sprintf('[%s]', $caster->getSampleEllipsis());
             $isSample = true;
         }
 
         if ($isSample) {
-            $return .= " (sample)";
+            $return .= ' (sample)';
         }
 
         return $return;

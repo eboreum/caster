@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Eboreum\Caster\Formatter\Object_;
 
-use Eboreum\Caster\Caster;
-
 /**
  * Formatter for \DateInterval.
  */

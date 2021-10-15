@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace Eboreum\Caster\Formatter\Object_;
 
 use Eboreum\Caster\Abstraction\Formatter\AbstractObjectFormatter;
-use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\Caster;
-use Eboreum\Caster\Formatter\DefaultObjectFormatter;
+use Eboreum\Caster\Contract\CasterInterface;
 
 /**
  * Formatter for \DateTimeZone.
@@ -26,7 +25,7 @@ class DateTimeZoneFormatter extends AbstractObjectFormatter
         assert($object instanceof \DateTimeZone);
 
         return sprintf(
-            "%s (name: %s)",
+            '%s (name: %s)',
             Caster::makeNormalizedClassName(new \ReflectionObject($object)),
             $caster->cast($object->getName()),
         );

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace TestResource\Unit\Eboreum\Caster\Formatter\Object_\DebugIdentifierAnnotationInterfaceFormatterTest\testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities;
@@ -10,66 +11,66 @@ class ClassA extends ClassB
     /**
      * @DebugIdentifier
      */
-    public string $publicPublicPublic = "a";
+    public string $publicPublicPublic = 'a';
 
     /**
      * @DebugIdentifier
      */
-    public string $publicPublicProtected = "a";
+    public string $publicPublicProtected = 'a';
 
     /**
      * @DebugIdentifier
      */
-    public string $publicPublicPrivate = "a";
+    public string $publicPublicPrivate = 'a';
 
     /**
      * @DebugIdentifier
      */
-    public string $publicProtectedProtected = "a";
+    public string $publicProtectedProtected = 'a';
 
     /**
      * @DebugIdentifier
      */
-    public string $publicProtectedPrivate = "a";
+    public string $publicProtectedPrivate = 'a';
 
     /**
      * @DebugIdentifier
      */
-    public string $publicPrivatePrivate = "a";
-
-    /**
-     * @DebugIdentifier
-     */
-    protected string $protectedProtectedProtected = "a";
-
-    /**
-     * @DebugIdentifier
-     */
-    protected string $protectedProtectedPrivate = "a";
-
-    /**
-     * @DebugIdentifier
-     */
-    protected string $protectedPrivatePrivate = "a";
-
-    /**
-     * @DebugIdentifier
-     */
-    private string $privatePrivatePrivate = "a";
-
-    /**
-     * @DebugIdentifier
-     */
-    private static string $staticPrivatePrivatePrivate = "a";
-
-    /**
-     * @DebugIdentifier
-     */
-    private string $onlyInA = "a";
+    public string $publicPrivatePrivate = 'a';
 
     public $publicDoNotIncludeMe;
+
+    /**
+     * @DebugIdentifier
+     */
+    protected string $protectedProtectedProtected = 'a';
+
+    /**
+     * @DebugIdentifier
+     */
+    protected string $protectedProtectedPrivate = 'a';
+
+    /**
+     * @DebugIdentifier
+     */
+    protected string $protectedPrivatePrivate = 'a';
 
     protected $protectedDoNotIncludeMe;
 
     protected $privateDoNotIncludeMe;
+
+    /**
+     * @DebugIdentifier
+     */
+    private string $privatePrivatePrivate = 'a';
+
+    /**
+     * @DebugIdentifier
+     */
+    private static string $staticPrivatePrivatePrivate = 'a';
+
+    /**
+     * @DebugIdentifier
+     */
+    private string $onlyInA = 'a';
 }

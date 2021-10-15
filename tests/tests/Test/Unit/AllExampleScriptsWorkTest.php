@@ -6,6 +6,10 @@ namespace Test\Unit\Eboreum\Caster;
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class AllExampleScriptsWorkTest extends TestCase
 {
     /**
@@ -13,7 +17,7 @@ class AllExampleScriptsWorkTest extends TestCase
      */
     public function testAllExampleScriptsWork(): void
     {
-        $globbedFilePaths = glob(TEST_ROOT_PATH . "/../script/misc/readme/example-*.php");
+        $globbedFilePaths = glob(TEST_ROOT_PATH . '/../script/misc/readme/example-*.php');
 
         assert(is_array($globbedFilePaths));
 
@@ -37,7 +41,7 @@ class AllExampleScriptsWorkTest extends TestCase
                 ob_end_clean();
             } catch (\Throwable $t) {
                 throw new \RuntimeException(sprintf(
-                    "Failure when processing file: %s",
+                    'Failure when processing file: %s',
                     $filePath,
                 ), 0, $t);
             }

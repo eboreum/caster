@@ -40,6 +40,7 @@ class ResourceFormatterCollection extends AbstractObjectCollection implements Fo
      * {@inheritDoc}
      *
      * @phpstan-ignore-next-line
+     *
      * @return \ArrayIterator<int, ResourceFormatterInterface>
      */
     public function getIterator(): \ArrayIterator

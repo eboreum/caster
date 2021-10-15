@@ -12,7 +12,6 @@ use Eboreum\Caster\Contract\CharacterEncodingInterface;
 use Eboreum\Caster\Contract\CharacterInterface;
 use Eboreum\Caster\Contract\DebugIdentifierAnnotationInterface;
 use Eboreum\Caster\Exception\RuntimeException;
-use Eboreum\Caster\Formatter\DefaultObjectFormatter;
 
 /**
  * Contains a single character. No more. No less.
@@ -43,9 +42,9 @@ class Character implements CharacterInterface, DebugIdentifierAnnotationInterfac
 
             if (1 !== mb_strlen($character, (string)$characterEncodingVariant)) {
                 throw new RuntimeException(sprintf(
-                    implode("", [
-                        "Argument \$character must be exactly 1 character, using character encoding %s, but it is not.",
-                        " Found: %s",
+                    implode('', [
+                        'Argument $character must be exactly 1 character, using character encoding %s, but it is not.',
+                        ' Found: %s',
                     ]),
                     Caster::getInternalInstance()->cast($characterEncodingVariant),
                     Caster::getInternalInstance()->castTyped($character),
@@ -57,18 +56,18 @@ class Character implements CharacterInterface, DebugIdentifierAnnotationInterfac
         } catch (\Throwable $t) {
             $argumentsAsStrings = [];
             $argumentsAsStrings[] = sprintf(
-                "\$character = %s",
+                '$character = %s',
                 Caster::create()->castTyped($character),
             );
             $argumentsAsStrings[] = sprintf(
-                "\$characterEncoding = %s",
+                '$characterEncoding = %s',
                 Caster::create()->castTyped($characterEncoding),
             );
 
             throw new RuntimeException(sprintf(
-                "Failed to construct %s with arguments {%s}",
+                'Failed to construct %s with arguments {%s}',
                 Caster::makeNormalizedClassName(new \ReflectionObject($this)),
-                implode(", ", $argumentsAsStrings),
+                implode(', ', $argumentsAsStrings),
             ), 0, $t);
         }
     }
@@ -84,7 +83,7 @@ class Character implements CharacterInterface, DebugIdentifierAnnotationInterfac
     public function toTextualIdentifier(CasterInterface $caster): string
     {
         return sprintf(
-            "%s {\$character = %s, \$characterEncoding = %s}",
+            '%s {$character = %s, $characterEncoding = %s}',
             Caster::makeNormalizedClassName(new \ReflectionObject($this)),
             $caster->castTyped($this->character),
             $caster->castTyped($this->characterEncoding),
@@ -103,9 +102,9 @@ class Character implements CharacterInterface, DebugIdentifierAnnotationInterfac
 
     public function isSame(CharacterInterface $character): bool
     {
-        return (
+        return
             (string)$this === (string)$character
             && $this->getCharacterEncoding()->isSame($character->getCharacterEncoding())
-        );
+        ;
     }
 }

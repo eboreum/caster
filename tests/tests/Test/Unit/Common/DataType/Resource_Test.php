@@ -7,17 +7,21 @@ namespace Test\Unit\Eboreum\Caster\Common\DataType;
 use Eboreum\Caster\Common\DataType\Resource_;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class Resource_Test extends TestCase
 {
     /**
      * @dataProvider dataProvider_testBasics
+     *
      * @param resource $resource
      */
     public function testBasics(
         $resource,
         ?\Closure $takeDownCallback
-    ): void
-    {
+    ): void {
         $resourceObject = new Resource_($resource);
 
         $this->assertSame($resource, $resourceObject->getResource());
@@ -34,8 +38,8 @@ class Resource_Test extends TestCase
     {
         return [
             [
-                \fopen(__FILE__, "r"),
-                function(Resource_ $resource){
+                \fopen(__FILE__, 'r'),
+                function (Resource_ $resource) {
                     fclose($resource->getResource());
                 },
             ],
@@ -45,12 +49,12 @@ class Resource_Test extends TestCase
     public function testConstructorThrowsExceptionWhenArgumentResourceIsInvalid(): void
     {
         try {
-            new Resource_(42); /** @phpstan-ignore-line */
+            new Resource_(42); // @phpstan-ignore-line
         } catch (\Exception $e) {
             $exceptionCurrent = $e;
-            $this->assertSame("InvalidArgumentException", get_class($exceptionCurrent));
+            $this->assertSame('InvalidArgumentException', get_class($exceptionCurrent));
             $this->assertMatchesRegularExpression(
-                implode("", [
+                implode('', [
                     '/',
                     '^',
                     'Expects argument \$resource to be a resource, but it is not\.',
@@ -62,11 +66,11 @@ class Resource_Test extends TestCase
             );
 
             $exceptionCurrent = $exceptionCurrent->getPrevious();
-            $this->assertTrue(is_null($exceptionCurrent));
+            $this->assertTrue(null === $exceptionCurrent);
 
             return;
         }
 
-        $this->fail("Exception was never thrown.");
+        $this->fail('Exception was never thrown.');
     }
 }

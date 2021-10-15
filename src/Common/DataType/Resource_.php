@@ -18,7 +18,7 @@ use Eboreum\Caster\Caster;
 class Resource_
 {
     /**
-     * @var resource $resource
+     * @var resource
      */
     protected $resource;
 
@@ -26,13 +26,14 @@ class Resource_
      * Argument $resource must be a resource.
      *
      * @param resource $resource
+     *
      * @throws \InvalidArgumentException
      */
     public function __construct($resource)
     {
-        if (false == is_resource($resource)) {
+        if (false === is_resource($resource)) {
             throw new \InvalidArgumentException(sprintf(
-                "Expects argument \$resource to be a resource, but it is not. Found: %s",
+                'Expects argument $resource to be a resource, but it is not. Found: %s',
                 Caster::getInternalInstance()->castTyped($resource),
             ));
         }

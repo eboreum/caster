@@ -8,6 +8,10 @@ use Eboreum\Caster\CharacterEncoding;
 use Eboreum\Caster\Exception\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class CharacterEncodingTest extends TestCase
 {
     public function testBasics(): void
@@ -20,15 +24,15 @@ class CharacterEncodingTest extends TestCase
     public function testConstructorThrowsException(): void
     {
         try {
-            new CharacterEncoding("5ffaf0ea-7520-4a09-b188-2a542e04d0f3");
+            new CharacterEncoding('5ffaf0ea-7520-4a09-b188-2a542e04d0f3');
         } catch (\Exception $e) {
             $currentException = $e;
             $this->assertSame(RuntimeException::class, get_class($currentException));
             $this->assertSame(
-                implode("", [
-                    "Failed to construct \\Eboreum\\Caster\\CharacterEncoding with arguments {",
-                        "\$name = (string(36)) \"5ffaf0ea-7520-4a09-b188-2a542e04d0f3\"",
-                    "}",
+                implode('', [
+                    'Failed to construct \\Eboreum\\Caster\\CharacterEncoding with arguments {',
+                    '$name = (string(36)) "5ffaf0ea-7520-4a09-b188-2a542e04d0f3"',
+                    '}',
                 ]),
                 $currentException->getMessage(),
             );
@@ -36,11 +40,11 @@ class CharacterEncodingTest extends TestCase
             $currentException = $currentException->getPrevious();
             $this->assertSame(RuntimeException::class, get_class($currentException));
             $this->assertMatchesRegularExpression(
-                implode("", [
+                implode('', [
                     '/',
                     '^',
                     'Argument \$name is not a valid character encoding\. Expected it to be one of: \[',
-                        '\'[^\']+\'(, \'[^\']+\')*',
+                    '\'[^\']+\'(, \'[^\']+\')*',
                     '\], but it is not\.',
                     ' Found: \(string\(36\)\) "5ffaf0ea-7520-4a09-b188-2a542e04d0f3"',
                     '$',
@@ -50,18 +54,18 @@ class CharacterEncodingTest extends TestCase
             );
 
             $currentException = $currentException->getPrevious();
-            $this->assertTrue(is_null($currentException));
+            $this->assertTrue(null === $currentException);
 
             return;
         }
 
-        $this->fail("Exception was never thrown.");
+        $this->fail('Exception was never thrown.');
     }
 
     public function testIsCharacterEncodingValidWorks(): void
     {
         $this->assertTrue(CharacterEncoding::isCharacterEncodingValid(mb_internal_encoding()));
-        $this->assertFalse(CharacterEncoding::isCharacterEncodingValid("5ffaf0ea-7520-4a09-b188-2a542e04d0f3"));
+        $this->assertFalse(CharacterEncoding::isCharacterEncodingValid('5ffaf0ea-7520-4a09-b188-2a542e04d0f3'));
     }
 
     public function testGetInstanceWorks(): void

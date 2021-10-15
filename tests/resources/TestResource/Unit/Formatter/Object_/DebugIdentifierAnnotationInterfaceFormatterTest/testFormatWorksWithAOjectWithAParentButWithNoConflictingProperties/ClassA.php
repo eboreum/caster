@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace TestResource\Unit\Eboreum\Caster\Formatter\Object_\DebugIdentifierAnnotationInterfaceFormatterTest\testFormatWorksWithAOjectWithAParentButWithNoConflictingProperties;
@@ -10,7 +11,7 @@ class ClassA extends ClassB
     /**
      * @DebugIdentifier
      */
-    private string $foo = "a";
+    private string $foo = 'a';
 
-    private string $doNotIncludeMe = "";
+    private string $doNotIncludeMe = '';
 }

@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace Eboreum\Caster\Formatter\Object_;
 
 use Eboreum\Caster\Abstraction\Formatter\AbstractObjectFormatter;
+use Eboreum\Caster\Caster;
 use Eboreum\Caster\Common\DataType\Integer\PositiveInteger;
 use Eboreum\Caster\Common\DataType\Integer\UnsignedInteger;
 use Eboreum\Caster\Contract\CasterInterface;
-use Eboreum\Caster\Caster;
-use Eboreum\Caster\Formatter\DefaultObjectFormatter;
 
 /**
  * Formats instances of \Throwable.
@@ -38,17 +37,16 @@ class ThrowableFormatter extends AbstractObjectFormatter
         assert($object instanceof \Throwable);
 
         if (1 === $caster->getContext()->count()) {
-            /*
-             * Don't omit previous throwables after rather few of them (e.g. merely 3).
-             */
+            // Don't omit previous throwables after rather few of them (e.g. merely 3).
             $caster = $caster->withDepthMaximum($this->getDepthMaximum());
         }
 
         $casterMessage = $caster
-            ->withStringSampleSize(clone $this->getMessageMaximumLength());
+            ->withStringSampleSize(clone $this->getMessageMaximumLength())
+        ;
 
         return sprintf(
-            "%s {\$code = %s, \$file = %s, \$line = %s, \$message = %s, \$previous = %s}",
+            '%s {$code = %s, $file = %s, $line = %s, $message = %s, $previous = %s}',
             Caster::makeNormalizedClassName(new \ReflectionObject($object)),
             $caster->cast($object->getCode()),
             $caster->cast($object->getFile()),
@@ -89,6 +87,6 @@ class ThrowableFormatter extends AbstractObjectFormatter
      */
     public function isHandling(object $object): bool
     {
-        return ($object instanceof \Throwable);
+        return $object instanceof \Throwable;
     }
 }

@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace Test\Unit\Eboreum\Caster\Formatter;
 
 use Eboreum\Caster\Caster;
-use Eboreum\Caster\Common\DataType\Integer\PositiveInteger;
-use Eboreum\Caster\Common\DataType\Integer\UnsignedInteger;
 use Eboreum\Caster\Formatter\DefaultObjectFormatter;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class DefaultObjectFormatterTest extends TestCase
 {
     /**
@@ -21,9 +23,8 @@ class DefaultObjectFormatterTest extends TestCase
         string $expectedWithType,
         Caster $caster,
         object $object
-    ): void
-    {
-        $defaultObjectFormatter = new DefaultObjectFormatter;
+    ): void {
+        $defaultObjectFormatter = new DefaultObjectFormatter();
 
         $this->assertTrue($defaultObjectFormatter->isHandling($object), $message);
 
@@ -51,11 +52,11 @@ class DefaultObjectFormatterTest extends TestCase
     {
         return [
             [
-                "stdClass",
+                'stdClass',
                 '/^\\\\stdClass$/',
                 '/^\\\\stdClass$/',
                 Caster::getInstance(),
-                new \stdClass,
+                new \stdClass(),
             ],
         ];
     }
@@ -63,9 +64,9 @@ class DefaultObjectFormatterTest extends TestCase
     public function testWithIsAppendingSplObjectHashWorks(): void
     {
         $caster = Caster::getInstance();
-        $object = new \DateTimeImmutable;
+        $object = new \DateTimeImmutable();
 
-        $defaultObjectFormatterA = new DefaultObjectFormatter;
+        $defaultObjectFormatterA = new DefaultObjectFormatter();
         $defaultObjectFormatterB = $defaultObjectFormatterA->withIsAppendingSplObjectHash(false);
         $defaultObjectFormatterC = $defaultObjectFormatterA->withIsAppendingSplObjectHash(true);
 

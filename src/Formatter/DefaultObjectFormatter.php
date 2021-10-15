@@ -7,9 +7,6 @@ namespace Eboreum\Caster\Formatter;
 use Eboreum\Caster\Abstraction\Formatter\AbstractObjectFormatter;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\CasterInterface;
-use Eboreum\Caster\Contract\Formatter\ObjectFormatterInterface;
-use Eboreum\Caster\Contract\TextuallyIdentifiableInterface;
-use Eboreum\Caster\Formatter\Object_\TextuallyIdentifiableInterfaceFormatter;
 
 class DefaultObjectFormatter extends AbstractObjectFormatter
 {
@@ -29,7 +26,7 @@ class DefaultObjectFormatter extends AbstractObjectFormatter
 
         if ($this->isAppendingSplObjectHash()) {
             $str .= sprintf(
-                " (%s)",
+                ' (%s)',
                 \spl_object_hash($object),
             );
         }

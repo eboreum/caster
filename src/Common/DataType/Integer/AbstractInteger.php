@@ -8,7 +8,6 @@ use Eboreum\Caster\Annotation\DebugIdentifier;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\DataType\Integer\IntegerInterface;
 use Eboreum\Caster\Exception\RuntimeException;
-use Eboreum\Caster\Formatter\DefaultObjectFormatter;
 
 /**
  * {@inheritDoc}
@@ -31,7 +30,7 @@ abstract class AbstractInteger implements IntegerInterface
             if (is_int(static::getMinimumLimit())) {
                 if (false === ($integer >= static::getMinimumLimit())) {
                     $errorMessages[] = sprintf(
-                        "Argument \$integer must be >= the minimum limit of %d, but it is not. Found: %s",
+                        'Argument $integer must be >= the minimum limit of %d, but it is not. Found: %s',
                         static::getMinimumLimit(),
                         Caster::getInternalInstance()->castTyped($integer),
                     );
@@ -41,7 +40,7 @@ abstract class AbstractInteger implements IntegerInterface
             if (is_int(static::getMaximumLimit())) {
                 if (false === ($integer <= static::getMaximumLimit())) {
                     $errorMessages[] = sprintf(
-                        "Argument \$integer must be <= the maximum limit of %d, but it is not. Found: %s",
+                        'Argument $integer must be <= the maximum limit of %d, but it is not. Found: %s',
                         static::getMaximumLimit(),
                         Caster::getInternalInstance()->castTyped($integer),
                     );
@@ -49,21 +48,21 @@ abstract class AbstractInteger implements IntegerInterface
             }
 
             if ($errorMessages) {
-                throw new RuntimeException(implode(". ", $errorMessages));
+                throw new RuntimeException(implode('. ', $errorMessages));
             }
 
             $this->integer = $integer;
         } catch (\Throwable $t) {
             $argumentsAsStrings = [];
             $argumentsAsStrings[] = sprintf(
-                "\$integer = %s",
+                '$integer = %s',
                 Caster::create()->castTyped($integer),
             );
 
             throw new RuntimeException(sprintf(
-                "Failed to construct %s with arguments {%s}",
+                'Failed to construct %s with arguments {%s}',
                 Caster::makeNormalizedClassName(new \ReflectionObject($this)),
-                implode(", ", $argumentsAsStrings),
+                implode(', ', $argumentsAsStrings),
             ), 0, $t);
         }
     }

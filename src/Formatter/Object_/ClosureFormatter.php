@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Eboreum\Caster\Formatter\Object_;
 
 use Eboreum\Caster\Abstraction\Formatter\AbstractObjectFormatter;
-use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\Caster;
+use Eboreum\Caster\Contract\CasterInterface;
 
 /**
  * Formatter for \Closure.
@@ -32,11 +32,11 @@ class ClosureFormatter extends AbstractObjectFormatter
             $argument = "\${$reflectionParameter->getName()}";
 
             if ($reflectionParameter->isPassedByReference()) {
-                $argument = "&" . $argument;
+                $argument = '&' . $argument;
             }
 
             if ($reflectionParameter->isVariadic()) {
-                $argument = "..." . $argument;
+                $argument = '...' . $argument;
             }
 
             if ($reflectionParameter->hasType()) {
@@ -51,7 +51,7 @@ class ClosureFormatter extends AbstractObjectFormatter
                 }
 
                 if ($reflectionParameter->allowsNull()) {
-                    $typeText = "?" . $typeText;
+                    $typeText = '?' . $typeText;
                 }
 
                 if ($reflectionParameter->isDefaultValueAvailable()) {
@@ -62,9 +62,9 @@ class ClosureFormatter extends AbstractObjectFormatter
                             $constantName = "\\{$constantName}";
                         }
 
-                        $argument .= " = " . $constantName;
+                        $argument .= ' = ' . $constantName;
                     } else {
-                        $argument .= " = " . $caster->cast($reflectionParameter->getDefaultValue());
+                        $argument .= ' = ' . $caster->cast($reflectionParameter->getDefaultValue());
                     }
                 }
 
@@ -75,9 +75,9 @@ class ClosureFormatter extends AbstractObjectFormatter
         }
 
         return sprintf(
-            "%s(%s)",
+            '%s(%s)',
             Caster::makeNormalizedClassName(new \ReflectionObject($object)),
-            implode(", ", $arguments)
+            implode(', ', $arguments)
         );
     }
 

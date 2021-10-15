@@ -7,7 +7,7 @@ namespace Eboreum\Caster\Contract;
 /**
  * Implementing class must contain a guaranteed to be valid character encoding.
  *   - `mb_list_encodings`: @see https://www.php.net/manual/en/function.mb-list-encodings.php
- *   - `mb_internal_encoding`: @see https://www.php.net/manual/en/function.mb-internal-encoding.php
+ *   - `mb_internal_encoding`: @see https://www.php.net/manual/en/function.mb-internal-encoding.php.
  */
 interface CharacterEncodingInterface extends ImmutableObjectInterface
 {

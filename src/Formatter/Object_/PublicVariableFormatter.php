@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Eboreum\Caster\Formatter\Object_;
 
 use Eboreum\Caster\Abstraction\Formatter\AbstractObjectFormatter;
-use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\Caster;
+use Eboreum\Caster\Contract\CasterInterface;
 
 /**
  * Prints class properties with public access.
@@ -28,7 +28,7 @@ class PublicVariableFormatter extends AbstractObjectFormatter
         $propertySequenceAsString = $this->getPropertySequenceAsString($caster, $object);
 
         return sprintf(
-            "%s {%s}",
+            '%s {%s}',
             Caster::makeNormalizedClassName(new \ReflectionObject($object)),
             $propertySequenceAsString,
         );
@@ -77,16 +77,16 @@ class PublicVariableFormatter extends AbstractObjectFormatter
             $reflectionProperty->setAccessible(true);
 
             $segments[] = sprintf(
-                "\$%s = %s",
+                '$%s = %s',
                 $propertyName,
                 (
                     $reflectionProperty->isInitialized($object)
                     ? $caster->cast($reflectionProperty->getValue($object))
-                    : "(uninitialized)"
+                    : '(uninitialized)'
                 ),
             );
         }
 
-        return implode(", ", $segments);
+        return implode(', ', $segments);
     }
 }

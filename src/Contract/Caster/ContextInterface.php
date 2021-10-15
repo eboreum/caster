@@ -24,7 +24,7 @@ interface ContextInterface extends ImmutableObjectInterface, \Countable
     public function hasVisitedObject(object $object): bool;
 
     /**
-     * Whther the visited object stack in the implementing class is empty or not. Faster than: 0 === count($context)
+     * Whther the visited object stack in the implementing class is empty or not. Faster than: 0 === count($context).
      */
     public function isEmpty(): bool;
 }

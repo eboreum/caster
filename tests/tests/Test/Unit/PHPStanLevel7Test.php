@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Test\Unit\Eboreum\Caster;
 
@@ -8,6 +8,10 @@ use Eboreum\Caster\Caster;
 use Nette\Neon\Neon;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class PHPStanLevel7Test extends TestCase
 {
     public function testPHPStanIsAtLevel7(): void

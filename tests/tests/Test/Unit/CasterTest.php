@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Test\Unit\Eboreum\Caster;
 
 use Eboreum\Caster\Abstraction\Formatter\AbstractArrayFormatter;
-use Eboreum\Caster\Abstraction\Formatter\AbstractFormatter;
 use Eboreum\Caster\Abstraction\Formatter\AbstractObjectFormatter;
 use Eboreum\Caster\Abstraction\Formatter\AbstractResourceFormatter;
 use Eboreum\Caster\Abstraction\Formatter\AbstractStringFormatter;
@@ -13,11 +12,11 @@ use Eboreum\Caster\Annotation\DebugIdentifier;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Caster\Context;
 use Eboreum\Caster\CharacterEncoding;
+use Eboreum\Caster\Collection\EncryptedStringCollection;
 use Eboreum\Caster\Collection\Formatter\ArrayFormatterCollection;
 use Eboreum\Caster\Collection\Formatter\ObjectFormatterCollection;
 use Eboreum\Caster\Collection\Formatter\ResourceFormatterCollection;
 use Eboreum\Caster\Collection\Formatter\StringFormatterCollection;
-use Eboreum\Caster\Collection\EncryptedStringCollection;
 use Eboreum\Caster\Common\DataType\Integer\PositiveInteger;
 use Eboreum\Caster\Common\DataType\Integer\UnsignedInteger;
 use Eboreum\Caster\Common\DataType\Resource_;
@@ -26,6 +25,7 @@ use Eboreum\Caster\Contract\Caster\ContextInterface;
 use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\Contract\DebugIdentifierAnnotationInterface;
 use Eboreum\Caster\Contract\TextuallyIdentifiableInterface;
+use Eboreum\Caster\EncryptedString;
 use Eboreum\Caster\Exception\CasterException;
 use Eboreum\Caster\Formatter\DefaultArrayFormatter;
 use Eboreum\Caster\Formatter\DefaultObjectFormatter;
@@ -40,10 +40,13 @@ use Eboreum\Caster\Formatter\Object_\PublicVariableFormatter;
 use Eboreum\Caster\Formatter\Object_\SplFileInfoFormatter;
 use Eboreum\Caster\Formatter\Object_\TextuallyIdentifiableInterfaceFormatter;
 use Eboreum\Caster\Formatter\Object_\ThrowableFormatter;
-use Eboreum\Caster\EncryptedString;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class CasterTest extends TestCase
 {
     public function testBasics(): void
@@ -72,11 +75,11 @@ class CasterTest extends TestCase
         );
         $this->assertCount(0, $caster->getMaskedEncryptedStringCollection());
         $this->assertSame(
-            "*",
+            '*',
             (string)$caster->getMaskingCharacter(),
         );
         $this->assertSame(
-            "******",
+            '******',
             $caster->getMaskingString(),
         );
         $this->assertSame(
@@ -84,17 +87,17 @@ class CasterTest extends TestCase
             $caster->getMaskingStringLength()->toInteger(),
         );
         $this->assertMatchesRegularExpression(
-            implode("", [
+            implode('', [
                 '/',
                 '^',
                 '\*\* RECURSION \*\* \(',
-                    '\\\\stdClass',
-                    ', [0-9a-f]{32}',
+                '\\\\stdClass',
+                ', [0-9a-f]{32}',
                 '\)',
                 '$',
                 '/',
             ]),
-            $caster->getRecursionMessage(new \stdClass),
+            $caster->getRecursionMessage(new \stdClass()),
         );
         $this->assertSame(
             CasterInterface::STRING_SAMPLE_SIZE_DEFAULT,
@@ -122,6 +125,7 @@ class CasterTest extends TestCase
 
     /**
      * @dataProvider dataProvider_testCastWorks
+     *
      * @param mixed $value
      */
     public function testCastWorks(
@@ -129,8 +133,7 @@ class CasterTest extends TestCase
         string $expected,
         $value,
         Caster $caster
-    ): void
-    {
+    ): void {
         $this->assertMatchesRegularExpression(
             $expected,
             $caster->cast($value),
@@ -145,187 +148,180 @@ class CasterTest extends TestCase
     {
         return [
             [
-                "null",
+                'null',
                 '/^null$/',
                 null,
                 Caster::create(),
             ],
             [
-                "bool: true",
+                'bool: true',
                 '/^true$/',
                 true,
                 Caster::create(),
             ],
             [
-                "bool: false",
+                'bool: false',
                 '/^false$/',
                 false,
                 Caster::create(),
             ],
             [
-                "An integer",
+                'An integer',
                 '/^42$/',
                 42,
                 Caster::create(),
             ],
             [
-                "A float",
+                'A float',
                 '/^3\.14$/',
                 3.14,
                 Caster::create(),
             ],
             [
-                "A string",
+                'A string',
                 '/^"foo"$/',
-                "foo",
+                'foo',
                 Caster::create(),
             ],
             [
-                "object: \stdClass",
+                'object: \\stdClass',
                 '/^\\\\stdClass$/',
-                new \stdClass,
+                new \stdClass(),
                 Caster::create(),
             ],
             [
-                "DateIntervalFormatter",
-                implode("", [
+                'DateIntervalFormatter',
+                implode('', [
                     '/',
                     '^',
                     '\\\\DateInterval \{',
-                        '\$y = 1',
-                        ', \$m = 1',
-                        ', \$d = 2',
-                        ', \$h = 12',
-                        ', \$i = 34',
-                        ', \$s = 56',
-                        ', \$f = 0',
-                        ', \$weekday = 0',
-                        ', \$weekday_behavior = 0',
-                        ', \$first_last_day_of = 0',
-                        ', \$invert = 0',
-                        ', \$days = 399',
-                        ', \$special_type = 0',
-                        ', \$special_amount = 0',
-                        ', \$have_weekday_relative = 0',
-                        ', \$have_special_relative = 0',
+                    '\$y = 1',
+                    ', \$m = 1',
+                    ', \$d = 2',
+                    ', \$h = 12',
+                    ', \$i = 34',
+                    ', \$s = 56',
+                    ', \$f = 0',
+                    ', \$weekday = 0',
+                    ', \$weekday_behavior = 0',
+                    ', \$first_last_day_of = 0',
+                    ', \$invert = 0',
+                    ', \$days = 399',
+                    ', \$special_type = 0',
+                    ', \$special_amount = 0',
+                    ', \$have_weekday_relative = 0',
+                    ', \$have_special_relative = 0',
                     '\}',
                     '$',
                     '/',
                 ]),
-                (new \DateTimeImmutable("2020-01-01 00:00:00"))->diff(new \DateTimeImmutable("2021-02-03 12:34:56")),
-                (function(){
+                (new \DateTimeImmutable('2020-01-01 00:00:00'))->diff(new \DateTimeImmutable('2021-02-03 12:34:56')),
+                (function () {
                     $caster = Caster::create();
-                    $caster = $caster->withCustomObjectFormatterCollection(
+
+                    return $caster->withCustomObjectFormatterCollection(
                         new ObjectFormatterCollection(...[
-                            new DateIntervalFormatter,
+                            new DateIntervalFormatter(),
                         ]),
                     );
-
-                    return $caster;
                 })(),
             ],
             [
-                "DatePeriodFormatter",
-                implode("", [
+                'DatePeriodFormatter',
+                implode('', [
                     '/',
                     '^',
                     '\\\\DatePeriod \(',
-                        'start: \\\\DateTimeImmutable',
-                        ', end: \\\\DateTimeImmutable',
-                        ', recurrences: null',
-                        ', interval: \\\\DateInterval',
+                    'start: \\\\DateTimeImmutable',
+                    ', end: \\\\DateTimeImmutable',
+                    ', recurrences: null',
+                    ', interval: \\\\DateInterval',
                     '\)',
                     '$',
                     '/',
                 ]),
                 new \DatePeriod(
-                    new \DateTimeImmutable("2020-01-01 00:00:00"),
-                    new \DateInterval("P1D"),
-                    new \DateTimeImmutable("2021-02-03 12:34:56"),
+                    new \DateTimeImmutable('2020-01-01 00:00:00'),
+                    new \DateInterval('P1D'),
+                    new \DateTimeImmutable('2021-02-03 12:34:56'),
                 ),
-                (function(){
+                (function () {
                     $caster = Caster::create();
-                    $caster = $caster->withCustomObjectFormatterCollection(
+
+                    return $caster->withCustomObjectFormatterCollection(
                         new ObjectFormatterCollection(...[
-                            new DatePeriodFormatter,
+                            new DatePeriodFormatter(),
                         ]),
                     );
-
-                    return $caster;
                 })(),
             ],
             [
-                "DateTimeInterfaceFormatter",
-                implode("", [
+                'DateTimeInterfaceFormatter',
+                implode('', [
                     '/',
                     '^',
                     '\\\\DateTimeImmutable \("2021-02-03T12:34:56\+00:00"\)',
                     '$',
                     '/',
                 ]),
-                new \DateTimeImmutable("2021-02-03 12:34:56+00:00"),
-                (function(){
+                new \DateTimeImmutable('2021-02-03 12:34:56+00:00'),
+                (function () {
                     $caster = Caster::create();
-                    $caster = $caster->withCustomObjectFormatterCollection(
+
+                    return $caster->withCustomObjectFormatterCollection(
                         new ObjectFormatterCollection(...[
-                            new DateTimeInterfaceFormatter,
+                            new DateTimeInterfaceFormatter(),
                         ]),
                     );
-
-                    return $caster;
                 })(),
             ],
             [
-                "DebugIdentifierAnnotationInterfaceFormatter",
+                'DebugIdentifierAnnotationInterfaceFormatter',
                 '/^class@anonymous\/in\/.+\/CasterTest\.php:\d+ \{\$foo = \(string\(3\)\) "bar"\}$/',
-                new class implements DebugIdentifierAnnotationInterface
-                {
+                new class() implements DebugIdentifierAnnotationInterface {
                     /**
                      * @DebugIdentifier
                      */
-                    private string $foo = "bar";
+                    private string $foo = 'bar';
                 },
-                (function(){
+                (function () {
                     $caster = Caster::create();
-                    $caster = $caster->withCustomObjectFormatterCollection(
+
+                    return $caster->withCustomObjectFormatterCollection(
                         new ObjectFormatterCollection(...[
-                            new DebugIdentifierAnnotationInterfaceFormatter,
+                            new DebugIdentifierAnnotationInterfaceFormatter(),
                         ]),
                     );
-
-                    return $caster;
                 })(),
             ],
             [
-                "DirectoryFormatter",
+                'DirectoryFormatter',
                 '/^\\\\Directory \{\$path = ".+"\}$/',
                 dir(__DIR__),
-                (function(){
+                (function () {
                     $caster = Caster::create();
-                    $caster = $caster->withCustomObjectFormatterCollection(
+
+                    return $caster->withCustomObjectFormatterCollection(
                         new ObjectFormatterCollection(...[
-                            new DirectoryFormatter,
+                            new DirectoryFormatter(),
                         ]),
                     );
-
-                    return $caster;
                 })(),
             ],
             [
-                "PublicVariableFormatter",
-                implode("", [
+                'PublicVariableFormatter',
+                implode('', [
                     '/',
                     '^',
                     'class@anonymous\/in\/.+\/CasterTest\.php:\d+ \{',
-                        '\$foo = "aaa"',
-                        ', \$bar = 42',
+                    '\$foo = "aaa"',
+                    ', \$bar = 42',
                     '\}',
                     '$',
                     '/',
                 ]),
-                new class
-                {
-                    public string $foo = "aaa";
+                new class() {
+                    public string $foo = 'aaa';
 
                     public int $bar = 42;
 
@@ -336,20 +332,19 @@ class CasterTest extends TestCase
                      */
                     protected array $bim = [];
                 },
-                (function(){
+                (function () {
                     $caster = Caster::create();
-                    $caster = $caster->withCustomObjectFormatterCollection(
+
+                    return $caster->withCustomObjectFormatterCollection(
                         new ObjectFormatterCollection(...[
-                            new PublicVariableFormatter,
+                            new PublicVariableFormatter(),
                         ]),
                     );
-
-                    return $caster;
                 })(),
             ],
             [
-                "SplFileInfoFormatter",
-                implode("", [
+                'SplFileInfoFormatter',
+                implode('', [
                     '/',
                     '^',
                     '\\\\SplFileObject \(".+"\)',
@@ -357,90 +352,86 @@ class CasterTest extends TestCase
                     '/',
                 ]),
                 new \SplFileObject(__FILE__),
-                (function(){
+                (function () {
                     $caster = Caster::create();
-                    $caster = $caster->withCustomObjectFormatterCollection(
+
+                    return $caster->withCustomObjectFormatterCollection(
                         new ObjectFormatterCollection(...[
-                            new SplFileInfoFormatter,
+                            new SplFileInfoFormatter(),
                         ]),
                     );
-
-                    return $caster;
                 })(),
             ],
             [
-                "TextuallyIdentifiableInterfaceFormatter",
+                'TextuallyIdentifiableInterfaceFormatter',
                 '/^class@anonymous\/in\/.+\/CasterTest\.php\:\d+\: AnonymousClass$/',
-                new class implements TextuallyIdentifiableInterface
-                {
+                new class() implements TextuallyIdentifiableInterface {
                     public function toTextualIdentifier(CasterInterface $caster): string
                     {
-                        return "AnonymousClass";
+                        return 'AnonymousClass';
                     }
                 },
-                (function(){
+                (function () {
                     $caster = Caster::create();
-                    $caster = $caster->withCustomObjectFormatterCollection(
+
+                    return $caster->withCustomObjectFormatterCollection(
                         new ObjectFormatterCollection(...[
-                            new TextuallyIdentifiableInterfaceFormatter,
+                            new TextuallyIdentifiableInterfaceFormatter(),
                         ]),
                     );
-
-                    return $caster;
                 })(),
             ],
             [
-                "ThrowableFormatter",
-                implode("", [
+                'ThrowableFormatter',
+                implode('', [
                     '/',
                     '^',
                     '\\\\Exception \{',
-                        '\$code = 0',
-                        ', \$file = ".+"',
-                        ', \$line = \d+',
-                        ', \$message = "a"',
-                        ', \$previous = \\\\RuntimeException \{',
-                            '\$code = 1',
-                            ', \$file = ".+"',
-                            ', \$line = \d+',
-                            ', \$message = "b"',
-                            ', \$previous = \\\\LogicException \{',
-                                '\$code = 2',
-                                ', \$file = ".+"',
-                                ', \$line = \d+',
-                                ', \$message = "c"',
-                                ', \$previous = null',
-                            '\}',
-                        '\}',
+                    '\$code = 0',
+                    ', \$file = ".+"',
+                    ', \$line = \d+',
+                    ', \$message = "a"',
+                    ', \$previous = \\\\RuntimeException \{',
+                    '\$code = 1',
+                    ', \$file = ".+"',
+                    ', \$line = \d+',
+                    ', \$message = "b"',
+                    ', \$previous = \\\\LogicException \{',
+                    '\$code = 2',
+                    ', \$file = ".+"',
+                    ', \$line = \d+',
+                    ', \$message = "c"',
+                    ', \$previous = null',
+                    '\}',
+                    '\}',
                     '\}',
                     '$',
                     '/',
                 ]),
-                (function(){
-                    $c = new \LogicException("c", 2);
-                    $b = new \RuntimeException("b", 1, $c);
+                (function () {
+                    $c = new \LogicException('c', 2);
+                    $b = new \RuntimeException('b', 1, $c);
 
-                    return new \Exception("a", 0, $b);
+                    return new \Exception('a', 0, $b);
                 })(),
-                (function(){
+                (function () {
                     $caster = Caster::create();
-                    $caster = $caster->withCustomObjectFormatterCollection(
+
+                    return $caster->withCustomObjectFormatterCollection(
                         new ObjectFormatterCollection(...[
-                            new ThrowableFormatter,
+                            new ThrowableFormatter(),
                         ]),
                     );
-
-                    return $caster;
                 })(),
             ],
             [
-                "An array",
+                'An array',
                 '/^\[0 \=\> "foo", 1 \=\> 42\]$/',
-                ["foo", 42],
+                ['foo', 42],
                 Caster::create(),
             ],
             [
-                "A resource",
+                'A resource',
                 '/^`stream` Resource id #\d+$/',
                 \fopen(__FILE__, 'r+'),
                 Caster::create(),
@@ -450,30 +441,31 @@ class CasterTest extends TestCase
 
     public function testCastWorksWithStringSample(): void
     {
-        $str = str_repeat("a", CasterInterface::STRING_SAMPLE_SIZE_DEFAULT+1);
+        $str = str_repeat('a', CasterInterface::STRING_SAMPLE_SIZE_DEFAULT + 1);
 
         $this->assertSame(
-            '"' . str_repeat("a", CasterInterface::STRING_SAMPLE_SIZE_DEFAULT-4) . ' ..." (sample)',
+            '"' . str_repeat('a', CasterInterface::STRING_SAMPLE_SIZE_DEFAULT - 4) . ' ..." (sample)',
             Caster::create()->withIsMakingSamples(true)->cast($str),
         );
     }
 
     public function testCastWorksWithoutStringSample(): void
     {
-        $str = str_repeat("a", CasterInterface::STRING_SAMPLE_SIZE_DEFAULT+1);
+        $str = str_repeat('a', CasterInterface::STRING_SAMPLE_SIZE_DEFAULT + 1);
 
         $this->assertSame(
-            '"' . str_repeat("a", CasterInterface::STRING_SAMPLE_SIZE_DEFAULT+1) . '"',
+            '"' . str_repeat('a', CasterInterface::STRING_SAMPLE_SIZE_DEFAULT + 1) . '"',
             Caster::create()->withIsMakingSamples(false)->cast($str),
         );
     }
 
     public function testCastWorksWithAnonymousClass(): void
     {
-        $class = new class {};
+        $class = new class() {
+        };
 
         $this->assertMatchesRegularExpression(
-            implode("", [
+            implode('', [
                 '/',
                 '^',
                 'class@anonymous\/in\/.+\/CasterTest\.php:\d+',
@@ -488,7 +480,7 @@ class CasterTest extends TestCase
     {
         $this->assertMatchesRegularExpression(
             '/^`stream` Resource id #\d+$/',
-            Caster::create()->cast(fopen(__FILE__, "r+")),
+            Caster::create()->cast(fopen(__FILE__, 'r+')),
         );
     }
 
@@ -499,15 +491,15 @@ class CasterTest extends TestCase
         $caster = $caster->withArraySampleSize(new UnsignedInteger(3));
         $caster = $caster->withStringSampleSize(new UnsignedInteger(5));
         $array = [
-            "foobar",
-            "loremipsum" => "dolorsit",
+            'foobar',
+            'loremipsum' => 'dolorsit',
             1,
             2,
             3,
         ];
 
         $this->assertSame(
-            implode("", [
+            implode('', [
                 '[',
                 '0 => "f ..." (sample)',
                 ', "l ..." (sample) => "d ..." (sample)',
@@ -525,8 +517,8 @@ class CasterTest extends TestCase
         $caster = $caster->withArraySampleSize(new UnsignedInteger(10));
         $caster = $caster->withStringSampleSize(new UnsignedInteger(200));
         $array = [
-            "foobar",
-            "loremipsum" => "dolorsit",
+            'foobar',
+            'loremipsum' => 'dolorsit',
             1,
             2,
             3,
@@ -540,14 +532,14 @@ class CasterTest extends TestCase
 
     /**
      * @dataProvider dataProvider_testCastWorksWithArrayLargerThanSampleSize
+     *
      * @param array<mixed> $array
      */
     public function testCastWorksWithArrayLargerThanSampleSize(
         string $message,
         string $expected,
         array $array
-    ): void
-    {
+    ): void {
         $this->assertSame(
             $expected,
             Caster::create()->withIsMakingSamples(true)->cast($array),
@@ -562,12 +554,12 @@ class CasterTest extends TestCase
     {
         return [
             [
-                "Singular \"element\"",
+                'Singular "element"',
                 '[0 => "foo", 1 => 42, 2 => null, ... and 1 more element] (sample)',
-                ["foo", 42, null, false]
+                ['foo', 42, null, false],
             ],
             [
-                "Plural \"elements\"",
+                'Plural "elements"',
                 '[0 => 1, 1 => 1, 2 => 1, ... and 97 more elements] (sample)',
                 array_fill(0, 100, 1),
             ],
@@ -576,7 +568,12 @@ class CasterTest extends TestCase
 
     public function testCastWorksWithAnAssociativeArray(): void
     {
-        $array = ["foo" => 1, "bar" => 2, "baz" => 3, "bim" => 4];
+        $array = [
+            'foo' => 1,
+            'bar' => 2,
+            'baz' => 3,
+            'bim' => 4,
+        ];
 
         $this->assertSame(
             '["foo" => 1, "bar" => 2, "baz" => 3, ... and 1 more element] (sample)',
@@ -586,7 +583,12 @@ class CasterTest extends TestCase
 
     public function testCastWorksWithAMixedArray(): void
     {
-        $array = ["foo", "bar" => 2, "baz", "bim" => 4];
+        $array = [
+            'foo',
+            'bar' => 2,
+            'baz',
+            'bim' => 4,
+        ];
 
         $this->assertSame(
             '[0 => "foo", "bar" => 2, 1 => "baz", ... and 1 more element] (sample)',
@@ -598,17 +600,17 @@ class CasterTest extends TestCase
     {
         $caster = Caster::create();
         $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection(...[
-            new EncryptedString("bar"),
-            new EncryptedString("bim"),
+            new EncryptedString('bar'),
+            new EncryptedString('bim'),
         ]));
 
         $this->assertSame(
             sprintf(
                 '"foo %s baz %s" (masked)',
-                "******",
-                "******"
+                '******',
+                '******'
             ),
-            $caster->cast("foo bar baz bim"),
+            $caster->cast('foo bar baz bim'),
         );
     }
 
@@ -618,13 +620,13 @@ class CasterTest extends TestCase
         $caster = $caster->withIsMakingSamples(true);
         $caster = $caster->withStringSampleSize(new UnsignedInteger(10));
         $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection(...[
-            new EncryptedString("bar"),
-            new EncryptedString("bim"),
+            new EncryptedString('bar'),
+            new EncryptedString('bim'),
         ]));
 
         $this->assertSame(
             '"foo ** ..." (sample) (masked)',
-            $caster->cast("foo bar baz bim"),
+            $caster->cast('foo bar baz bim'),
         );
     }
 
@@ -632,18 +634,20 @@ class CasterTest extends TestCase
     {
         $caster = Caster::create();
         $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection(...[
-            new EncryptedString("bar"),
-            new EncryptedString("bim"),
+            new EncryptedString('bar'),
+            new EncryptedString('bim'),
         ]));
-        $array = ["foo bar baz bim" => "bar"];
+        $array = [
+            'foo bar baz bim' => 'bar',
+        ];
 
         // It's the masked length = 19, not the original length. Don't bleed information about masked string
         $this->assertSame(
             sprintf(
                 '["foo %s baz %s" (masked) => "%s" (masked)]',
-                "******",
-                "******",
-                "******",
+                '******',
+                '******',
+                '******',
             ),
             $caster->cast($array),
         );
@@ -651,14 +655,14 @@ class CasterTest extends TestCase
 
     /**
      * @dataProvider dataProvider_testCastOnMaskedStringsWillNotCauseMaskingToBePartOfOtherMaskings
+     *
      * @param EncryptedStringCollection<int, EncryptedString> $encryptedStringCollection
      */
     public function testCastOnMaskedStringsWillNotCauseMaskingToBePartOfOtherMaskings(
         string $expected,
         string $input,
         EncryptedStringCollection $encryptedStringCollection
-    ): void
-    {
+    ): void {
         $caster = Caster::create();
         $caster = $caster->withMaskedEncryptedStringCollection($encryptedStringCollection);
 
@@ -674,60 +678,60 @@ class CasterTest extends TestCase
             [
                 sprintf(
                     '"foo %s baz %s bim" (masked)',
-                    "******",
-                    "******",
+                    '******',
+                    '******',
                 ),
                 'foo bar baz *** bim',
                 new EncryptedStringCollection(...[
-                    new EncryptedString("***"),
-                    new EncryptedString("bar"),
+                    new EncryptedString('***'),
+                    new EncryptedString('bar'),
                 ]),
             ],
             [
                 sprintf(
                     '"foo %s baz %s bim" (masked)',
-                    "******",
-                    "******",
+                    '******',
+                    '******',
                 ),
                 'foo bar baz *** bim',
                 new EncryptedStringCollection(...[
-                    new EncryptedString("bar"),
-                    new EncryptedString("***"),
+                    new EncryptedString('bar'),
+                    new EncryptedString('***'),
                 ]),
             ],
             [
                 sprintf(
                     '"foo %s %s baz bim" (masked)',
-                    "******",
-                    "******",
+                    '******',
+                    '******',
                 ),
                 'foo *** bar baz bim',
                 new EncryptedStringCollection(...[
-                    new EncryptedString("***"),
-                    new EncryptedString("bar"),
+                    new EncryptedString('***'),
+                    new EncryptedString('bar'),
                 ]),
             ],
             [
                 sprintf(
                     '"foo %s %s baz bim" (masked)',
-                    "******",
-                    "******",
+                    '******',
+                    '******',
                 ),
                 'foo *** bar baz bim',
                 new EncryptedStringCollection(...[
-                    new EncryptedString("bar"),
-                    new EncryptedString("***"),
+                    new EncryptedString('bar'),
+                    new EncryptedString('***'),
                 ]),
             ],
             [
                 sprintf(
                     '"foo %s bar" (masked)',
-                    "******",
+                    '******',
                 ),
                 'foo ********** bar',
                 new EncryptedStringCollection(...[
-                    new EncryptedString("***"),
-                    new EncryptedString("**********"),
+                    new EncryptedString('***'),
+                    new EncryptedString('**********'),
                 ]),
             ],
         ];
@@ -735,6 +739,7 @@ class CasterTest extends TestCase
 
     /**
      * @dataProvider dataProvider_testCastWorksWithTypePrepended
+     *
      * @param mixed $value
      */
     public function testCastWorksWithTypePrepended(
@@ -742,8 +747,7 @@ class CasterTest extends TestCase
         string $expected,
         $value,
         Caster $caster
-    ): void
-    {
+    ): void {
         $caster = $caster->withIsPrependingType(true);
 
         $this->assertMatchesRegularExpression(
@@ -768,187 +772,180 @@ class CasterTest extends TestCase
     {
         return [
             [
-                "null",
+                'null',
                 '/^\(null\) null$/',
                 null,
                 Caster::create(),
             ],
             [
-                "bool: true",
+                'bool: true',
                 '/^\(bool\) true$/',
                 true,
                 Caster::create(),
             ],
             [
-                "bool: false",
+                'bool: false',
                 '/^\(bool\) false$/',
                 false,
                 Caster::create(),
             ],
             [
-                "An integer",
+                'An integer',
                 '/^\(int\) 42$/',
                 42,
                 Caster::create(),
             ],
             [
-                "A float",
+                'A float',
                 '/^\(float\) 3\.14$/',
                 3.14,
                 Caster::create(),
             ],
             [
-                "A string",
+                'A string',
                 '/^\(string\(3\)\) "foo"$/',
-                "foo",
+                'foo',
                 Caster::create(),
             ],
             [
-                "object: \stdClass",
+                'object: \\stdClass',
                 '/^\(object\) \\\\stdClass$/',
-                new \stdClass,
+                new \stdClass(),
                 Caster::create(),
             ],
             [
-                "DateIntervalFormatter",
-                implode("", [
+                'DateIntervalFormatter',
+                implode('', [
                     '/',
                     '^',
                     '\(object\) \\\\DateInterval \{',
-                        '\$y = \(int\) 1',
-                        ', \$m = \(int\) 1',
-                        ', \$d = \(int\) 2',
-                        ', \$h = \(int\) 12',
-                        ', \$i = \(int\) 34',
-                        ', \$s = \(int\) 56',
-                        ', \$f = \(float\) 0',
-                        ', \$weekday = \(int\) 0',
-                        ', \$weekday_behavior = \(int\) 0',
-                        ', \$first_last_day_of = \(int\) 0',
-                        ', \$invert = \(int\) 0',
-                        ', \$days = \(int\) 399',
-                        ', \$special_type = \(int\) 0',
-                        ', \$special_amount = \(int\) 0',
-                        ', \$have_weekday_relative = \(int\) 0',
-                        ', \$have_special_relative = \(int\) 0',
+                    '\$y = \(int\) 1',
+                    ', \$m = \(int\) 1',
+                    ', \$d = \(int\) 2',
+                    ', \$h = \(int\) 12',
+                    ', \$i = \(int\) 34',
+                    ', \$s = \(int\) 56',
+                    ', \$f = \(float\) 0',
+                    ', \$weekday = \(int\) 0',
+                    ', \$weekday_behavior = \(int\) 0',
+                    ', \$first_last_day_of = \(int\) 0',
+                    ', \$invert = \(int\) 0',
+                    ', \$days = \(int\) 399',
+                    ', \$special_type = \(int\) 0',
+                    ', \$special_amount = \(int\) 0',
+                    ', \$have_weekday_relative = \(int\) 0',
+                    ', \$have_special_relative = \(int\) 0',
                     '\}',
                     '$',
                     '/',
                 ]),
-                (new \DateTimeImmutable("2020-01-01 00:00:00"))->diff(new \DateTimeImmutable("2021-02-03 12:34:56")),
-                (function(){
+                (new \DateTimeImmutable('2020-01-01 00:00:00'))->diff(new \DateTimeImmutable('2021-02-03 12:34:56')),
+                (function () {
                     $caster = Caster::create();
-                    $caster = $caster->withCustomObjectFormatterCollection(
+
+                    return $caster->withCustomObjectFormatterCollection(
                         new ObjectFormatterCollection(...[
-                            new DateIntervalFormatter,
+                            new DateIntervalFormatter(),
                         ]),
                     );
-
-                    return $caster;
                 })(),
             ],
             [
-                "DatePeriodFormatter",
-                implode("", [
+                'DatePeriodFormatter',
+                implode('', [
                     '/',
                     '^',
                     '\(object\) \\\\DatePeriod \(',
-                        'start: \(object\) \\\\DateTimeImmutable',
-                        ', end: \(object\) \\\\DateTimeImmutable',
-                        ', recurrences: \(null\) null',
-                        ', interval: \(object\) \\\\DateInterval',
+                    'start: \(object\) \\\\DateTimeImmutable',
+                    ', end: \(object\) \\\\DateTimeImmutable',
+                    ', recurrences: \(null\) null',
+                    ', interval: \(object\) \\\\DateInterval',
                     '\)',
                     '$',
                     '/',
                 ]),
                 new \DatePeriod(
-                    new \DateTimeImmutable("2020-01-01 00:00:00"),
-                    new \DateInterval("P1D"),
-                    new \DateTimeImmutable("2021-02-03 12:34:56"),
+                    new \DateTimeImmutable('2020-01-01 00:00:00'),
+                    new \DateInterval('P1D'),
+                    new \DateTimeImmutable('2021-02-03 12:34:56'),
                 ),
-                (function(){
+                (function () {
                     $caster = Caster::create();
-                    $caster = $caster->withCustomObjectFormatterCollection(
+
+                    return $caster->withCustomObjectFormatterCollection(
                         new ObjectFormatterCollection(...[
-                            new DatePeriodFormatter,
+                            new DatePeriodFormatter(),
                         ]),
                     );
-
-                    return $caster;
                 })(),
             ],
             [
-                "DateTimeInterfaceFormatter",
-                implode("", [
+                'DateTimeInterfaceFormatter',
+                implode('', [
                     '/',
                     '^',
                     '\(object\) \\\\DateTimeImmutable \("2021-02-03T12:34:56\+00:00"\)',
                     '$',
                     '/',
                 ]),
-                new \DateTimeImmutable("2021-02-03 12:34:56+00:00"),
-                (function(){
+                new \DateTimeImmutable('2021-02-03 12:34:56+00:00'),
+                (function () {
                     $caster = Caster::create();
-                    $caster = $caster->withCustomObjectFormatterCollection(
+
+                    return $caster->withCustomObjectFormatterCollection(
                         new ObjectFormatterCollection(...[
-                            new DateTimeInterfaceFormatter,
+                            new DateTimeInterfaceFormatter(),
                         ]),
                     );
-
-                    return $caster;
                 })(),
             ],
             [
-                "DebugIdentifierAnnotationInterfaceFormatter",
+                'DebugIdentifierAnnotationInterfaceFormatter',
                 '/^\(object\) class@anonymous\/in\/.+\/CasterTest\.php:\d+ \{\$foo = \(string\(3\)\) "bar"\}$/',
-                new class implements DebugIdentifierAnnotationInterface
-                {
+                new class() implements DebugIdentifierAnnotationInterface {
                     /**
                      * @DebugIdentifier
                      */
-                    private string $foo = "bar";
+                    private string $foo = 'bar';
                 },
-                (function(){
+                (function () {
                     $caster = Caster::create();
-                    $caster = $caster->withCustomObjectFormatterCollection(
+
+                    return $caster->withCustomObjectFormatterCollection(
                         new ObjectFormatterCollection(...[
-                            new DebugIdentifierAnnotationInterfaceFormatter,
+                            new DebugIdentifierAnnotationInterfaceFormatter(),
                         ]),
                     );
-
-                    return $caster;
                 })(),
             ],
             [
-                "DirectoryFormatter",
+                'DirectoryFormatter',
                 '/^\(object\) \\\\Directory \{\$path = \(string\(\d+\)\) ".+"\}$/',
                 dir(__DIR__),
-                (function(){
+                (function () {
                     $caster = Caster::create();
-                    $caster = $caster->withCustomObjectFormatterCollection(
+
+                    return $caster->withCustomObjectFormatterCollection(
                         new ObjectFormatterCollection(...[
-                            new DirectoryFormatter,
+                            new DirectoryFormatter(),
                         ]),
                     );
-
-                    return $caster;
                 })(),
             ],
             [
-                "PublicVariableFormatter",
-                implode("", [
+                'PublicVariableFormatter',
+                implode('', [
                     '/',
                     '^',
                     '\(object\) class@anonymous\/in\/.+\/CasterTest\.php:\d+ \{',
-                        '\$foo = \(string\(3\)\) "aaa"',
-                        ', \$bar = \(int\) 42',
+                    '\$foo = \(string\(3\)\) "aaa"',
+                    ', \$bar = \(int\) 42',
                     '\}',
                     '$',
                     '/',
                 ]),
-                new class
-                {
-                    public string $foo = "aaa";
+                new class() {
+                    public string $foo = 'aaa';
 
                     public int $bar = 42;
 
@@ -959,20 +956,19 @@ class CasterTest extends TestCase
                      */
                     protected array $bim = [];
                 },
-                (function(){
+                (function () {
                     $caster = Caster::create();
-                    $caster = $caster->withCustomObjectFormatterCollection(
+
+                    return $caster->withCustomObjectFormatterCollection(
                         new ObjectFormatterCollection(...[
-                            new PublicVariableFormatter,
+                            new PublicVariableFormatter(),
                         ]),
                     );
-
-                    return $caster;
                 })(),
             ],
             [
-                "SplFileInfoFormatter",
-                implode("", [
+                'SplFileInfoFormatter',
+                implode('', [
                     '/',
                     '^',
                     '\(object\) \\\\SplFileObject \(".+"\)',
@@ -980,99 +976,95 @@ class CasterTest extends TestCase
                     '/',
                 ]),
                 new \SplFileObject(__FILE__),
-                (function(){
+                (function () {
                     $caster = Caster::create();
-                    $caster = $caster->withCustomObjectFormatterCollection(
+
+                    return $caster->withCustomObjectFormatterCollection(
                         new ObjectFormatterCollection(...[
-                            new SplFileInfoFormatter,
+                            new SplFileInfoFormatter(),
                         ]),
                     );
-
-                    return $caster;
                 })(),
             ],
             [
-                "TextuallyIdentifiableInterfaceFormatter",
+                'TextuallyIdentifiableInterfaceFormatter',
                 '/^\(object\) class@anonymous\/in\/.+\/CasterTest\.php\:\d+\: AnonymousClass$/',
-                new class implements TextuallyIdentifiableInterface
-                {
+                new class() implements TextuallyIdentifiableInterface {
                     public function toTextualIdentifier(CasterInterface $caster): string
                     {
-                        return "AnonymousClass";
+                        return 'AnonymousClass';
                     }
                 },
-                (function(){
+                (function () {
                     $caster = Caster::create();
-                    $caster = $caster->withCustomObjectFormatterCollection(
+
+                    return $caster->withCustomObjectFormatterCollection(
                         new ObjectFormatterCollection(...[
-                            new TextuallyIdentifiableInterfaceFormatter,
+                            new TextuallyIdentifiableInterfaceFormatter(),
                         ]),
                     );
-
-                    return $caster;
                 })(),
             ],
             [
-                "ThrowableFormatter",
-                implode("", [
+                'ThrowableFormatter',
+                implode('', [
                     '/',
                     '^',
                     '\(object\) \\\\Exception \{',
-                        '\$code = \(int\) 0',
-                        ', \$file = \(string\(\d+\)\) ".+"',
-                        ', \$line = \(int\) \d+',
-                        ', \$message = \(string\(\d+\)\) "a"',
-                        ', \$previous = \(object\) \\\\RuntimeException \{',
-                            '\$code = \(int\) 1',
-                            ', \$file = \(string\(\d+\)\) ".+"',
-                            ', \$line = \(int\) \d+',
-                            ', \$message = \(string\(\d+\)\) "b"',
-                            ', \$previous = \(object\) \\\\LogicException \{',
-                                '\$code = \(int\) 2',
-                                ', \$file = \(string\(\d+\)\) ".+"',
-                                ', \$line = \(int\) \d+',
-                                ', \$message = \(string\(\d+\)\) "c"',
-                                ', \$previous = \(null\) null',
-                            '\}',
-                        '\}',
+                    '\$code = \(int\) 0',
+                    ', \$file = \(string\(\d+\)\) ".+"',
+                    ', \$line = \(int\) \d+',
+                    ', \$message = \(string\(\d+\)\) "a"',
+                    ', \$previous = \(object\) \\\\RuntimeException \{',
+                    '\$code = \(int\) 1',
+                    ', \$file = \(string\(\d+\)\) ".+"',
+                    ', \$line = \(int\) \d+',
+                    ', \$message = \(string\(\d+\)\) "b"',
+                    ', \$previous = \(object\) \\\\LogicException \{',
+                    '\$code = \(int\) 2',
+                    ', \$file = \(string\(\d+\)\) ".+"',
+                    ', \$line = \(int\) \d+',
+                    ', \$message = \(string\(\d+\)\) "c"',
+                    ', \$previous = \(null\) null',
+                    '\}',
+                    '\}',
                     '\}',
                     '$',
                     '/',
                 ]),
-                (function(){
-                    $c = new \LogicException("c", 2);
-                    $b = new \RuntimeException("b", 1, $c);
+                (function () {
+                    $c = new \LogicException('c', 2);
+                    $b = new \RuntimeException('b', 1, $c);
 
-                    return new \Exception("a", 0, $b);
+                    return new \Exception('a', 0, $b);
                 })(),
-                (function(){
+                (function () {
                     $caster = Caster::create();
-                    $caster = $caster->withCustomObjectFormatterCollection(
+
+                    return $caster->withCustomObjectFormatterCollection(
                         new ObjectFormatterCollection(...[
-                            new ThrowableFormatter,
+                            new ThrowableFormatter(),
                         ]),
                     );
-
-                    return $caster;
                 })(),
             ],
             [
-                "An array",
-                implode("", [
+                'An array',
+                implode('', [
                     '/',
                     '^',
                     '\(array\(2\)\) \[',
-                        '\(int\) 0 \=\> \(string\(\d+\)\) "foo"',
-                        ', \(int\) 1 \=\> \(int\) 42',
+                    '\(int\) 0 \=\> \(string\(\d+\)\) "foo"',
+                    ', \(int\) 1 \=\> \(int\) 42',
                     '\]',
                     '$',
                     '/',
                 ]),
-                ["foo", 42],
+                ['foo', 42],
                 Caster::create(),
             ],
             [
-                "A resource",
+                'A resource',
                 '/^\(resource\) `stream` Resource id #\d+$/',
                 \fopen(__FILE__, 'r+'),
                 Caster::create(),
@@ -1084,8 +1076,7 @@ class CasterTest extends TestCase
     {
         $caster = Caster::create();
         $caster = $caster->withCustomArrayFormatterCollection(new ArrayFormatterCollection(...[
-            new class extends AbstractArrayFormatter
-            {
+            new class() extends AbstractArrayFormatter {
                 /**
                  * {@inheritDoc}
                  */
@@ -1095,7 +1086,7 @@ class CasterTest extends TestCase
                         return null;
                     }
 
-                    $array["replaceme"] = "replaced";
+                    $array['replaceme'] = 'replaced';
 
                     return $caster->getDefaultArrayFormatter()->format($caster, $array);
                 }
@@ -1105,13 +1096,12 @@ class CasterTest extends TestCase
                  */
                 public function isHandling(array $array): bool
                 {
-                    return array_key_exists("replaceme", $array);
+                    return array_key_exists('replaceme', $array);
                 }
             },
         ]));
         $caster = $caster->withCustomObjectFormatterCollection(new ObjectFormatterCollection(...[
-            new class extends AbstractObjectFormatter
-            {
+            new class() extends AbstractObjectFormatter {
                 /**
                  * {@inheritDoc}
                  */
@@ -1124,9 +1114,9 @@ class CasterTest extends TestCase
                     assert($object instanceof \DateTimeInterface);
 
                     return sprintf(
-                        "\\%s (%s)",
+                        '\\%s (%s)',
                         get_class($object),
-                        $object->format("c")
+                        $object->format('c')
                     );
                 }
 
@@ -1135,11 +1125,10 @@ class CasterTest extends TestCase
                  */
                 public function isHandling(object $object): bool
                 {
-                    return ($object instanceof \DateTimeInterface);
+                    return $object instanceof \DateTimeInterface;
                 }
             },
-            new class extends AbstractObjectFormatter
-            {
+            new class() extends AbstractObjectFormatter {
                 /**
                  * {@inheritDoc}
                  */
@@ -1152,7 +1141,7 @@ class CasterTest extends TestCase
                     assert($object instanceof \Throwable);
 
                     return sprintf(
-                        "\\%s {\$code = %s, \$file = %s, \$line = %s, \$message = %s}",
+                        '\\%s {$code = %s, $file = %s, $line = %s, $message = %s}',
                         get_class($object),
                         $caster->cast($object->getCode()),
                         $caster->cast($object->getFile()),
@@ -1166,13 +1155,12 @@ class CasterTest extends TestCase
                  */
                 public function isHandling(object $object): bool
                 {
-                    return ($object instanceof \Throwable);
+                    return $object instanceof \Throwable;
                 }
             },
         ]));
         $caster = $caster->withCustomResourceFormatterCollection(new ResourceFormatterCollection(...[
-            new class extends AbstractResourceFormatter
-            {
+            new class() extends AbstractResourceFormatter {
                 /**
                  * {@inheritDoc}
                  */
@@ -1182,7 +1170,7 @@ class CasterTest extends TestCase
                         return null;
                     }
 
-                    return "YOLO";
+                    return 'YOLO';
                 }
 
                 /**
@@ -1190,13 +1178,12 @@ class CasterTest extends TestCase
                  */
                 public function isHandling(Resource_ $resource): bool
                 {
-                    return ("stream" === get_resource_type($resource->getResource()));
+                    return 'stream' === get_resource_type($resource->getResource());
                 }
             },
         ]));
         $caster = $caster->withCustomStringFormatterCollection(new StringFormatterCollection(...[
-            new class extends AbstractStringFormatter
-            {
+            new class() extends AbstractStringFormatter {
                 /**
                  * {@inheritDoc}
                  */
@@ -1206,7 +1193,7 @@ class CasterTest extends TestCase
                         return null;
                     }
 
-                    return $caster->getDefaultStringFormatter()->format($caster, "bar");
+                    return $caster->getDefaultStringFormatter()->format($caster, 'bar');
                 }
 
                 /**
@@ -1214,35 +1201,37 @@ class CasterTest extends TestCase
                  */
                 public function isHandling(string $string): bool
                 {
-                    return ("foo" === $string);
+                    return 'foo' === $string;
                 }
             },
         ]));
         $this->assertSame('[0 => 1]', $caster->cast([1]));
-        $this->assertSame('["replaceme" => "replaced"]', $caster->cast(["replaceme" => "original"]));
-        $this->assertSame('\\stdClass', $caster->cast(new \stdClass));
+        $this->assertSame('["replaceme" => "replaced"]', $caster->cast([
+            'replaceme' => 'original',
+        ]));
+        $this->assertSame('\\stdClass', $caster->cast(new \stdClass()));
         $this->assertSame(
             '\\DateTimeImmutable (2019-01-01T00:00:00+00:00)',
-            $caster->cast(new \DateTimeImmutable("2019-01-01T00:00:00+00:00")),
+            $caster->cast(new \DateTimeImmutable('2019-01-01T00:00:00+00:00')),
         );
         $this->assertMatchesRegularExpression(
             '/^\\\\RuntimeException \{\$code = 1, \$file = "(.+)", \$line = \d+, \$message = "test"\}$/',
-            $caster->cast(new \RuntimeException("test", 1))
+            $caster->cast(new \RuntimeException('test', 1))
         );
-        $this->assertSame("YOLO", $caster->cast(\fopen(__FILE__, "r+")));
-        $this->assertSame('"baz"', $caster->cast("baz"));
-        $this->assertSame('"bar"', $caster->cast("foo"));
+        $this->assertSame('YOLO', $caster->cast(\fopen(__FILE__, 'r+')));
+        $this->assertSame('"baz"', $caster->cast('baz'));
+        $this->assertSame('"bar"', $caster->cast('foo'));
     }
 
     public function testCastWorksWithPrependedTypeAndWithStringSample(): void
     {
-        $str = str_repeat("a", CasterInterface::STRING_SAMPLE_SIZE_DEFAULT+1);
+        $str = str_repeat('a', CasterInterface::STRING_SAMPLE_SIZE_DEFAULT + 1);
 
         $this->assertSame(
             sprintf(
                 '(string(%d)) "%s ..." (sample)',
-                (CasterInterface::STRING_SAMPLE_SIZE_DEFAULT+1),
-                str_repeat("a", CasterInterface::STRING_SAMPLE_SIZE_DEFAULT-4)
+                (CasterInterface::STRING_SAMPLE_SIZE_DEFAULT + 1),
+                str_repeat('a', CasterInterface::STRING_SAMPLE_SIZE_DEFAULT - 4)
             ),
             Caster::create()->withIsMakingSamples(true)->withIsPrependingType(true)->cast($str),
         );
@@ -1250,13 +1239,13 @@ class CasterTest extends TestCase
 
     public function testCastWorksWithPrependedTypeAndWithoutStringSample(): void
     {
-        $str = str_repeat("a", CasterInterface::STRING_SAMPLE_SIZE_DEFAULT+1);
+        $str = str_repeat('a', CasterInterface::STRING_SAMPLE_SIZE_DEFAULT + 1);
 
         $this->assertSame(
             sprintf(
                 '(string(%d)) "%s"',
-                (CasterInterface::STRING_SAMPLE_SIZE_DEFAULT+1),
-                str_repeat("a", CasterInterface::STRING_SAMPLE_SIZE_DEFAULT+1)
+                (CasterInterface::STRING_SAMPLE_SIZE_DEFAULT + 1),
+                str_repeat('a', CasterInterface::STRING_SAMPLE_SIZE_DEFAULT + 1)
             ),
             Caster::create()->withIsMakingSamples(false)->withIsPrependingType(true)->cast($str),
         );
@@ -1264,10 +1253,11 @@ class CasterTest extends TestCase
 
     public function testCastWorksWithPrependedTypeAndWithAnonymousClass(): void
     {
-        $class = new class {};
+        $class = new class() {
+        };
 
         $this->assertMatchesRegularExpression(
-            implode("", [
+            implode('', [
                 '/',
                 '^',
                 '\(object\) class@anonymous\/in\/.+\/CasterTest\.php:\d+',
@@ -1282,7 +1272,7 @@ class CasterTest extends TestCase
     {
         $this->assertMatchesRegularExpression(
             '/^\(resource\) `stream` Resource id #\d+$/',
-            Caster::create()->withIsPrependingType(true)->cast(fopen(__FILE__, "r+")),
+            Caster::create()->withIsPrependingType(true)->cast(fopen(__FILE__, 'r+')),
         );
     }
 
@@ -1293,28 +1283,28 @@ class CasterTest extends TestCase
         $caster = $caster->withArraySampleSize(new UnsignedInteger(3));
         $caster = $caster->withStringSampleSize(new UnsignedInteger(5));
         $array = [
-            "foobar",
-            "loremipsum" => "dolorsit",
+            'foobar',
+            'loremipsum' => 'dolorsit',
             1,
             2,
             3,
         ];
-        $expected = implode("", [
+        $expected = implode('', [
             '(array(5)) [',
-                '(int) 0 => (string(6)) "f ..." (sample)',
-                ', (string(10)) "l ..." (sample) => (string(8)) "d ..." (sample)',
-                ', (int) 1 => (int) 1',
-                ', ... and 2 more elements',
+            '(int) 0 => (string(6)) "f ..." (sample)',
+            ', (string(10)) "l ..." (sample) => (string(8)) "d ..." (sample)',
+            ', (int) 1 => (int) 1',
+            ', ... and 2 more elements',
             '] (sample)',
         ]);
 
         $this->assertSame(
-            implode("", [
+            implode('', [
                 '(array(5)) [',
-                    '(int) 0 => (string(6)) "f ..." (sample),',
-                    ' (string(10)) "l ..." (sample) => (string(8)) "d ..." (sample)',
-                    ', (int) 1 => (int) 1',
-                    ', ... and 2 more elements',
+                '(int) 0 => (string(6)) "f ..." (sample),',
+                ' (string(10)) "l ..." (sample) => (string(8)) "d ..." (sample)',
+                ', (int) 1 => (int) 1',
+                ', ... and 2 more elements',
                 '] (sample)',
             ]),
             $caster->withIsPrependingType(true)->cast($array),
@@ -1328,21 +1318,21 @@ class CasterTest extends TestCase
         $caster = $caster->withArraySampleSize(new UnsignedInteger(10));
         $caster = $caster->withStringSampleSize(new UnsignedInteger(200));
         $array = [
-            "foobar",
-            "loremipsum" => "dolorsit",
+            'foobar',
+            'loremipsum' => 'dolorsit',
             1,
             2,
             3,
         ];
 
         $this->assertSame(
-            implode("", [
+            implode('', [
                 '(array(5)) [',
-                    '(int) 0 => (string(6)) "foobar"',
-                    ', (string(10)) "loremipsum" => (string(8)) "dolorsit"',
-                    ', (int) 1 => (int) 1',
-                    ', (int) 2 => (int) 2',
-                    ', (int) 3 => (int) 3',
+                '(int) 0 => (string(6)) "foobar"',
+                ', (string(10)) "loremipsum" => (string(8)) "dolorsit"',
+                ', (int) 1 => (int) 1',
+                ', (int) 2 => (int) 2',
+                ', (int) 3 => (int) 3',
                 ']',
             ]),
             $caster->withIsPrependingType(true)->cast($array),
@@ -1351,14 +1341,14 @@ class CasterTest extends TestCase
 
     /**
      * @dataProvider dataProvider_testCastWorksWithPrependedTypeAndWithArrayLargerThanSampleSize
+     *
      * @param array<mixed> $array
      */
     public function testCastWorksWithPrependedTypeAndWithArrayLargerThanSampleSize(
         string $message,
         string $expected,
         array $array
-    ): void
-    {
+    ): void {
         $this->assertSame(
             $expected,
             Caster::create()->withIsMakingSamples(true)->withIsPrependingType(true)->cast($array),
@@ -1373,12 +1363,12 @@ class CasterTest extends TestCase
     {
         return [
             [
-                "Singular \"element\"",
+                'Singular "element"',
                 '(array(4)) [(int) 0 => (string(3)) "foo", (int) 1 => (int) 42, (int) 2 => (null) null, ... and 1 more element] (sample)',
-                ["foo", 42, null, false],
+                ['foo', 42, null, false],
             ],
             [
-                "Plural \"elements\"",
+                'Plural "elements"',
                 '(array(100)) [(int) 0 => (int) 1, (int) 1 => (int) 1, (int) 2 => (int) 1, ... and 97 more elements] (sample)',
                 array_fill(0, 100, 1),
             ],
@@ -1387,15 +1377,20 @@ class CasterTest extends TestCase
 
     public function testCastWorksWithPrependedTypeAndWithAnAssociativeArray(): void
     {
-        $array = ["foo" => 1, "bar" => 2, "baz" => 3, "bim" => 4];
+        $array = [
+            'foo' => 1,
+            'bar' => 2,
+            'baz' => 3,
+            'bim' => 4,
+        ];
 
         $this->assertSame(
-            implode("", [
+            implode('', [
                 '(array(4)) [',
-                    '(string(3)) "foo" => (int) 1',
-                    ', (string(3)) "bar" => (int) 2',
-                    ', (string(3)) "baz" => (int) 3',
-                    ', ... and 1 more element',
+                '(string(3)) "foo" => (int) 1',
+                ', (string(3)) "bar" => (int) 2',
+                ', (string(3)) "baz" => (int) 3',
+                ', ... and 1 more element',
                 '] (sample)',
             ]),
             Caster::create()->withIsMakingSamples(true)->withIsPrependingType(true)->cast($array),
@@ -1404,10 +1399,15 @@ class CasterTest extends TestCase
 
     public function testCastWorksWithPrependedTypeAndWithAMixedArray(): void
     {
-        $array = ["foo", "bar" => 2, "baz", "bim" => 4];
+        $array = [
+            'foo',
+            'bar' => 2,
+            'baz',
+            'bim' => 4,
+        ];
 
         $this->assertSame(
-            implode("", [
+            implode('', [
                 '(array(4)) [',
                 '(int) 0 => (string(3)) "foo"',
                 ', (string(3)) "bar" => (int) 2',
@@ -1423,17 +1423,17 @@ class CasterTest extends TestCase
     {
         $caster = Caster::create();
         $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection(...[
-            new EncryptedString("bar"),
-            new EncryptedString("bim"),
+            new EncryptedString('bar'),
+            new EncryptedString('bim'),
         ]));
 
         $this->assertSame(
             sprintf(
                 '(string(21)) "foo %s baz %s" (masked)',
-                "******",
-                "******",
+                '******',
+                '******',
             ),
-            $caster->withIsPrependingType(true)->cast("foo bar baz bim"),
+            $caster->withIsPrependingType(true)->cast('foo bar baz bim'),
         );
     }
 
@@ -1443,13 +1443,13 @@ class CasterTest extends TestCase
         $caster = $caster->withIsMakingSamples(true);
         $caster = $caster->withStringSampleSize(new UnsignedInteger(10));
         $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection(...[
-            new EncryptedString("bar"),
-            new EncryptedString("bim"),
+            new EncryptedString('bar'),
+            new EncryptedString('bim'),
         ]));
 
         $this->assertSame(
             '(string(21)) "foo ** ..." (sample) (masked)',
-            $caster->withIsPrependingType(true)->cast("foo bar baz bim"),
+            $caster->withIsPrependingType(true)->cast('foo bar baz bim'),
         );
     }
 
@@ -1457,18 +1457,20 @@ class CasterTest extends TestCase
     {
         $caster = Caster::create();
         $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection(...[
-            new EncryptedString("bar"),
-            new EncryptedString("bim"),
+            new EncryptedString('bar'),
+            new EncryptedString('bim'),
         ]));
-        $array = ["foo bar baz bim" => "bar"];
+        $array = [
+            'foo bar baz bim' => 'bar',
+        ];
 
         // It's the masked length = 19, not the original length. Don't bleed information about masked string
         $this->assertSame(
             sprintf(
                 '(array(1)) [(string(21)) "foo %s baz %s" (masked) => (string(6)) "%s" (masked)]',
-                "******",
-                "******",
-                "******",
+                '******',
+                '******',
+                '******',
             ),
             $caster->withIsPrependingType(true)->cast($array),
         );
@@ -1480,9 +1482,9 @@ class CasterTest extends TestCase
         $caster = $caster->withDepthMaximum(new PositiveInteger(2));
 
         $array = [
-            "foo" => [
-                "bar" => [
-                    "baz" => [],
+            'foo' => [
+                'bar' => [
+                    'baz' => [],
                 ],
             ],
         ];
@@ -1499,11 +1501,11 @@ class CasterTest extends TestCase
 
         $this->assertSame(
             sprintf(
-                implode("", [
+                implode('', [
                     '(array(1)) [',
-                        '(string(3)) "foo" => (array(1)) [',
-                            '(string(3)) "bar" => (array(1)) [%s] ** OMITTED ** (maximum depth of 2 reached)',
-                        ']',
+                    '(string(3)) "foo" => (array(1)) [',
+                    '(string(3)) "bar" => (array(1)) [%s] ** OMITTED ** (maximum depth of 2 reached)',
+                    ']',
                     ']',
                 ]),
                 $caster->getSampleEllipsis(),
@@ -1515,15 +1517,16 @@ class CasterTest extends TestCase
     public function testCastWillHandleObjectRecursionCorrectly(): void
     {
         $caster = Caster::create();
-        $object = new \stdClass;
+        $object = new \stdClass();
 
         $context = $this->_mockContextInterface();
 
         $context
             ->expects($this->exactly(2))
-            ->method("hasVisitedObject")
+            ->method('hasVisitedObject')
             ->with($object)
-            ->willReturn(true);
+            ->willReturn(true)
+        ;
 
         $caster = $caster->withContext($context);
 
@@ -1534,7 +1537,7 @@ class CasterTest extends TestCase
 
         $this->assertSame(
             sprintf(
-                "(object) %s",
+                '(object) %s',
                 $caster->getRecursionMessage($object),
             ),
             $caster->castTyped($object),
@@ -1546,11 +1549,11 @@ class CasterTest extends TestCase
         $caster = Caster::create();
         $caster = $caster->withDepthMaximum(new PositiveInteger(1));
         $caster = $caster->withDepthCurrent(new PositiveInteger(2));
-        $object = new \stdClass;
+        $object = new \stdClass();
 
         $this->assertSame(
             sprintf(
-                "\\stdClass: %s",
+                '\\stdClass: %s',
                 $caster->getOmittedMaximumDepthOfXReachedMessage(),
             ),
             $caster->cast($object),
@@ -1558,7 +1561,7 @@ class CasterTest extends TestCase
 
         $this->assertSame(
             sprintf(
-                "(object) \\stdClass: %s",
+                '(object) \\stdClass: %s',
                 $caster->getOmittedMaximumDepthOfXReachedMessage(),
             ),
             $caster->castTyped($object),
@@ -1594,8 +1597,7 @@ class CasterTest extends TestCase
         string $expected,
         Caster $caster,
         string $str
-    ): void
-    {
+    ): void {
         $this->assertSame($expected, $caster->maskString($str), $message);
     }
 
@@ -1606,68 +1608,65 @@ class CasterTest extends TestCase
     {
         return [
             [
-                "",
-                "",
+                '',
+                '',
                 Caster::create(),
-                "",
+                '',
             ],
             [
-                "",
-                "foo bar baz",
+                '',
+                'foo bar baz',
                 Caster::create(),
-                "foo bar baz",
+                'foo bar baz',
             ],
             [
-                "",
+                '',
                 sprintf(
-                    "foo %s baz",
-                    "******",
+                    'foo %s baz',
+                    '******',
                 ),
-                (function(){
+                (function () {
                     $caster = Caster::create();
-                    $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection(...[
-                        new EncryptedString("bar"),
-                    ]));
 
-                    return $caster;
+                    return $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection(...[
+                        new EncryptedString('bar'),
+                    ]));
                 })(),
-                "foo bar baz",
+                'foo bar baz',
             ],
             [
-                "",
+                '',
                 sprintf(
-                    "12%s78",
-                    "******",
+                    '12%s78',
+                    '******',
                 ),
-                (function(){
+                (function () {
                     $caster = Caster::create();
-                    $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection(...[
-                        new EncryptedString("3"),
-                        new EncryptedString("34"),
-                        new EncryptedString("345"),
-                        new EncryptedString("3456"),
-                    ]));
 
-                    return $caster;
+                    return $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection(...[
+                        new EncryptedString('3'),
+                        new EncryptedString('34'),
+                        new EncryptedString('345'),
+                        new EncryptedString('3456'),
+                    ]));
                 })(),
-                "12345678",
+                '12345678',
             ],
             [
-                "It works with overlapping masking strings",
+                'It works with overlapping masking strings',
                 sprintf(
-                    "12%s67",
-                    "******",
+                    '12%s67',
+                    '******',
                 ),
-                (function(){
+                (function () {
                     $caster = Caster::create();
-                    $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection(...[
-                        new EncryptedString("34"),
-                        new EncryptedString("45"),
-                    ]));
 
-                    return $caster;
+                    return $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection(...[
+                        new EncryptedString('34'),
+                        new EncryptedString('45'),
+                    ]));
                 })(),
-                "1234567",
+                '1234567',
             ],
         ];
     }
@@ -1703,7 +1702,7 @@ class CasterTest extends TestCase
         $casterA = Caster::create();
         $characterEncodingA = $casterA->getCharacterEncoding();
 
-        $characterEncodingB = new CharacterEncoding("ISO-8859-1");
+        $characterEncodingB = new CharacterEncoding('ISO-8859-1');
         $casterB = $casterA->withCharacterEncoding($characterEncodingB);
 
         $this->assertNotSame($casterA, $casterB);
@@ -1726,7 +1725,7 @@ class CasterTest extends TestCase
         $casterA = Caster::create();
         $contextA = $casterA->getContext();
 
-        $contextB = new Context;
+        $contextB = new Context();
         $casterB = $casterA->withContext($contextB);
 
         $this->assertNotSame($casterA, $casterB);
@@ -1750,8 +1749,7 @@ class CasterTest extends TestCase
         $arrayFormatterCollectionA = $casterA->getCustomArrayFormatterCollection();
 
         $arrayFormatterCollectionB = new ArrayFormatterCollection(...[
-            new class extends AbstractArrayFormatter
-            {
+            new class() extends AbstractArrayFormatter {
                 /**
                  * {@inheritDoc}
                  */
@@ -1767,7 +1765,7 @@ class CasterTest extends TestCase
                 {
                     return true;
                 }
-            }
+            },
         ]);
         $casterB = $casterA->withCustomArrayFormatterCollection($arrayFormatterCollectionB);
 
@@ -1800,8 +1798,7 @@ class CasterTest extends TestCase
         $objectFormatterCollectionA = $casterA->getCustomObjectFormatterCollection();
 
         $objectFormatterCollectionB = new ObjectFormatterCollection(...[
-            new class extends AbstractObjectFormatter
-            {
+            new class() extends AbstractObjectFormatter {
                 /**
                  * {@inheritDoc}
                  */
@@ -1817,7 +1814,7 @@ class CasterTest extends TestCase
                 {
                     return true;
                 }
-            }
+            },
         ]);
         $casterB = $casterA->withCustomObjectFormatterCollection($objectFormatterCollectionB);
 
@@ -1850,8 +1847,7 @@ class CasterTest extends TestCase
         $resourceFormatterCollectionA = $casterA->getCustomResourceFormatterCollection();
 
         $resourceFormatterCollectionB = new ResourceFormatterCollection(...[
-            new class extends AbstractResourceFormatter
-            {
+            new class() extends AbstractResourceFormatter {
                 /**
                  * {@inheritDoc}
                  */
@@ -1867,7 +1863,7 @@ class CasterTest extends TestCase
                 {
                     return true;
                 }
-            }
+            },
         ]);
         $casterB = $casterA->withCustomResourceFormatterCollection($resourceFormatterCollectionB);
 
@@ -1900,8 +1896,7 @@ class CasterTest extends TestCase
         $stringFormatterCollectionA = $casterA->getCustomStringFormatterCollection();
 
         $stringFormatterCollectionB = new StringFormatterCollection(...[
-            new class extends AbstractStringFormatter
-            {
+            new class() extends AbstractStringFormatter {
                 /**
                  * {@inheritDoc}
                  */
@@ -1917,7 +1912,7 @@ class CasterTest extends TestCase
                 {
                     return true;
                 }
-            }
+            },
         ]);
         $casterB = $casterA->withCustomStringFormatterCollection($stringFormatterCollectionB);
 
@@ -2030,7 +2025,7 @@ class CasterTest extends TestCase
         $maskedEncryptedStringCollectionA = $casterA->getMaskedEncryptedStringCollection();
 
         $maskedEncryptedStringCollectionB = new EncryptedStringCollection(...[
-            new EncryptedString("foo"),
+            new EncryptedString('foo'),
         ]);
         $casterB = $casterA->withMaskedEncryptedStringCollection(
             $maskedEncryptedStringCollectionB
@@ -2060,7 +2055,7 @@ class CasterTest extends TestCase
         $casterA = Caster::create();
         $maskingCharacterA = $casterA->getMaskingCharacter();
 
-        $maskingCharacterB = new Character("#");
+        $maskingCharacterB = new Character('#');
         $casterB = $casterA->withMaskingCharacter($maskingCharacterB);
 
         $this->assertNotSame($casterA, $casterB);
@@ -2069,7 +2064,7 @@ class CasterTest extends TestCase
             $casterA->getMaskingCharacter(),
         );
         $this->assertSame(
-            "*",
+            '*',
             (string)$casterA->getMaskingCharacter(),
         );
         $this->assertSame(
@@ -2077,7 +2072,7 @@ class CasterTest extends TestCase
             $casterB->getMaskingCharacter(),
         );
         $this->assertSame(
-            "#",
+            '#',
             (string)$casterB->getMaskingCharacter(),
         );
     }
@@ -2114,7 +2109,7 @@ class CasterTest extends TestCase
         $casterA = Caster::create();
         $sampleEllipsisA = $casterA->getSampleEllipsis();
 
-        $sampleEllipsisB = "+++";
+        $sampleEllipsisB = '+++';
         $casterB = $casterA->withSampleEllipsis($sampleEllipsisB);
 
         $this->assertNotSame($casterA, $casterB);
@@ -2133,23 +2128,23 @@ class CasterTest extends TestCase
         $caster = Caster::create();
 
         try {
-            $caster->withSampleEllipsis("");
+            $caster->withSampleEllipsis('');
         } catch (\Exception $e) {
             $currentException = $e;
             $this->assertSame(CasterException::class, get_class($currentException));
             $this->assertMatchesRegularExpression(
                 sprintf(
-                    implode("", [
+                    implode('', [
                         '/',
                         '^',
                         'Failure in \\\\%s-\>withSampleEllipsis\(',
-                            '\$sampleEllipsis = \(string\(0\)\) ""',
+                        '\$sampleEllipsis = \(string\(0\)\) ""',
                         '\): \(object\) \\\\%s',
                         '$',
                         '/',
                     ]),
-                    preg_quote(Caster::class, "/"),
-                    preg_quote(Caster::class, "/"),
+                    preg_quote(Caster::class, '/'),
+                    preg_quote(Caster::class, '/'),
                 ),
                 $currentException->getMessage(),
             );
@@ -2158,25 +2153,25 @@ class CasterTest extends TestCase
             $this->assertSame(CasterException::class, get_class($currentException));
             $this->assertMatchesRegularExpression(
                 sprintf(
-                    implode("", [
+                    implode('', [
                         '/',
                         '^',
                         'Argument \$sampleEllipsis is an empty string, which is not allowed',
                         '$',
                         '/',
                     ]),
-                    preg_quote(Character::class, "/"),
+                    preg_quote(Character::class, '/'),
                 ),
                 $currentException->getMessage(),
             );
 
             $currentException = $currentException->getPrevious();
-            $this->assertTrue(is_null($currentException));
+            $this->assertTrue(null === $currentException);
 
             return;
         }
 
-        $this->fail("Exception was never thrown.");
+        $this->fail('Exception was never thrown.');
     }
 
     public function testWithSampleEllipsisThrowsExceptionWhenWhenArgumentSampleEllipsisWhenTrimmedIsEmpty(): void
@@ -2184,23 +2179,23 @@ class CasterTest extends TestCase
         $caster = Caster::create();
 
         try {
-            $caster->withSampleEllipsis("   ");
+            $caster->withSampleEllipsis('   ');
         } catch (\Exception $e) {
             $currentException = $e;
             $this->assertSame(CasterException::class, get_class($currentException));
             $this->assertMatchesRegularExpression(
                 sprintf(
-                    implode("", [
+                    implode('', [
                         '/',
                         '^',
                         'Failure in \\\\%s-\>withSampleEllipsis\(',
-                            '\$sampleEllipsis = \(string\(3\)\) "   "',
+                        '\$sampleEllipsis = \(string\(3\)\) "   "',
                         '\): \(object\) \\\\%s',
                         '$',
                         '/',
                     ]),
-                    preg_quote(Caster::class, "/"),
-                    preg_quote(Caster::class, "/"),
+                    preg_quote(Caster::class, '/'),
+                    preg_quote(Caster::class, '/'),
                 ),
                 $currentException->getMessage(),
             );
@@ -2208,7 +2203,7 @@ class CasterTest extends TestCase
             $currentException = $currentException->getPrevious();
             $this->assertSame(CasterException::class, get_class($currentException));
             $this->assertMatchesRegularExpression(
-                implode("", [
+                implode('', [
                     '/',
                     '^',
                     'Argument \$sampleEllipsis contains only white space characters, which is not allowed.',
@@ -2220,12 +2215,12 @@ class CasterTest extends TestCase
             );
 
             $currentException = $currentException->getPrevious();
-            $this->assertTrue(is_null($currentException));
+            $this->assertTrue(null === $currentException);
 
             return;
         }
 
-        $this->fail("Exception was never thrown.");
+        $this->fail('Exception was never thrown.');
     }
 
     public function testWithSampleEllipsisThrowsExceptionWhenArgumentSampleEllipsisContainsIllegalCharacters(): void
@@ -2239,17 +2234,17 @@ class CasterTest extends TestCase
             $this->assertSame(CasterException::class, get_class($currentException));
             $this->assertMatchesRegularExpression(
                 sprintf(
-                    implode("", [
+                    implode('', [
                         '/',
                         '^',
                         'Failure in \\\\%s-\>withSampleEllipsis\(',
-                            '\$sampleEllipsis = \(string\(9\)\) "foo \r bar"',
+                        '\$sampleEllipsis = \(string\(9\)\) "foo \r bar"',
                         '\): \(object\) \\\\%s',
                         '$',
                         '/',
                     ]),
-                    preg_quote(Caster::class, "/"),
-                    preg_quote(Caster::class, "/"),
+                    preg_quote(Caster::class, '/'),
+                    preg_quote(Caster::class, '/'),
                 ),
                 $currentException->getMessage(),
             );
@@ -2257,7 +2252,7 @@ class CasterTest extends TestCase
             $currentException = $currentException->getPrevious();
             $this->assertSame(CasterException::class, get_class($currentException));
             $this->assertMatchesRegularExpression(
-                implode("", [
+                implode('', [
                     '/',
                     '^',
                     'Argument \$sampleEllipsis contains illegal characters.',
@@ -2269,12 +2264,12 @@ class CasterTest extends TestCase
             );
 
             $currentException = $currentException->getPrevious();
-            $this->assertTrue(is_null($currentException));
+            $this->assertTrue(null === $currentException);
 
             return;
         }
 
-        $this->fail("Exception was never thrown.");
+        $this->fail('Exception was never thrown.');
     }
 
     public function testWithStringSampleSizeWorks(): void
@@ -2300,7 +2295,7 @@ class CasterTest extends TestCase
     {
         $casterA = Caster::create();
 
-        $casterB = $casterA->withStringQuotingCharacter(new Character("`"));
+        $casterB = $casterA->withStringQuotingCharacter(new Character('`'));
 
         $this->assertNotSame($casterA, $casterB);
         $this->assertNotSame(
@@ -2312,7 +2307,7 @@ class CasterTest extends TestCase
             (string)$casterA->getStringQuotingCharacter(),
         );
         $this->assertSame(
-            "`",
+            '`',
             (string)$casterB->getStringQuotingCharacter(),
         );
     }
@@ -2322,24 +2317,24 @@ class CasterTest extends TestCase
         $caster = Caster::create();
 
         try {
-            $caster->withStringQuotingCharacter(new Character("\\"));
+            $caster->withStringQuotingCharacter(new Character('\\'));
         } catch (\Exception $e) {
             $currentException = $e;
             $this->assertSame(CasterException::class, get_class($currentException));
             $this->assertMatchesRegularExpression(
                 sprintf(
-                    implode("", [
+                    implode('', [
                         '/',
                         '^',
                         'Failure in \\\\%s-\>withStringQuotingCharacter\(',
-                            '\$stringQuotingCharacter = \(object\) \\\\%s \{.+\}',
+                        '\$stringQuotingCharacter = \(object\) \\\\%s \{.+\}',
                         '\): \(object\) \\\\%s',
                         '$',
                         '/',
                     ]),
-                    preg_quote(Caster::class, "/"),
-                    preg_quote(Character::class, "/"),
-                    preg_quote(Caster::class, "/"),
+                    preg_quote(Caster::class, '/'),
+                    preg_quote(Character::class, '/'),
+                    preg_quote(Caster::class, '/'),
                 ),
                 $currentException->getMessage(),
             );
@@ -2348,7 +2343,7 @@ class CasterTest extends TestCase
             $this->assertSame(CasterException::class, get_class($currentException));
             $this->assertMatchesRegularExpression(
                 sprintf(
-                    implode("", [
+                    implode('', [
                         '/',
                         '^',
                         'Argument \$stringQuotingCharacter must not be a backslash, but it is\.',
@@ -2356,18 +2351,18 @@ class CasterTest extends TestCase
                         '$',
                         '/',
                     ]),
-                    preg_quote(Character::class, "/"),
+                    preg_quote(Character::class, '/'),
                 ),
                 $currentException->getMessage(),
             );
 
             $currentException = $currentException->getPrevious();
-            $this->assertTrue(is_null($currentException));
+            $this->assertTrue(null === $currentException);
 
             return;
         }
 
-        $this->fail("Exception was never thrown.");
+        $this->fail('Exception was never thrown.');
     }
 
     public function testGetInstanceWorks(): void
@@ -2401,6 +2396,7 @@ class CasterTest extends TestCase
         return $this
             ->getMockBuilder(ContextInterface::class)
             ->disableOriginalConstructor()
-            ->getMock();
+            ->getMock()
+        ;
     }
 }

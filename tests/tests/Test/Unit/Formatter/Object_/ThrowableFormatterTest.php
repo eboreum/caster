@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Test\Unit\Eboreum\Caster\Formatter\Object_;
@@ -7,17 +8,20 @@ use Eboreum\Caster\Caster;
 use Eboreum\Caster\Collection\Formatter\ObjectFormatterCollection;
 use Eboreum\Caster\Common\DataType\Integer\PositiveInteger;
 use Eboreum\Caster\Common\DataType\Integer\UnsignedInteger;
-use Eboreum\Caster\Formatter\DefaultObjectFormatter;
 use Eboreum\Caster\Formatter\Object_\ThrowableFormatter;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class ThrowableFormatterTest extends TestCase
 {
     public function testFormatWorksWithNonThrowables(): void
     {
         $caster = Caster::create();
-        $throwableFormatter = new ThrowableFormatter;
-        $object = new \stdClass;
+        $throwableFormatter = new ThrowableFormatter();
+        $object = new \stdClass();
 
         $this->assertFalse($throwableFormatter->isHandling($object));
         $this->assertNull($throwableFormatter->format($caster, $object));
@@ -26,20 +30,20 @@ class ThrowableFormatterTest extends TestCase
     public function testFormatWorksWithAnExceptionWithNoPrevious(): void
     {
         $caster = Caster::create();
-        $throwableFormatter = new ThrowableFormatter;
-        $object = new \Exception("foo");
+        $throwableFormatter = new ThrowableFormatter();
+        $object = new \Exception('foo');
 
         $this->assertTrue($throwableFormatter->isHandling($object));
         $this->assertMatchesRegularExpression(
-            implode("", [
+            implode('', [
                 '/',
                 '^',
                 '\\\\Exception \{',
-                    '\$code = 0',
-                    ', \$file = ".+"',
-                    ', \$line = \d+',
-                    ', \$message = "foo"',
-                    ', \$previous = null',
+                '\$code = 0',
+                ', \$file = ".+"',
+                ', \$line = \d+',
+                ', \$message = "foo"',
+                ', \$previous = null',
                 '\}',
                 '$',
                 '/',
@@ -52,44 +56,44 @@ class ThrowableFormatterTest extends TestCase
     {
         $caster = Caster::create();
         $caster = $caster->withDepthMaximum(new PositiveInteger(2));
-        $throwableFormatter = new ThrowableFormatter;
+        $throwableFormatter = new ThrowableFormatter();
         $caster = $caster->withCustomObjectFormatterCollection(
             new ObjectFormatterCollection(...[
                 $throwableFormatter,
             ]),
         );
-        $third = new \LogicException("baz", 2);
-        $second = new \RuntimeException("bar", 1, $third);
-        $object = new \Exception("foo", 0, $second);
+        $third = new \LogicException('baz', 2);
+        $second = new \RuntimeException('bar', 1, $third);
+        $object = new \Exception('foo', 0, $second);
 
-        /**
+        /*
          * We get 3 levels because, because we didn't not pass it through Caster->cast(...), and so the depth is off by
          * 1.
          */
 
         $this->assertTrue($throwableFormatter->isHandling($object));
         $this->assertMatchesRegularExpression(
-            implode("", [
+            implode('', [
                 '/',
                 '^',
                 '\\\\Exception \{',
-                    '\$code = 0',
-                    ', \$file = ".+"',
-                    ', \$line = \d+',
-                    ', \$message = "foo"',
-                    ', \$previous = \\\\RuntimeException \{',
-                        '\$code = 1',
-                        ', \$file = ".+"',
-                        ', \$line = \d+',
-                        ', \$message = "bar"',
-                        ', \$previous = \\\\LogicException \{',
-                            '\$code = 2',
-                            ', \$file = ".+"',
-                            ', \$line = \d+',
-                            ', \$message = "baz"',
-                            ', \$previous = null',
-                        '\}',
-                    '\}',
+                '\$code = 0',
+                ', \$file = ".+"',
+                ', \$line = \d+',
+                ', \$message = "foo"',
+                ', \$previous = \\\\RuntimeException \{',
+                '\$code = 1',
+                ', \$file = ".+"',
+                ', \$line = \d+',
+                ', \$message = "bar"',
+                ', \$previous = \\\\LogicException \{',
+                '\$code = 2',
+                ', \$file = ".+"',
+                ', \$line = \d+',
+                ', \$message = "baz"',
+                ', \$previous = null',
+                '\}',
+                '\}',
                 '\}',
                 '$',
                 '/',
@@ -102,7 +106,7 @@ class ThrowableFormatterTest extends TestCase
     {
         $caster = Caster::create();
         $caster = $caster->withDepthMaximum(new PositiveInteger(1));
-        $throwableFormatter = new ThrowableFormatter;
+        $throwableFormatter = new ThrowableFormatter();
         $throwableFormatter = $throwableFormatter->withDepthMaximum(new PositiveInteger(1));
         $caster = $caster->withCustomObjectFormatterCollection(
             new ObjectFormatterCollection(...[
@@ -110,32 +114,32 @@ class ThrowableFormatterTest extends TestCase
             ]),
         );
 
-        $third = new \LogicException("baz", 2);
-        $second = new \RuntimeException("bar", 1, $third);
-        $object = new \Exception("foo", 0, $second);
+        $third = new \LogicException('baz', 2);
+        $second = new \RuntimeException('bar', 1, $third);
+        $object = new \Exception('foo', 0, $second);
 
-        /**
+        /*
          * We get 2 levels because, because we didn't not pass it through Caster->cast(...), and so the depth is off by
          * 1.
          */
 
         $this->assertTrue($throwableFormatter->isHandling($object));
         $this->assertMatchesRegularExpression(
-            implode("", [
+            implode('', [
                 '/',
                 '^',
                 '\\\\Exception \{',
-                    '\$code = 0',
-                    ', \$file = ".+"',
-                    ', \$line = \d+',
-                    ', \$message = "foo"',
-                    ', \$previous = \\\\RuntimeException \{',
-                        '\$code = 1',
-                        ', \$file = ".+"',
-                        ', \$line = \d+',
-                        ', \$message = "bar"',
-                        ', \$previous = \\\\LogicException: \*\* OMITTED \*\* \(maximum depth of 1 reached\)',
-                    '\}',
+                '\$code = 0',
+                ', \$file = ".+"',
+                ', \$line = \d+',
+                ', \$message = "foo"',
+                ', \$previous = \\\\RuntimeException \{',
+                '\$code = 1',
+                ', \$file = ".+"',
+                ', \$line = \d+',
+                ', \$message = "bar"',
+                ', \$previous = \\\\LogicException: \*\* OMITTED \*\* \(maximum depth of 1 reached\)',
+                '\}',
                 '\}',
                 '$',
                 '/',
@@ -146,7 +150,7 @@ class ThrowableFormatterTest extends TestCase
 
     public function testWithDepthMaximumWorks(): void
     {
-        $throwableFormatterA = new ThrowableFormatter;
+        $throwableFormatterA = new ThrowableFormatter();
         $depthMaximumA = $throwableFormatterA->getDepthMaximum();
 
         $depthMaximumB = new PositiveInteger(42);
@@ -159,7 +163,7 @@ class ThrowableFormatterTest extends TestCase
 
     public function testWithMessageMaximumLengthWorks(): void
     {
-        $throwableFormatterA = new ThrowableFormatter;
+        $throwableFormatterA = new ThrowableFormatter();
         $messageMaximumLengthA = $throwableFormatterA->getMessageMaximumLength();
 
         $messageMaximumLengthB = new UnsignedInteger(42);
@@ -167,6 +171,6 @@ class ThrowableFormatterTest extends TestCase
 
         $this->assertNotSame($throwableFormatterA, $throwableFormatterB);
         $this->assertSame($messageMaximumLengthA, $throwableFormatterA->getMessageMaximumLength());
-        $this->assertSame($messageMaximumLengthB, $throwableFormatterB->getMessageMaximumLength ());
+        $this->assertSame($messageMaximumLengthB, $throwableFormatterB->getMessageMaximumLength());
     }
 }
