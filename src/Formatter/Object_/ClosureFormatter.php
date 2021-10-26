@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Eboreum\Caster\Formatter\Object_;
 
 use Eboreum\Caster\Abstraction\Formatter\AbstractObjectFormatter;
-use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\Caster;
+use Eboreum\Caster\Contract\CasterInterface;
 
 /**
  * Formatter for \Closure.
@@ -29,14 +29,17 @@ class ClosureFormatter extends AbstractObjectFormatter
         $reflectionFunction = new \ReflectionFunction($object);
 
         foreach ($reflectionFunction->getParameters() as $reflectionParameter) {
-            $argument = "\${$reflectionParameter->getName()}";
+            $argument = sprintf(
+                '$%s',
+                $reflectionParameter->getName(),
+            );
 
             if ($reflectionParameter->isPassedByReference()) {
-                $argument = "&" . $argument;
+                $argument = '&' . $argument;
             }
 
             if ($reflectionParameter->isVariadic()) {
-                $argument = "..." . $argument;
+                $argument = '...' . $argument;
             }
 
             if ($reflectionParameter->hasType()) {
@@ -47,11 +50,14 @@ class ClosureFormatter extends AbstractObjectFormatter
                 $typeText = $reflectionType->getName();
 
                 if (class_exists($typeText)) {
-                    $typeText = "\\{$typeText}";
+                    $typeText = sprintf(
+                        '\\%s',
+                        $typeText,
+                    );
                 }
 
                 if ($reflectionParameter->allowsNull()) {
-                    $typeText = "?" . $typeText;
+                    $typeText = '?' . $typeText;
                 }
 
                 if ($reflectionParameter->isDefaultValueAvailable()) {
@@ -59,25 +65,32 @@ class ClosureFormatter extends AbstractObjectFormatter
                         $constantName = $reflectionParameter->getDefaultValueConstantName();
 
                         if (preg_match('/\\\\/', $constantName)) {
-                            $constantName = "\\{$constantName}";
+                            $constantName = sprintf(
+                                '\\%s',
+                                $constantName,
+                            );
                         }
 
-                        $argument .= " = " . $constantName;
+                        $argument .= ' = ' . $constantName;
                     } else {
-                        $argument .= " = " . $caster->cast($reflectionParameter->getDefaultValue());
+                        $argument .= ' = ' . $caster->cast($reflectionParameter->getDefaultValue());
                     }
                 }
 
-                $argument = "{$typeText} {$argument}";
+                $argument = sprintf(
+                    '%s %s',
+                    $typeText,
+                    $argument,
+                );
             }
 
             $arguments[] = $argument;
         }
 
         return sprintf(
-            "%s(%s)",
+            '%s(%s)',
             Caster::makeNormalizedClassName(new \ReflectionObject($object)),
-            implode(", ", $arguments)
+            implode(', ', $arguments)
         );
     }
 

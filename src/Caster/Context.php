@@ -11,9 +11,7 @@ use Eboreum\Caster\Contract\Caster\ContextInterface;
  */
 class Context implements ContextInterface
 {
-    /**
-     * @var array<string, object>
-     */
+    /** @var array<string, object> */
     protected array $visitedObjectStack = [];
 
     /**
@@ -54,6 +52,6 @@ class Context implements ContextInterface
      */
     public function isEmpty(): bool
     {
-        return empty($this->visitedObjectStack);
+        return !$this->visitedObjectStack;
     }
 }

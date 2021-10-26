@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace Eboreum\Caster\Formatter\Object_;
 
 use Eboreum\Caster\Abstraction\Formatter\AbstractObjectFormatter;
-use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\Caster;
-use Eboreum\Caster\Formatter\DefaultObjectFormatter;
+use Eboreum\Caster\Contract\CasterInterface;
 
 /**
  * Handles instances of `\SplFileInfo`.
@@ -27,7 +26,7 @@ class SplFileInfoFormatter extends AbstractObjectFormatter
         assert(is_string($object->getRealPath()));
 
         return sprintf(
-            "%s (%s)",
+            '%s (%s)',
             Caster::makeNormalizedClassName(new \ReflectionObject($object)),
             strval($caster->getDefaultStringFormatter()->format($caster, $object->getRealPath())),
         );

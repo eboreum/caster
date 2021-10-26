@@ -12,8 +12,8 @@ use Eboreum\Caster\Collection\Formatter\ResourceFormatterCollection;
 use Eboreum\Caster\Collection\Formatter\StringFormatterCollection;
 use Eboreum\Caster\Common\DataType\Integer\PositiveInteger;
 use Eboreum\Caster\Common\DataType\Integer\UnsignedInteger;
-use Eboreum\Caster\Common\DataType\String_\Character;
 use Eboreum\Caster\Common\DataType\Resource_;
+use Eboreum\Caster\Common\DataType\String_\Character;
 use Eboreum\Caster\Contract\Caster\ContextInterface;
 use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\Contract\CharacterEncodingInterface;
@@ -128,18 +128,18 @@ class Caster implements CasterInterface
         $this->stringSampleSize = new UnsignedInteger(CasterInterface::STRING_SAMPLE_SIZE_DEFAULT);
         $this->stringQuotingCharacter = new Character(CasterInterface::STRING_QUOTING_CHARACTER_DEFAULT);
         $this->sampleEllipsis = CasterInterface::SAMPLE_ELLIPSIS_DEFAULT;
-        $this->defaultStringFormatter = new DefaultStringFormatter;
-        $this->defaultArrayFormatter = new DefaultArrayFormatter;
-        $this->defaultObjectFormatter = new DefaultObjectFormatter;
-        $this->defaultResourceFormatter = new DefaultResourceFormatter;
-        $this->maskingCharacter = new Character("*", $characterEncoding);
+        $this->defaultStringFormatter = new DefaultStringFormatter();
+        $this->defaultArrayFormatter = new DefaultArrayFormatter();
+        $this->defaultObjectFormatter = new DefaultObjectFormatter();
+        $this->defaultResourceFormatter = new DefaultResourceFormatter();
+        $this->maskingCharacter = new Character('*', $characterEncoding);
         $this->maskingStringLength = new PositiveInteger(6);
-        $this->maskedEncryptedStringCollection = new EncryptedStringCollection;
-        $this->customArrayFormatterCollection = new ArrayFormatterCollection;
-        $this->customObjectFormatterCollection = new ObjectFormatterCollection;
-        $this->customResourceFormatterCollection = new ResourceFormatterCollection;
-        $this->customStringFormatterCollection = new StringFormatterCollection;
-        $this->context = new Context;
+        $this->maskedEncryptedStringCollection = new EncryptedStringCollection();
+        $this->customArrayFormatterCollection = new ArrayFormatterCollection();
+        $this->customObjectFormatterCollection = new ObjectFormatterCollection();
+        $this->customResourceFormatterCollection = new ResourceFormatterCollection();
+        $this->customStringFormatterCollection = new StringFormatterCollection();
+        $this->context = new Context();
     }
 
     public function __clone()
@@ -164,18 +164,18 @@ class Caster implements CasterInterface
 
         if (is_null($value)) {
             if ($this->isPrependingType()) {
-                return "(null) null";
+                return '(null) null';
             }
 
-            return "null";
+            return 'null';
         }
 
         if (is_bool($value)) {
-            $return = ($value ? "true" : "false");
+            $return = ($value ? 'true' : 'false');
 
             if ($this->isPrependingType()) {
                 $return = sprintf(
-                    "(bool) %s",
+                    '(bool) %s',
                     $return,
                 );
             }
@@ -188,11 +188,11 @@ class Caster implements CasterInterface
 
             if ($this->isPrependingType()) {
                 $return = sprintf(
-                    "(%s) %s",
+                    '(%s) %s',
                     (
                         is_int($value)
-                        ? "int"
-                        : "float" // gettype on a float value will return "double"
+                        ? 'int'
+                        : 'float' // gettype on a float value will return "double"
                     ),
                     $return,
                 );
@@ -217,19 +217,18 @@ class Caster implements CasterInterface
             }
 
             if ($value !== $valueMasked) {
-                $return .= " (masked)";
+                $return .= ' (masked)';
             }
 
             if ($this->isPrependingType()) {
                 $return = sprintf(
-                    "(string(%d)) %s",
+                    '(string(%d)) %s',
                     mb_strlen($valueMasked, (string)$this->getCharacterEncoding()),
                     $return,
                 );
             }
 
             return $return;
-
         }
 
         if (is_object($value)) {
@@ -240,7 +239,7 @@ class Caster implements CasterInterface
 
                 if ($caster->isPrependingType()) {
                     $return = sprintf(
-                        "(object) %s",
+                        '(object) %s',
                         $return
                     );
                 }
@@ -250,14 +249,14 @@ class Caster implements CasterInterface
 
             if ($caster->getDepthCurrent()->toInteger() > $caster->getDepthMaximum()->toInteger()) {
                 $return = sprintf(
-                    "%s: %s",
-                    Caster::makeNormalizedClassName(new \ReflectionObject($value)),
+                    '%s: %s',
+                    self::makeNormalizedClassName(new \ReflectionObject($value)),
                     $caster->getOmittedMaximumDepthOfXReachedMessage(),
                 );
 
                 if ($caster->isPrependingType()) {
                     $return = sprintf(
-                        "(object) %s",
+                        '(object) %s',
                         $return
                     );
                 }
@@ -287,7 +286,7 @@ class Caster implements CasterInterface
 
             if ($caster->isPrependingType()) {
                 $return = sprintf(
-                    "(object) %s",
+                    '(object) %s',
                     $return,
                 );
             }
@@ -300,14 +299,14 @@ class Caster implements CasterInterface
 
             if ($caster->getDepthCurrent()->toInteger() > $caster->getDepthMaximum()->toInteger()) {
                 $return = sprintf(
-                    "[%s] %s",
+                    '[%s] %s',
                     $caster->getSampleEllipsis(),
                     $caster->getOmittedMaximumDepthOfXReachedMessage(),
                 );
 
                 if ($caster->isPrependingType()) {
                     $return = sprintf(
-                        "(array(%d)) %s",
+                        '(array(%d)) %s',
                         count($value),
                         $return,
                     );
@@ -334,7 +333,7 @@ class Caster implements CasterInterface
 
             if ($caster->isPrependingType()) {
                 $return = sprintf(
-                    "(array(%d)) %s",
+                    '(array(%d)) %s',
                     count($value),
                     $return,
                 );
@@ -358,7 +357,7 @@ class Caster implements CasterInterface
 
             if ($this->isPrependingType()) {
                 $return = sprintf(
-                    "(resource) %s",
+                    '(resource) %s',
                     $return,
                 );
             }
@@ -367,7 +366,7 @@ class Caster implements CasterInterface
         }
 
         throw new RuntimeException(sprintf(
-            "Uncovered case for type %s",
+            'Uncovered case for type %s',
             $this->quoteAndEscape(gettype($value))
         ));
     }
@@ -385,7 +384,7 @@ class Caster implements CasterInterface
      */
     public function escape(string $str): string
     {
-        $escapee = "\\";
+        $escapee = '\\';
 
         if ((string)$this->stringQuotingCharacter !== $escapee) {
             $escapee .= (string)$this->stringQuotingCharacter;
@@ -400,7 +399,7 @@ class Caster implements CasterInterface
     public function maskString(string $str): string
     {
         if (false === $this->maskedEncryptedStringCollection->isEmpty()) {
-            $uasortMaskedStrings = function(string $a, string $b){
+            $uasortMaskedStrings = function (string $a, string $b) {
                 return (
                     (-1)
                     * (
@@ -413,12 +412,12 @@ class Caster implements CasterInterface
 
             $maskedStrings = array_filter(
                 array_map(
-                    function(EncryptedString $encryptedString){
+                    static function (EncryptedString $encryptedString) {
                         return $encryptedString->decrypt();
                     },
                     $this->maskedEncryptedStringCollection->toArray(),
                 ),
-                function(string $s){
+                function (string $s) {
                     return mb_strlen($s, (string)$this->getCharacterEncoding()) > 0;
                 }
             );
@@ -465,9 +464,9 @@ class Caster implements CasterInterface
                     sprintf(
                         '/(%s)/',
                         implode(
-                            "|",
+                            '|',
                             array_map(
-                                function(string $maskedString){
+                                static function (string $maskedString) {
                                     return preg_quote($maskedString, '/');
                                 },
                                 $maskedStrings,
@@ -482,7 +481,7 @@ class Caster implements CasterInterface
 
                 if (count($split) > 1) {
                     $split = array_values($split);
-                    $max = count($split)-1;
+                    $max = count($split) - 1;
                     $segments = [];
                     $maskingString = $this->getMaskingString();
 
@@ -494,7 +493,7 @@ class Caster implements CasterInterface
                         $segments[] = $split[$i];
                     }
 
-                    return implode("", $segments);
+                    return implode('', $segments);
                 }
             }
         }
@@ -508,7 +507,7 @@ class Caster implements CasterInterface
     public function quoteAndEscape(string $str): string
     {
         return implode(
-            "",
+            '',
             [
                 (string)$this->stringQuotingCharacter,
                 $this->escape($str),
@@ -553,9 +552,7 @@ class Caster implements CasterInterface
     /**
      * {@inheritDoc}
      */
-    public function withCustomArrayFormatterCollection(
-        ArrayFormatterCollection $customArrayFormatterCollection
-    ): Caster
+    public function withCustomArrayFormatterCollection(ArrayFormatterCollection $customArrayFormatterCollection): Caster
     {
         $clone = clone $this;
         $clone->customArrayFormatterCollection = $customArrayFormatterCollection;
@@ -568,8 +565,7 @@ class Caster implements CasterInterface
      */
     public function withCustomObjectFormatterCollection(
         ObjectFormatterCollection $customObjectFormatterCollection
-    ): Caster
-    {
+    ): Caster {
         $clone = clone $this;
         $clone->customObjectFormatterCollection = $customObjectFormatterCollection;
 
@@ -581,8 +577,7 @@ class Caster implements CasterInterface
      */
     public function withCustomResourceFormatterCollection(
         ResourceFormatterCollection $customResourceFormatterCollection
-    ): Caster
-    {
+    ): Caster {
         $clone = clone $this;
         $clone->customResourceFormatterCollection = $customResourceFormatterCollection;
 
@@ -594,8 +589,7 @@ class Caster implements CasterInterface
      */
     public function withCustomStringFormatterCollection(
         StringFormatterCollection $customStringFormatterCollection
-    ): Caster
-    {
+    ): Caster {
         $clone = clone $this;
         $clone->customStringFormatterCollection = $customStringFormatterCollection;
 
@@ -651,8 +645,7 @@ class Caster implements CasterInterface
      */
     public function withMaskedEncryptedStringCollection(
         EncryptedStringCollection $maskedEncryptedStringCollection
-    ): Caster
-    {
+    ): Caster {
         $clone = clone $this;
         $clone->maskedEncryptedStringCollection = $maskedEncryptedStringCollection;
 
@@ -687,20 +680,20 @@ class Caster implements CasterInterface
     public function withSampleEllipsis(string $sampleEllipsis): Caster
     {
         try {
-            if ("" === $sampleEllipsis) {
+            if ('' === $sampleEllipsis) {
                 throw new CasterException(
-                    "Argument \$sampleEllipsis is an empty string, which is not allowed"
+                    'Argument $sampleEllipsis is an empty string, which is not allowed'
                 );
             }
 
-            if ("" === trim($sampleEllipsis)) {
+            if ('' === trim($sampleEllipsis)) {
                 throw new CasterException(
                     sprintf(
-                        implode("", [
-                            "Argument \$sampleEllipsis contains only white space characters, which is not allowed.",
-                            " Found: %s",
+                        implode('', [
+                            'Argument $sampleEllipsis contains only white space characters, which is not allowed.',
+                            ' Found: %s',
                         ]),
-                        Caster::getInternalInstance()->castTyped($sampleEllipsis),
+                        self::getInternalInstance()->castTyped($sampleEllipsis),
                     ),
                 );
             }
@@ -708,11 +701,11 @@ class Caster implements CasterInterface
             if (preg_match('/[\x00-\x1f]/', $sampleEllipsis)) {
                 throw new CasterException(
                     sprintf(
-                        implode("", [
-                            "Argument \$sampleEllipsis contains illegal characters.",
-                            " Found: %s",
+                        implode('', [
+                            'Argument $sampleEllipsis contains illegal characters.',
+                            ' Found: %s',
                         ]),
-                        Caster::getInternalInstance()->castTyped($sampleEllipsis),
+                        self::getInternalInstance()->castTyped($sampleEllipsis),
                     ),
                 );
             }
@@ -722,16 +715,16 @@ class Caster implements CasterInterface
         } catch (\Throwable $t) {
             $argumentsAsStrings = [];
             $argumentsAsStrings[] = sprintf(
-                "\$sampleEllipsis = %s",
-                Caster::getInternalInstance()->castTyped($sampleEllipsis),
+                '$sampleEllipsis = %s',
+                self::getInternalInstance()->castTyped($sampleEllipsis),
             );
 
             throw new CasterException(sprintf(
-                "Failure in %s->%s(%s): %s",
-                Caster::makeNormalizedClassName(new \ReflectionObject($this)),
+                'Failure in %s->%s(%s): %s',
+                self::makeNormalizedClassName(new \ReflectionObject($this)),
                 __FUNCTION__,
-                implode(", ", $argumentsAsStrings),
-                Caster::getInternalInstance()->castTyped($this),
+                implode(', ', $argumentsAsStrings),
+                self::getInternalInstance()->castTyped($this),
             ), 0, $t);
         }
 
@@ -755,10 +748,10 @@ class Caster implements CasterInterface
     public function withStringQuotingCharacter(CharacterInterface $stringQuotingCharacter): Caster
     {
         try {
-            if ("\\" === (string)$stringQuotingCharacter) {
+            if ('\\' === (string)$stringQuotingCharacter) {
                 throw new CasterException(sprintf(
-                    "Argument \$stringQuotingCharacter must not be a backslash, but it is. Found: %s",
-                    Caster::getInternalInstance()->withIsPrependingType(true)->cast($stringQuotingCharacter),
+                    'Argument $stringQuotingCharacter must not be a backslash, but it is. Found: %s',
+                    self::getInternalInstance()->withIsPrependingType(true)->cast($stringQuotingCharacter),
                 ));
             }
 
@@ -767,16 +760,16 @@ class Caster implements CasterInterface
         } catch (\Throwable $t) {
             $argumentsAsStrings = [];
             $argumentsAsStrings[] = sprintf(
-                "\$stringQuotingCharacter = %s",
-                Caster::getInternalInstance()->castTyped($stringQuotingCharacter),
+                '$stringQuotingCharacter = %s',
+                self::getInternalInstance()->castTyped($stringQuotingCharacter),
             );
 
             throw new CasterException(sprintf(
-                "Failure in %s->%s(%s): %s",
-                Caster::makeNormalizedClassName(new \ReflectionObject($this)),
+                'Failure in %s->%s(%s): %s',
+                self::makeNormalizedClassName(new \ReflectionObject($this)),
                 __FUNCTION__,
-                implode(", ", $argumentsAsStrings),
-                Caster::getInternalInstance()->castTyped($this),
+                implode(', ', $argumentsAsStrings),
+                self::getInternalInstance()->castTyped($this),
             ), 0, $t);
         }
 
@@ -925,7 +918,7 @@ class Caster implements CasterInterface
     public function getOmittedMaximumDepthOfXReachedMessage(): string
     {
         return sprintf(
-            "** OMITTED ** (maximum depth of %d reached)",
+            '** OMITTED ** (maximum depth of %d reached)',
             $this->getDepthMaximum()->toInteger(),
         );
     }
@@ -936,8 +929,8 @@ class Caster implements CasterInterface
     public function getRecursionMessage(object $object): string
     {
         return sprintf(
-            "** RECURSION ** (%s, %s)",
-            Caster::makeNormalizedClassName(new \ReflectionObject($object)),
+            '** RECURSION ** (%s, %s)',
+            self::makeNormalizedClassName(new \ReflectionObject($object)),
             spl_object_hash($object),
         );
     }
@@ -1003,10 +996,10 @@ class Caster implements CasterInterface
             assert(is_string($reflectionClass->getFileName()));
 
             return sprintf(
-                "class@anonymous/in/%s:%d",
+                'class@anonymous/in/%s:%d',
                 preg_replace(
                     '/^\//',
-                    "",
+                    '',
                     $reflectionClass->getFileName(),
                 ),
                 $reflectionClass->getStartLine(),
@@ -1014,7 +1007,7 @@ class Caster implements CasterInterface
         }
 
         return sprintf(
-            "\\%s",
+            '\\%s',
             $reflectionClass->getName(),
         );
     }
@@ -1041,8 +1034,8 @@ class Caster implements CasterInterface
 
             self::$internalInstance = self::$internalInstance->withCustomObjectFormatterCollection(
                 new ObjectFormatterCollection(...[
-                    new DebugIdentifierAnnotationInterfaceFormatter,
-                    new TextuallyIdentifiableInterfaceFormatter,
+                    new DebugIdentifierAnnotationInterfaceFormatter(),
+                    new TextuallyIdentifiableInterfaceFormatter(),
                 ]),
             );
         }

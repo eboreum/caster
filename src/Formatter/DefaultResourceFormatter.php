@@ -16,8 +16,9 @@ class DefaultResourceFormatter extends AbstractResourceFormatter
     public function format(CasterInterface $caster, Resource_ $resource): ?string
     {
         return sprintf(
-            "`%s` {$resource->getResource()}",
+            '`%s` %s',
             get_resource_type($resource->getResource()),
+            (string)$resource->getResource(),
         );
     }
 }

@@ -14,9 +14,7 @@ use Eboreum\Caster\Exception\RuntimeException;
  */
 class StringFormatterCollection extends AbstractObjectCollection implements FormatterCollectionInterface
 {
-    /**
-     * @var array<int, StringFormatterInterface>
-     */
+    /** @var array<int, StringFormatterInterface> */
     protected array $elements;
 
     /**

@@ -26,7 +26,7 @@ interface CasterInterface extends ImmutableObjectInterface
 {
     public const ARRAY_SAMPLE_SIZE_DEFAULT = 3;
     public const DEPTH_MAXIMUM_DEFAULT = 3;
-    public const SAMPLE_ELLIPSIS_DEFAULT = "...";
+    public const SAMPLE_ELLIPSIS_DEFAULT = '...';
     public const STRING_QUOTING_CHARACTER_DEFAULT = '"';
     public const STRING_SAMPLE_SIZE_DEFAULT = 1000;
 
@@ -37,14 +37,14 @@ interface CasterInterface extends ImmutableObjectInterface
      * To prepend information about the data type, first call `withIsPrependingType(true)` or simply call
      * `castTyped(...)` instead.
      *
-     * @param mixed $value                      Accepts any data type.
+     * @param mixed $value Accepts any data type.
      */
     public function cast($value): string;
 
     /**
      * A convenience/proxy method for CasterInterface->withIsPrependingType(true)->cast(...).
      *
-     * @param mixed $value                      Accepts any data type.
+     * @param mixed $value Accepts any data type.
      */
     public function castTyped($value): string;
 

@@ -22,24 +22,24 @@ class CharacterEncoding implements CharacterEncodingInterface
             if (false === static::isCharacterEncodingValid($name)) {
                 throw new RuntimeException(sprintf(
                     implode(
-                        "",
+                        '',
                         [
-                            "Argument \$name is not a valid character encoding.",
-                            " Expected it to be one of: [%s], but it is not.",
-                            " Found: (string(%d)) \"%s\"",
+                            'Argument $name is not a valid character encoding.',
+                            ' Expected it to be one of: [%s], but it is not.',
+                            ' Found: (string(%d)) "%s"',
                         ],
                     ),
                     implode(
-                        ", ",
+                        ', ',
                         array_map(
-                            function (string $name) {
+                            static function (string $name) {
                                 return escapeshellarg($name);
                             },
                             mb_list_encodings(),
                         ),
                     ),
                     mb_strlen($name),
-                    addcslashes($name, "\\\""),
+                    addcslashes($name, '\\"'),
                 ));
             }
 
@@ -47,14 +47,14 @@ class CharacterEncoding implements CharacterEncodingInterface
         } catch (\Throwable $t) {
             $argumentsAsStrings = [];
             $argumentsAsStrings[] = sprintf(
-                "\$name = %s",
+                '$name = %s',
                 Caster::getInternalInstance()->castTyped($name),
             );
 
             throw new RuntimeException(sprintf(
-                "Failed to construct %s with arguments {%s}",
+                'Failed to construct %s with arguments {%s}',
                 Caster::makeNormalizedClassName(new \ReflectionObject($this)),
-                implode(", ", $argumentsAsStrings),
+                implode(', ', $argumentsAsStrings),
             ), 0, $t);
         }
     }

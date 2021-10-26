@@ -7,7 +7,6 @@ namespace Eboreum\Caster\Formatter\Object_;
 use Eboreum\Caster\Abstraction\Formatter\AbstractObjectFormatter;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\CasterInterface;
-use Eboreum\Caster\Formatter\DefaultObjectFormatter;
 
 /**
  * Prints class name and ISO 8601 datetime in parenthesis. Example: \DateTimeImmutable ("2019-01-01T00:00:00+00:00")
@@ -26,9 +25,9 @@ class DateTimeInterfaceFormatter extends AbstractObjectFormatter
         assert($object instanceof \DateTimeInterface);
 
         return sprintf(
-            "%s (%s)",
+            '%s (%s)',
             Caster::makeNormalizedClassName(new \ReflectionObject($object)),
-            $caster->withIsPrependingType(false)->cast(strval($object->format("c"))),
+            $caster->withIsPrependingType(false)->cast(strval($object->format('c'))),
         );
     }
 

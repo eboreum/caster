@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Eboreum\Caster;
 
-use Eboreum\Caster\Exception\RuntimeException;
 use Eboreum\Caster\Contract\Collection\ElementInterface;
 use Eboreum\Caster\Contract\ImmutableObjectInterface;
+use Eboreum\Caster\Exception\RuntimeException;
 use Exception;
 
 /**
@@ -17,7 +17,7 @@ use Exception;
  */
 class EncryptedString implements ImmutableObjectInterface, ElementInterface
 {
-    const ENCRYPTION_METHOD_DEFAULT = "aes-256-cbc";
+    public const ENCRYPTION_METHOD_DEFAULT = 'aes-256-cbc';
 
     protected string $initializationVectorBase;
 
@@ -30,11 +30,7 @@ class EncryptedString implements ImmutableObjectInterface, ElementInterface
     /**
      * @throws RuntimeException
      */
-    public function __construct(
-        string $string,
-        ?string $salt = null,
-        ?string $encryptionMethod = null
-    )
+    public function __construct(string $string, ?string $salt = null, ?string $encryptionMethod = null)
     {
         try {
             $errorMessages = [];
@@ -44,9 +40,9 @@ class EncryptedString implements ImmutableObjectInterface, ElementInterface
             if (null === $saltVariation) {
                 $saltVariation = static::generateRandomSalt();
             } else {
-                if ("" === $saltVariation) {
+                if ('' === $saltVariation) {
                     $errorMessages[] = sprintf(
-                        "Argument \$salt must not be an empty string, but it is. Found: %s",
+                        'Argument $salt must not be an empty string, but it is. Found: %s',
                         Caster::getInternalInstance()->castTyped($salt),
                     );
                 }
@@ -55,19 +51,19 @@ class EncryptedString implements ImmutableObjectInterface, ElementInterface
             $encryptionMethodVariant = $encryptionMethod;
 
             if (null === $encryptionMethodVariant) {
-                $encryptionMethodVariant = static::ENCRYPTION_METHOD_DEFAULT;
+                $encryptionMethodVariant = self::ENCRYPTION_METHOD_DEFAULT;
             }
 
             if (false === static::isEncryptionMethodValid($encryptionMethodVariant)) {
                 $errorMessages[] = sprintf(
-                    implode("", [
-                        "Expects argument \$encryptionMethod to be null or when a string, to be one of [%s]",
-                        ", but it is not. Found: %s",
+                    implode('', [
+                        'Expects argument $encryptionMethod to be null or when a string, to be one of [%s]',
+                        ', but it is not. Found: %s',
                     ]),
                     implode(
-                        ", ",
+                        ', ',
                         array_map(
-                            function($v){
+                            static function ($v) {
                                 return Caster::getInternalInstance()->cast($v);
                             },
                             \openssl_get_cipher_methods(),
@@ -78,7 +74,7 @@ class EncryptedString implements ImmutableObjectInterface, ElementInterface
             }
 
             if ($errorMessages) {
-                throw new RuntimeException(implode(". ", $errorMessages));
+                throw new RuntimeException(implode('. ', $errorMessages));
             }
 
             $this->salt = $saltVariation;
@@ -89,7 +85,7 @@ class EncryptedString implements ImmutableObjectInterface, ElementInterface
                 $this->encryptionMethod,
                 $this->salt,
                 0,
-                $this->_getInitializationVector()
+                $this->getInitializationVector()
             );
 
             assert(is_string($encryptedString));
@@ -97,17 +93,17 @@ class EncryptedString implements ImmutableObjectInterface, ElementInterface
             $this->encryptedString = $encryptedString;
         } catch (\Throwable $t) {
             $argumentSegments = [];
-            $argumentSegments[] = "\$string = ** HIDDEN **";
-            $argumentSegments[] = "\$salt = ** HIDDEN **";
+            $argumentSegments[] = '$string = ** HIDDEN **';
+            $argumentSegments[] = '$salt = ** HIDDEN **';
             $argumentSegments[] = sprintf(
-                "\$encryptionMethod = %s",
+                '$encryptionMethod = %s',
                 Caster::getInternalInstance()->castTyped($encryptionMethod),
             );
 
             throw new RuntimeException(sprintf(
-                "Failed to construct \\%s with arguments {%s}",
+                'Failed to construct \\%s with arguments {%s}',
                 static::class,
-                implode(", ", $argumentSegments),
+                implode(', ', $argumentSegments),
             ), 0, $t);
         }
     }
@@ -122,7 +118,7 @@ class EncryptedString implements ImmutableObjectInterface, ElementInterface
             $this->encryptionMethod,
             $this->salt,
             0,
-            $this->_getInitializationVector(),
+            $this->getInitializationVector(),
         );
 
         assert(is_string($decrypted));
@@ -140,11 +136,11 @@ class EncryptedString implements ImmutableObjectInterface, ElementInterface
 
             if (false === static::isEncryptionMethodValid($encryptionMethod)) {
                 $errorMessages[] = sprintf(
-                    "Expects argument \$encryptionMethod to be one of [%s], but it is not. Found: %s",
+                    'Expects argument $encryptionMethod to be one of [%s], but it is not. Found: %s',
                     implode(
-                        ", ",
+                        ', ',
                         array_map(
-                            function($encryptionMethod){
+                            static function ($encryptionMethod) {
                                 return Caster::getInternalInstance()->cast($encryptionMethod);
                             },
                             \openssl_get_cipher_methods()
@@ -155,7 +151,7 @@ class EncryptedString implements ImmutableObjectInterface, ElementInterface
             }
 
             if ($errorMessages) {
-                throw new RuntimeException(implode(". ", $errorMessages));
+                throw new RuntimeException(implode('. ', $errorMessages));
             }
 
             $clone = clone $this;
@@ -166,7 +162,7 @@ class EncryptedString implements ImmutableObjectInterface, ElementInterface
                 $clone->encryptionMethod,
                 $clone->salt,
                 0,
-                $clone->_getInitializationVector(),
+                $clone->getInitializationVector(),
             );
 
             assert(is_string($encryptedString));
@@ -175,15 +171,15 @@ class EncryptedString implements ImmutableObjectInterface, ElementInterface
         } catch (\Throwable $t) {
             $argumentsAsStrings = [];
             $argumentsAsStrings[] = sprintf(
-                "\$encryptionMethod = %s",
+                '$encryptionMethod = %s',
                 Caster::getInternalInstance()->castTyped($encryptionMethod),
             );
 
             throw new RuntimeException(sprintf(
-                "Failure in %s->%s(%s): %s",
+                'Failure in %s->%s(%s): %s',
                 Caster::makeNormalizedClassName(new \ReflectionObject($this)),
                 __FUNCTION__,
-                implode(", ", $argumentsAsStrings),
+                implode(', ', $argumentsAsStrings),
                 Caster::getInternalInstance()->castTyped($this),
             ), 0, $t);
         }
@@ -196,9 +192,9 @@ class EncryptedString implements ImmutableObjectInterface, ElementInterface
         return $this->encryptionMethod;
     }
 
-    protected function _getInitializationVector(): string
+    protected function getInitializationVector(): string
     {
-        return substr(\hash("sha256", $this->initializationVectorBase), 0, 16);
+        return substr(\hash('sha256', $this->initializationVectorBase), 0, 16);
     }
 
     /**

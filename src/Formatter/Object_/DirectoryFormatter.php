@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace Eboreum\Caster\Formatter\Object_;
 
 use Eboreum\Caster\Abstraction\Formatter\AbstractObjectFormatter;
-use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\Caster;
-use Eboreum\Caster\Formatter\DefaultObjectFormatter;
+use Eboreum\Caster\Contract\CasterInterface;
 
 /**
  * Handles instances of `\Directory`.
@@ -26,7 +25,7 @@ class DirectoryFormatter extends AbstractObjectFormatter
         assert($object instanceof \Directory);
 
         return sprintf(
-            "%s {\$path = %s}",
+            '%s {$path = %s}',
             Caster::makeNormalizedClassName(new \ReflectionObject($object)),
             $caster->cast($object->path),
         );

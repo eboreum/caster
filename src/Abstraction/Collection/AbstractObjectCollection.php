@@ -9,7 +9,6 @@ use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\Contract\Collection\ElementInterface;
 use Eboreum\Caster\Contract\Collection\ObjectCollectionInterface;
 use Eboreum\Caster\Exception\RuntimeException;
-use Eboreum\Caster\Formatter\DefaultObjectFormatter;
 
 /**
  * {@inheritDoc}
@@ -19,9 +18,7 @@ use Eboreum\Caster\Formatter\DefaultObjectFormatter;
  */
 abstract class AbstractObjectCollection implements ObjectCollectionInterface
 {
-    /**
-     * @var array<int, ElementInterface>
-     */
+    /** @var array<int, ElementInterface> */
     protected array $elements;
 
     /**
@@ -44,9 +41,9 @@ abstract class AbstractObjectCollection implements ObjectCollectionInterface
 
                 if ($invalids) {
                     throw new RuntimeException(sprintf(
-                        implode("", [
-                            "In argument \$elements, %d/%d values are invalid. Must contain objects, instance of \\%s,",
-                            " exclusively, but it does not. Invalid values include: %s",
+                        implode('', [
+                            'In argument $elements, %d/%d values are invalid. Must contain objects, instance of \\%s,',
+                            ' exclusively, but it does not. Invalid values include: %s',
                         ]),
                         count($invalids),
                         count($elements),
@@ -60,14 +57,14 @@ abstract class AbstractObjectCollection implements ObjectCollectionInterface
         } catch (\Throwable $t) {
             $argumentsAsStrings = [];
             $argumentsAsStrings[] = sprintf(
-                "\$elements = ...%s",
+                '$elements = ...%s',
                 Caster::create()->castTyped($elements),
             );
 
             throw new RuntimeException(sprintf(
-                "Failed to construct %s with arguments {%s}",
+                'Failed to construct %s with arguments {%s}',
                 Caster::makeNormalizedClassName(new \ReflectionObject($this)),
-                implode(", ", $argumentsAsStrings),
+                implode(', ', $argumentsAsStrings),
             ), 0, $t);
         }
     }
@@ -94,7 +91,7 @@ abstract class AbstractObjectCollection implements ObjectCollectionInterface
     public function toTextualIdentifier(CasterInterface $caster): string
     {
         return sprintf(
-            "%s {\$elements = %s}",
+            '%s {$elements = %s}',
             Caster::makeNormalizedClassName(new \ReflectionObject($this)),
             Caster::getInternalInstance()->castTyped($this->toArray()),
         );
@@ -105,7 +102,7 @@ abstract class AbstractObjectCollection implements ObjectCollectionInterface
      */
     public function isEmpty(): bool
     {
-        return empty($this->elements);
+        return !$this->elements;
     }
 
     /**

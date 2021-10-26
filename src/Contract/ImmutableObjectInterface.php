@@ -12,5 +12,4 @@ namespace Eboreum\Caster\Contract;
  */
 interface ImmutableObjectInterface
 {
-
 }

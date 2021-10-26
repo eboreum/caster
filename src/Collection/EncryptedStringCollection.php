@@ -10,9 +10,7 @@ use Eboreum\Caster\Exception\RuntimeException;
 
 class EncryptedStringCollection extends AbstractObjectCollection
 {
-    /**
-     * @var array<int, EncryptedString>
-     */
+    /** @var array<int, EncryptedString> */
     protected array $elements;
 
     /**

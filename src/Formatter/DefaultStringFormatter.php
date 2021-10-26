@@ -18,13 +18,13 @@ class DefaultStringFormatter extends AbstractStringFormatter
             $string,
             (string)$caster->getCharacterEncoding(),
         );
-        $return = "";
+        $return = '';
         $isSample = false;
         $encodingStr = (string)$caster->getCharacterEncoding();
 
         if ($caster->isMakingSamples()) {
-            if ("" === $string) {
-                $return = $caster->quoteAndEscape("");
+            if ('' === $string) {
+                $return = $caster->quoteAndEscape('');
             } elseif ($caster->getStringSampleSize()->toInteger() > 0) {
                 if ($length > $caster->getStringSampleSize()->toInteger()) {
                     $ellipsisLength = mb_strlen($caster->getSampleEllipsis(), $encodingStr);
@@ -35,14 +35,14 @@ class DefaultStringFormatter extends AbstractStringFormatter
                             0,
                             (
                                 $caster->getStringSampleSize()->toInteger()
-                                - ($ellipsisLength+1)
+                                - ($ellipsisLength + 1)
                             )
                         ),
                         $encodingStr
                     );
 
                     if ($return) {
-                        $return .= " " . $caster->getSampleEllipsis();
+                        $return .= ' ' . $caster->getSampleEllipsis();
                     } else {
                         $return = $caster->getSampleEllipsis();
                     }
@@ -62,7 +62,7 @@ class DefaultStringFormatter extends AbstractStringFormatter
         }
 
         if ($isSample) {
-            $return .= " (sample)";
+            $return .= ' (sample)';
         }
 
         return $return;
