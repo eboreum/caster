@@ -162,7 +162,7 @@ class Caster implements CasterInterface
     {
         $return = null;
 
-        if (is_null($value)) {
+        if (null === $value) {
             if ($this->isPrependingType()) {
                 return '(null) null';
             }
