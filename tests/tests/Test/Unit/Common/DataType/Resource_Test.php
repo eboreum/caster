@@ -13,10 +13,7 @@ class Resource_Test extends TestCase
      * @dataProvider dataProvider_testBasics
      * @param resource $resource
      */
-    public function testBasics(
-        $resource,
-        ?\Closure $takeDownCallback
-    ): void
+    public function testBasics($resource, ?\Closure $takeDownCallback): void
     {
         $resourceObject = new Resource_($resource);
 
@@ -28,14 +25,14 @@ class Resource_Test extends TestCase
     }
 
     /**
-     * @return array<int, array{0: mixed, 1: null|callable}>
+     * @return array<int, array{0: mixed, 1: callable|null}>
      */
     public function dataProvider_testBasics(): array
     {
         return [
             [
-                \fopen(__FILE__, "r"),
-                function(Resource_ $resource){
+                \fopen(__FILE__, 'r'),
+                static function (Resource_ $resource): void {
                     fclose($resource->getResource());
                 },
             ],
@@ -48,9 +45,9 @@ class Resource_Test extends TestCase
             new Resource_(42); /** @phpstan-ignore-line */
         } catch (\Exception $e) {
             $exceptionCurrent = $e;
-            $this->assertSame("InvalidArgumentException", get_class($exceptionCurrent));
+            $this->assertSame('InvalidArgumentException', get_class($exceptionCurrent));
             $this->assertMatchesRegularExpression(
-                implode("", [
+                implode('', [
                     '/',
                     '^',
                     'Expects argument \$resource to be a resource, but it is not\.',
@@ -62,11 +59,11 @@ class Resource_Test extends TestCase
             );
 
             $exceptionCurrent = $exceptionCurrent->getPrevious();
-            $this->assertTrue(is_null($exceptionCurrent));
+            $this->assertTrue(null === $exceptionCurrent);
 
             return;
         }
 
-        $this->fail("Exception was never thrown.");
+        $this->fail('Exception was never thrown.');
     }
 }

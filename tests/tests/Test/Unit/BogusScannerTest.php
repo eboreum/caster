@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Test\Unit\Eboreum\Caster;
 
-use PhpParser\Comment;
-use PhpParser\NodeFinder;
 use PhpParser\ParserFactory;
 use PHPUnit\Framework\TestCase;
 
@@ -19,13 +17,13 @@ class BogusScannerTest extends TestCase
         $errorMessages = [];
 
         $filePaths = array_merge(
-            \Eboreum\Caster\functions\rglob(dirname(TEST_ROOT_PATH) . "/src/*.php"),
-            \Eboreum\Caster\functions\rglob(dirname(TEST_ROOT_PATH) . "/script/misc/readme/*.php"),
-            \Eboreum\Caster\functions\rglob(TEST_ROOT_PATH . "/resources"),
-            \Eboreum\Caster\functions\rglob(TEST_ROOT_PATH . "/tests/*Test.php"),
+            \Eboreum\Caster\functions\rglob(dirname(TEST_ROOT_PATH) . '/src/*.php'),
+            \Eboreum\Caster\functions\rglob(dirname(TEST_ROOT_PATH) . '/script/misc/readme/*.php'),
+            \Eboreum\Caster\functions\rglob(TEST_ROOT_PATH . '/resources'),
+            \Eboreum\Caster\functions\rglob(TEST_ROOT_PATH . '/tests/*Test.php'),
         );
 
-        $contents = file_get_contents(dirname(TEST_ROOT_PATH) . "/composer.json");
+        $contents = file_get_contents(dirname(TEST_ROOT_PATH) . '/composer.json');
 
         assert(is_string($contents));
 
@@ -33,15 +31,15 @@ class BogusScannerTest extends TestCase
 
         $authorNames = [];
 
-        if ($composerJsonArray["authors"] ?? false) {
-            foreach ($composerJsonArray["authors"] as $author) {
-                if ($author["homepage"] ?? false) {
+        if ($composerJsonArray['authors'] ?? false) {
+            foreach ($composerJsonArray['authors'] as $author) {
+                if ($author['homepage'] ?? false) {
                     preg_match(
                         sprintf(
                             '/^%s\/([^\/]+)(\/|$)/',
-                            preg_quote("https://github.com", "/"),
+                            preg_quote('https://github.com', '/'),
                         ),
-                        $author["homepage"],
+                        $author['homepage'],
                         $match,
                     );
 
@@ -58,7 +56,7 @@ class BogusScannerTest extends TestCase
             '/(^|\W)XXX(\W|$)/i',
         ];
 
-        $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
+        $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
 
         foreach ($filePaths as $filePath) {
             if (false === is_file($filePath)) {
@@ -77,7 +75,7 @@ class BogusScannerTest extends TestCase
                 preg_match_all(
                     sprintf(
                         '/%s/i',
-                        preg_quote(mb_strtolower($authorName), "/"),
+                        preg_quote(mb_strtolower($authorName), '/'),
                     ),
                     $contents,
                     $matches,
@@ -86,12 +84,12 @@ class BogusScannerTest extends TestCase
                 if ($matches && ($matches[0] ?? false)) {
                     $matchCount = count($matches[0]);
                     $errorMessages[] = sprintf(
-                        "Found %d %s of the author name %s in file: %s",
+                        'Found %d %s of the author name %s in file: %s',
                         $matchCount,
                         (
                             1 === $matchCount
-                            ? "occurrence"
-                            : "occurrences"
+                            ? 'occurrence'
+                            : 'occurrences'
                         ),
                         escapeshellarg($authorName),
                         escapeshellarg($filePath),
@@ -101,7 +99,7 @@ class BogusScannerTest extends TestCase
 
             if (preg_match('/^\<\?php/', ltrim($contents))) {
                 $ast = $parser->parse($contents);
-                $comments = $this->_recursivelyFindAllCommentsInPHPFileAST($ast);
+                $comments = $this->recursivelyFindAllCommentsInPHPFileAST($ast);
 
                 foreach ($comments as $comment) {
                     foreach ($disallowedStringsInCommentsRegexes as $disallowedStringsInCommentRegex) {
@@ -114,18 +112,18 @@ class BogusScannerTest extends TestCase
                         if ($matches && ($matches[0] ?? false)) {
                             $matchCount = count($matches[0]);
                             $errorMessages[] = sprintf(
-                                "Found %d %s of the disallowed text (as a regular expression) %s %s in file: %s:%d",
+                                'Found %d %s of the disallowed text (as a regular expression) %s %s in file: %s:%d',
                                 $matchCount,
                                 (
                                     1 === $matchCount
-                                    ? "occurrence"
-                                    : "occurrences"
+                                    ? 'occurrence'
+                                    : 'occurrences'
                                 ),
                                 escapeshellarg($disallowedStringsInCommentRegex),
                                 (
                                     1 === $matchCount
-                                    ? "a comment"
-                                    : "comments"
+                                    ? 'a comment'
+                                    : 'comments'
                                 ),
                                 escapeshellarg($filePath),
                                 $comment->getStartLine(),
@@ -147,14 +145,14 @@ class BogusScannerTest extends TestCase
      * @param array<\PhpParser\Node> $ast
      * @return array<\PhpParser\Comment>
      */
-    private function _recursivelyFindAllCommentsInPHPFileAST(array $ast): array
+    private function recursivelyFindAllCommentsInPHPFileAST(array $ast): array
     {
         $comments = [];
 
         foreach ($ast as $node) {
             $comments = array_merge(
                 $comments,
-                $this->_handleNode($node)
+                $this->handleNode($node)
             );
         }
 
@@ -164,7 +162,7 @@ class BogusScannerTest extends TestCase
     /**
      * @return array<\PhpParser\Comment>
      */
-    private function _handleNode(\PhpParser\Node $node): array
+    private function handleNode(\PhpParser\Node $node): array
     {
         $comments = $node->getComments();
 
@@ -179,7 +177,7 @@ class BogusScannerTest extends TestCase
                 if ($var instanceof \PhpParser\Node) {
                     $comments = array_merge(
                         $comments,
-                        $this->_handleNode($var),
+                        $this->handleNode($var),
                     );
                 }
             }

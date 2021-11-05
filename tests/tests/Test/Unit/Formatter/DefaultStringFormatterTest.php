@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Test\Unit\Eboreum\Caster\Formatter;
 
 use Eboreum\Caster\Caster;
-use Eboreum\Caster\Common\DataType\Integer\PositiveInteger;
 use Eboreum\Caster\Common\DataType\Integer\UnsignedInteger;
 use Eboreum\Caster\Formatter\DefaultStringFormatter;
 use PHPUnit\Framework\TestCase;
@@ -21,9 +20,8 @@ class DefaultStringFormatterTest extends TestCase
         string $expectedWithType,
         Caster $caster,
         string $string
-    ): void
-    {
-        $defaultStringFormatter = new DefaultStringFormatter;
+    ): void {
+        $defaultStringFormatter = new DefaultStringFormatter();
 
         $this->assertTrue($defaultStringFormatter->isHandling($string), $message);
 
@@ -49,11 +47,11 @@ class DefaultStringFormatterTest extends TestCase
     {
         return [
             [
-                "foo",
+                'foo',
                 '/^"foo"$/',
                 '/^"foo"$/',
                 Caster::getInstance(),
-                "foo",
+                'foo',
             ],
         ];
     }
@@ -65,12 +63,11 @@ class DefaultStringFormatterTest extends TestCase
         string $expected,
         UnsignedInteger $stringSampleSize,
         string $string
-    ): void
-    {
+    ): void {
         $caster = Caster::create();
         $caster = $caster->withIsMakingSamples(true);
         $caster = $caster->withStringSampleSize($stringSampleSize);
-        $defaultStringFormatter = new DefaultStringFormatter;
+        $defaultStringFormatter = new DefaultStringFormatter();
 
         $this->assertSame(
             $expected,
@@ -85,34 +82,33 @@ class DefaultStringFormatterTest extends TestCase
     {
         return [
             [
-                "\"lo ...\" (sample)",
+                '"lo ..." (sample)',
                 new UnsignedInteger(6),
-                "lorem ipsum",
+                'lorem ipsum',
             ],
             [
-                "\"...\" (sample)",
+                '"..." (sample)',
                 new UnsignedInteger(2),
-                "lorem ipsum",
+                'lorem ipsum',
             ],
             [
-                "\"...\" (sample)",
+                '"..." (sample)',
                 new UnsignedInteger(0),
-                "lorem ipsum",
+                'lorem ipsum',
             ],
         ];
     }
-
 
     public function testFormatWorksCorrectlyWhenNotMakingSamples(): void
     {
         $caster = Caster::create();
         $caster = $caster->withIsMakingSamples(false);
         $caster = $caster->withStringSampleSize(new UnsignedInteger(6));
-        $defaultStringFormatter = new DefaultStringFormatter;
+        $defaultStringFormatter = new DefaultStringFormatter();
 
         $this->assertSame(
-            "\"lorem ipsum\"",
-            $defaultStringFormatter->format($caster, "lorem ipsum"),
+            '"lorem ipsum"',
+            $defaultStringFormatter->format($caster, 'lorem ipsum'),
         );
     }
 }

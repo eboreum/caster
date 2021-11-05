@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Test\Unit\Eboreum\Caster\Formatter;
 
 use Eboreum\Caster\Caster;
-use Eboreum\Caster\Common\DataType\Integer\PositiveInteger;
-use Eboreum\Caster\Common\DataType\Integer\UnsignedInteger;
 use Eboreum\Caster\Common\DataType\Resource_;
 use Eboreum\Caster\Formatter\DefaultResourceFormatter;
 use PHPUnit\Framework\TestCase;
@@ -22,9 +20,8 @@ class DefaultResourceFormatterTest extends TestCase
         string $expectedWithType,
         Caster $caster,
         Resource_ $resource
-    ): void
-    {
-        $defaultResourceFormatter = new DefaultResourceFormatter;
+    ): void {
+        $defaultResourceFormatter = new DefaultResourceFormatter();
 
         $this->assertTrue($defaultResourceFormatter->isHandling($resource), $message);
 
@@ -50,12 +47,12 @@ class DefaultResourceFormatterTest extends TestCase
     {
         return [
             [
-                "fopen",
+                'fopen',
                 '/^`stream` Resource id #\d+$/',
                 '/^`stream` Resource id #\d+$/',
                 Caster::getInstance(),
-                (function(){
-                    $resource = \fopen(__FILE__ ,'r+');
+                (static function () {
+                    $resource = \fopen(__FILE__, 'r+');
 
                     assert(is_resource($resource));
 

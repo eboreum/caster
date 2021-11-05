@@ -12,9 +12,9 @@ class ReadmeMdTest extends TestCase
 
     public function setUp(): void
     {
-        $readmeFilePath = dirname(TEST_ROOT_PATH) . "/README.md";
+        $readmeFilePath = dirname(TEST_ROOT_PATH) . '/README.md';
 
-        $this->assertTrue(is_file($readmeFilePath), "README.md does not exist!");
+        $this->assertTrue(is_file($readmeFilePath), 'README.md does not exist!');
 
         $contents = file_get_contents($readmeFilePath);
 
@@ -29,13 +29,13 @@ class ReadmeMdTest extends TestCase
     public function testIsReadmeMdUpToDate(): void
     {
         ob_start();
-        include dirname(TEST_ROOT_PATH) . "/script/make-readme.php";
+        include dirname(TEST_ROOT_PATH) . '/script/make-readme.php';
         $producedContents = ob_get_contents();
         ob_end_clean();
 
         $this->assertTrue(
             $this->contents === $producedContents,
-            "README.md is not up–to-date. Please run: php script/make-readme.php",
+            'README.md is not up–to-date. Please run: php script/make-readme.php',
         );
     }
 
@@ -46,11 +46,11 @@ class ReadmeMdTest extends TestCase
         $this->assertIsArray($split);
         assert(is_array($split)); // Make phpstan happy
 
-        if ("" === ($split[0] ?? null)) {
+        if ('' === ($split[0] ?? null)) {
             array_shift($split);
         }
 
-        $wrapAndImplode = function(... $strings){
+        $wrapAndImplode = static function (string ...$strings) {
             $inner = '(\\\\+\/|\\\\+|\/)'; // Handle both Windows and Unix
 
             return sprintf(
@@ -59,14 +59,14 @@ class ReadmeMdTest extends TestCase
                 implode(
                     $inner,
                     array_map(
-                        function(string $v){
-                            return preg_quote($v, "/");
+                        static function (string $v) {
+                            return preg_quote($v, '/');
                         },
                         $strings,
                     ),
                 ),
                 $inner,
-            );;
+            );
         };
 
         $rootPathRegex = $wrapAndImplode(...$split);
@@ -74,7 +74,7 @@ class ReadmeMdTest extends TestCase
         $this->assertSame(
             0,
             preg_match($rootPathRegex, $this->contents),
-            "README.md contains local file paths (on your system) and it should not.",
+            'README.md contains local file paths (on your system) and it should not.',
         );
     }
 }

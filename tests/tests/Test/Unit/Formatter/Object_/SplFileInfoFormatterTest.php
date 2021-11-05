@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Test\Unit\Eboreum\Caster\Formatter\Object_;
 
 use Eboreum\Caster\Caster;
-use Eboreum\Caster\Collection\Formatter\ObjectFormatterCollection;
 use Eboreum\Caster\Formatter\Object_\SplFileInfoFormatter;
 use PHPUnit\Framework\TestCase;
 
@@ -14,8 +13,8 @@ class SplFileInfoFormatterTest extends TestCase
     public function testFormatReturnsNullWhenObjectIsNotQualified(): void
     {
         $caster = Caster::create();
-        $splFileInfoFormatter = new SplFileInfoFormatter;
-        $object = new \stdClass;
+        $splFileInfoFormatter = new SplFileInfoFormatter();
+        $object = new \stdClass();
 
         $this->assertFalse($splFileInfoFormatter->isHandling($object));
         $this->assertNull($splFileInfoFormatter->format($caster, $object));
@@ -24,7 +23,7 @@ class SplFileInfoFormatterTest extends TestCase
     public function testFormatWorks(): void
     {
         $caster = Caster::create();
-        $splFileInfoFormatter = new SplFileInfoFormatter;
+        $splFileInfoFormatter = new SplFileInfoFormatter();
 
         $object = new \SplFileInfo(__FILE__);
 

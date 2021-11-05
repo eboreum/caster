@@ -57,7 +57,7 @@ class PositiveIntegerTest extends TestCase
             $this->assertSame(RuntimeException::class, get_class($exceptionCurrent));
             $this->assertMatchesRegularExpression(
                 sprintf(
-                    implode("", [
+                    implode('', [
                         '/',
                         '^',
                         'Failed to construct \\\\%s with arguments \{',
@@ -66,7 +66,7 @@ class PositiveIntegerTest extends TestCase
                         '$',
                         '/',
                     ]),
-                    preg_quote(PositiveInteger::class, "/"),
+                    preg_quote(PositiveInteger::class, '/'),
                 ),
                 $exceptionCurrent->getMessage(),
             );
@@ -75,7 +75,7 @@ class PositiveIntegerTest extends TestCase
             $this->assertSame(RuntimeException::class, get_class($exceptionCurrent));
             $this->assertMatchesRegularExpression(
                 sprintf(
-                    implode("", [
+                    implode('', [
                         '/',
                         '^',
                         'Argument \$integer must be \>= the minimum limit of %d, but it is not\.',
@@ -89,12 +89,12 @@ class PositiveIntegerTest extends TestCase
             );
 
             $exceptionCurrent = $exceptionCurrent->getPrevious();
-            $this->assertTrue(is_null($exceptionCurrent));
+            $this->assertTrue(null === $exceptionCurrent);
 
             return;
         }
 
-        $this->fail("Exception was never thrown.");
+        $this->fail('Exception was never thrown.');
     }
 
     public function testGetMaximumLimitWorks(): void

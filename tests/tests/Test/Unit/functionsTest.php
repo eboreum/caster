@@ -10,18 +10,18 @@ class functionsTest extends TestCase
 {
     public function testRglobWorks(): void
     {
-        $filePaths = \Eboreum\Caster\functions\rglob(dirname(TEST_ROOT_PATH) . "/src/*.php");
+        $filePaths = \Eboreum\Caster\functions\rglob(dirname(TEST_ROOT_PATH) . '/src/*.php');
 
         $this->assertGreaterThan(0, $filePaths);
 
         $this->assertTrue(in_array(
-            dirname(TEST_ROOT_PATH) . "/src/Caster.php",
+            dirname(TEST_ROOT_PATH) . '/src/Caster.php',
             $filePaths,
             true,
         ));
 
         $this->assertTrue(in_array(
-            dirname(TEST_ROOT_PATH) . "/src/Contract/ImmutableObjectInterface.php",
+            dirname(TEST_ROOT_PATH) . '/src/Contract/ImmutableObjectInterface.php',
             $filePaths,
             true,
         ));

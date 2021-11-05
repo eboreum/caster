@@ -13,48 +13,47 @@ class EncryptedStringTest extends TestCase
     /**
      * @dataProvider dataProvider_testBasics
      */
-        public function testBasics(
+    public function testBasics(
         string $expectedEncryptionMethod,
         string $value,
         ?string $salt,
         ?string $encryptionMethod
-    ): void
-    {
+    ): void {
         $encryptedString = new EncryptedString($value, $salt, $encryptionMethod);
         $this->assertInstanceOf(EncryptedString::class, $encryptedString);
         $this->assertSame($value, $encryptedString->decrypt());
         $this->assertSame($expectedEncryptionMethod, $encryptedString->getEncryptionMethod());
 
         $reflectionObject = new \ReflectionObject($encryptedString);
-        $reflectionProperty = $reflectionObject->getProperty("encryptedString");
+        $reflectionProperty = $reflectionObject->getProperty('encryptedString');
         $reflectionProperty->setAccessible(true);
         $encryptedString = $reflectionProperty->getValue($encryptedString);
         $this->assertNotSame($value, $encryptedString);
     }
 
     /**
-     * @return array<int, array{0: string, 1: string, 2: null|string, 3: null|string}>
+     * @return array<int, array{0: string, 1: string, 2: string|null, 3: string|null}>
      */
     public function dataProvider_testBasics(): array
     {
         return [
             [
                 EncryptedString::ENCRYPTION_METHOD_DEFAULT,
-                "foo",
+                'foo',
                 null,
                 null,
             ],
             [
                 EncryptedString::ENCRYPTION_METHOD_DEFAULT,
-                "foo",
-                "bar",
+                'foo',
+                'bar',
                 null,
             ],
             [
-                "aes-128-cbc",
-                "foo",
+                'aes-128-cbc',
+                'foo',
                 null,
-                "aes-128-cbc",
+                'aes-128-cbc',
             ],
         ];
     }
@@ -62,18 +61,18 @@ class EncryptedStringTest extends TestCase
     public function testConstructorThrowsExceptionWhenArgumentSaltIsInvalid(): void
     {
         try {
-            new EncryptedString("foo", "");
+            new EncryptedString('foo', '');
         } catch (\Exception $e) {
             $currentException = $e;
             $this->assertSame(RuntimeException::class, get_class($currentException));
             $this->assertSame(
                 sprintf(
-                    implode("", [
-                        "Failed to construct \\%s with arguments {",
-                            "\$string = ** HIDDEN **",
-                            ", \$salt = ** HIDDEN **",
-                            ", \$encryptionMethod = (null) null",
-                        "}",
+                    implode('', [
+                        'Failed to construct \\%s with arguments {',
+                            '$string = ** HIDDEN **',
+                            ', $salt = ** HIDDEN **',
+                            ', $encryptionMethod = (null) null',
+                        '}',
                     ]),
                     EncryptedString::class,
                 ),
@@ -88,29 +87,29 @@ class EncryptedStringTest extends TestCase
             );
 
             $currentException = $currentException->getPrevious();
-            $this->assertTrue(is_null($currentException));
+            $this->assertTrue(null === $currentException);
 
             return;
         }
 
-        $this->fail("Exception was never thrown.");
+        $this->fail('Exception was never thrown.');
     }
 
     public function testConstructorThrowsExceptionWhenArgumentEncryptionMethodIsInvalid(): void
     {
         try {
-            new EncryptedString("foo", "bar", "fc1a05ff-c80c-45bd-a1a4-e1d8105881bc");
+            new EncryptedString('foo', 'bar', 'fc1a05ff-c80c-45bd-a1a4-e1d8105881bc');
         } catch (\Exception $e) {
             $currentException = $e;
             $this->assertSame(RuntimeException::class, get_class($currentException));
             $this->assertSame(
                 sprintf(
-                    implode("", [
-                        "Failed to construct \\%s with arguments {",
-                            "\$string = ** HIDDEN **",
-                            ", \$salt = ** HIDDEN **",
-                            ", \$encryptionMethod = (string(36)) \"fc1a05ff-c80c-45bd-a1a4-e1d8105881bc\"",
-                        "}",
+                    implode('', [
+                        'Failed to construct \\%s with arguments {',
+                            '$string = ** HIDDEN **',
+                            ', $salt = ** HIDDEN **',
+                            ', $encryptionMethod = (string(36)) "fc1a05ff-c80c-45bd-a1a4-e1d8105881bc"',
+                        '}',
                     ]),
                     EncryptedString::class,
                 ),
@@ -121,7 +120,7 @@ class EncryptedStringTest extends TestCase
             $this->assertSame(RuntimeException::class, get_class($currentException));
             $this->assertMatchesRegularExpression(
                 sprintf(
-                    implode("", [
+                    implode('', [
                         '/',
                         '^',
                         'Expects argument \$encryptionMethod to be null or when a string, to be one of \[',
@@ -137,42 +136,42 @@ class EncryptedStringTest extends TestCase
             );
 
             $currentException = $currentException->getPrevious();
-            $this->assertTrue(is_null($currentException));
+            $this->assertTrue(null === $currentException);
 
             return;
         }
 
-        $this->fail("Exception was never thrown.");
+        $this->fail('Exception was never thrown.');
     }
 
     public function testWithEncryptionMethodWorks(): void
     {
-        $encryptedStringA = new EncryptedString("foo");
+        $encryptedStringA = new EncryptedString('foo');
 
-        $encryptedStringB = $encryptedStringA->withEncryptionMethod("aes-128-cbc");
+        $encryptedStringB = $encryptedStringA->withEncryptionMethod('aes-128-cbc');
 
         $this->assertNotSame($encryptedStringA, $encryptedStringB);
         $this->assertSame(EncryptedString::ENCRYPTION_METHOD_DEFAULT, $encryptedStringA->getEncryptionMethod());
-        $this->assertSame("foo", $encryptedStringA->decrypt());
-        $this->assertSame("aes-128-cbc", $encryptedStringB->getEncryptionMethod());
-        $this->assertSame("foo", $encryptedStringB->decrypt());
+        $this->assertSame('foo', $encryptedStringA->decrypt());
+        $this->assertSame('aes-128-cbc', $encryptedStringB->getEncryptionMethod());
+        $this->assertSame('foo', $encryptedStringB->decrypt());
     }
 
     public function testWithEncryptionMethodThrowsExceptionWhenArgumentExceptionMethodIsInvalid(): void
     {
-        $encryptedString = new EncryptedString("foo");
+        $encryptedString = new EncryptedString('foo');
 
         try {
-            $encryptedString->withEncryptionMethod("fc75493b-e598-4417-a255-c054268c4449");
+            $encryptedString->withEncryptionMethod('fc75493b-e598-4417-a255-c054268c4449');
         } catch (\Exception $e) {
             $currentException = $e;
             $this->assertSame(RuntimeException::class, get_class($currentException));
             $this->assertSame(
                 sprintf(
-                    implode("", [
-                        "Failure in \\%s->withEncryptionMethod(",
-                            "\$encryptionMethod = (string(36)) \"fc75493b-e598-4417-a255-c054268c4449\"",
-                        "): (object) \\%s",
+                    implode('', [
+                        'Failure in \\%s->withEncryptionMethod(',
+                            '$encryptionMethod = (string(36)) "fc75493b-e598-4417-a255-c054268c4449"',
+                        '): (object) \\%s',
                     ]),
                     EncryptedString::class,
                     EncryptedString::class,
@@ -184,7 +183,7 @@ class EncryptedStringTest extends TestCase
             $this->assertSame(RuntimeException::class, get_class($currentException));
             $this->assertMatchesRegularExpression(
                 sprintf(
-                    implode("", [
+                    implode('', [
                         '/',
                         '^',
                         'Expects argument \$encryptionMethod to be one of \[',
@@ -200,12 +199,12 @@ class EncryptedStringTest extends TestCase
             );
 
             $currentException = $currentException->getPrevious();
-            $this->assertTrue(is_null($currentException));
+            $this->assertTrue(null === $currentException);
 
             return;
         }
 
-        $this->fail("Exception was never thrown.");
+        $this->fail('Exception was never thrown.');
     }
 
     public function testGenerateRandomSaltWorks(): void

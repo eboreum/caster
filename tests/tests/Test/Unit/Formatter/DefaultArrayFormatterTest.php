@@ -22,9 +22,8 @@ class DefaultArrayFormatterTest extends TestCase
         string $expectedWithType,
         Caster $caster,
         array $array
-    ): void
-    {
-        $defaultArrayFormatter = new DefaultArrayFormatter;
+    ): void {
+        $defaultArrayFormatter = new DefaultArrayFormatter();
 
         $this->assertTrue($defaultArrayFormatter->isHandling($array), $message);
 
@@ -50,25 +49,23 @@ class DefaultArrayFormatterTest extends TestCase
     {
         return [
             [
-                "An empty array",
+                'An empty array',
                 '/^\[\]$/',
                 '/^\[\]$/',
                 Caster::getInstance(),
                 [],
             ],
             [
-                "A one-dimensional array",
+                'A one-dimensional array',
                 '/^\[0 =\> "foo"\]$/',
                 '/^\[\(int\) 0 =\> \(string\(3\)\) "foo"\]$/',
                 Caster::getInstance(),
-                [
-                    "foo",
-                ],
+                ['foo'],
             ],
             [
-                "A multidimensional array, not being restricted",
+                'A multidimensional array, not being restricted',
                 '/^\["foo" =\> \["bar" =\> \["baz" =\> \[\]\]\]\]$/',
-                implode("", [
+                implode('', [
                     '/',
                     '^',
                     '\[',
@@ -83,17 +80,17 @@ class DefaultArrayFormatterTest extends TestCase
                 ]),
                 Caster::getInstance(),
                 [
-                    "foo" => [
-                        "bar" => [
-                            "baz" => [],
+                    'foo' => [
+                        'bar' => [
+                            'baz' => [],
                         ],
                     ],
                 ],
             ],
             [
-                "A multidimensional array, being restricted by maximum depth",
+                'A multidimensional array, being restricted by maximum depth',
                 '/^\["foo" =\> \["bar" =\> \[\.\.\.\] \*\* OMITTED \*\* \(maximum depth of 1 reached\)\]\]$/',
-                implode("", [
+                implode('', [
                     '/',
                     '^',
                     '\[',
@@ -105,7 +102,7 @@ class DefaultArrayFormatterTest extends TestCase
                     '$',
                     '/',
                 ]),
-                (function(){
+                (static function () {
                     $caster = Caster::getInstance();
                     $caster = $caster->withDepthMaximum(new PositiveInteger(1));
 
@@ -117,17 +114,17 @@ class DefaultArrayFormatterTest extends TestCase
                     return $caster;
                 })(),
                 [
-                    "foo" => [
-                        "bar" => [
-                            "baz" => [],
+                    'foo' => [
+                        'bar' => [
+                            'baz' => [],
                         ],
                     ],
                 ],
             ],
             [
-                "A multidimensional array, being restricted by array sample size with 1 element in surplus",
+                'A multidimensional array, being restricted by array sample size with 1 element in surplus',
                 '/^\["foo" =\> 1, "bar" =\> 2, \.\.\. and 1 more element\] \(sample\)$/',
-                implode("", [
+                implode('', [
                     '/',
                     '^',
                     '\[',
@@ -138,7 +135,7 @@ class DefaultArrayFormatterTest extends TestCase
                     '$',
                     '/',
                 ]),
-                (function(){
+                (static function () {
                     $caster = Caster::getInstance();
                     $caster = $caster->withArraySampleSize(new UnsignedInteger(2));
 
@@ -150,15 +147,15 @@ class DefaultArrayFormatterTest extends TestCase
                     return $caster;
                 })(),
                 [
-                    "foo" => 1,
-                    "bar" => 2,
-                    "baz" => 3,
+                    'foo' => 1,
+                    'bar' => 2,
+                    'baz' => 3,
                 ],
             ],
             [
-                "A multidimensional array, being restricted by array sample size with 3 elements in surplus",
+                'A multidimensional array, being restricted by array sample size with 3 elements in surplus',
                 '/^\["foo" =\> 1, "bar" =\> 2, \.\.\. and 3 more elements\] \(sample\)$/',
-                implode("", [
+                implode('', [
                     '/',
                     '^',
                     '\[',
@@ -169,7 +166,7 @@ class DefaultArrayFormatterTest extends TestCase
                     '$',
                     '/',
                 ]),
-                (function(){
+                (static function () {
                     $caster = Caster::getInstance();
                     $caster = $caster->withArraySampleSize(new UnsignedInteger(2));
 
@@ -181,11 +178,11 @@ class DefaultArrayFormatterTest extends TestCase
                     return $caster;
                 })(),
                 [
-                    "foo" => 1,
-                    "bar" => 2,
-                    "baz" => 3,
-                    "bim" => 4,
-                    "bum" => 5,
+                    'foo' => 1,
+                    'bar' => 2,
+                    'baz' => 3,
+                    'bim' => 4,
+                    'bum' => 5,
                 ],
             ],
         ];
@@ -195,11 +192,11 @@ class DefaultArrayFormatterTest extends TestCase
     {
         $caster = Caster::create();
         $caster = $caster->withArraySampleSize(new UnsignedInteger(0));
-        $defaultArrayFormatter = new DefaultArrayFormatter;
+        $defaultArrayFormatter = new DefaultArrayFormatter();
 
         $this->assertSame(
-            "[...] (sample)",
-            $defaultArrayFormatter->format($caster, ["foo", 42]),
+            '[...] (sample)',
+            $defaultArrayFormatter->format($caster, ['foo', 42]),
         );
     }
 }
