@@ -64,7 +64,7 @@ class ClosureFormatter extends AbstractObjectFormatter
                     if ($reflectionParameter->isDefaultValueConstant()) {
                         $constantName = $reflectionParameter->getDefaultValueConstantName();
 
-                        if (preg_match('/\\\\/', $constantName)) {
+                        if ($constantName !== null && preg_match('/\\\\/', $constantName)) {
                             $constantName = sprintf(
                                 '\\%s',
                                 $constantName,

@@ -18,7 +18,7 @@ use Eboreum\Caster\Exception\RuntimeException;
  */
 abstract class AbstractObjectCollection implements ObjectCollectionInterface
 {
-    /** @var array<int, ElementInterface> */
+    /** @var array<ElementInterface> */
     protected array $elements;
 
     /**
