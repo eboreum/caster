@@ -342,33 +342,28 @@ class Caster implements CasterInterface
             return $return;
         }
 
-        if (is_resource($value)) {
-            foreach ($this->customResourceFormatterCollection as $resourceFormatter) {
-                $return = $resourceFormatter->format($this, new Resource_($value));
+        assert(is_resource($value));
 
-                if (is_string($return)) {
-                    break;
-                }
+        foreach ($this->customResourceFormatterCollection as $resourceFormatter) {
+            $return = $resourceFormatter->format($this, new Resource_($value));
+
+            if (is_string($return)) {
+                break;
             }
-
-            if (null === $return) {
-                $return = strval($this->getDefaultResourceFormatter()->format($this, new Resource_($value)));
-            }
-
-            if ($this->isPrependingType()) {
-                $return = sprintf(
-                    '(resource) %s',
-                    $return,
-                );
-            }
-
-            return $return;
         }
 
-        throw new RuntimeException(sprintf(
-            'Uncovered case for type %s',
-            $this->quoteAndEscape(gettype($value))
-        ));
+        if (null === $return) {
+            $return = strval($this->getDefaultResourceFormatter()->format($this, new Resource_($value)));
+        }
+
+        if ($this->isPrependingType()) {
+            $return = sprintf(
+                '(resource) %s',
+                $return,
+            );
+        }
+
+        return $return;
     }
 
     /**
