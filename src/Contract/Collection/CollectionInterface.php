@@ -19,6 +19,14 @@ interface CollectionInterface extends
     \IteratorAggregate
 {
     /**
+     * Must return true when the $element argument is accepted by the implementing class.
+     * Otherwise, must return false.
+     *
+     * @param mixed $element
+     */
+    public static function isElementAccepted($element): bool;
+
+    /**
      * @return array<int, ElementInterface>
      */
     public function toArray(): array;
@@ -34,12 +42,4 @@ interface CollectionInterface extends
      * Must return whether the collection is empty or not.
      */
     public function isEmpty(): bool;
-
-    /**
-     * Must return true when the $element argument is accepted by the implementing class.
-     * Otherwise, must return false.
-     *
-     * @param mixed $element
-     */
-    public static function isElementAccepted($element): bool;
 }

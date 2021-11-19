@@ -9,9 +9,9 @@ use Eboreum\Caster\Exception\RuntimeException;
 
 class CharacterEncoding implements CharacterEncodingInterface
 {
-    private static ?CharacterEncoding $instance = null;
-
     protected string $name;
+
+    private static ?CharacterEncoding $instance = null;
 
     /**
      * @throws RuntimeException
@@ -59,9 +59,28 @@ class CharacterEncoding implements CharacterEncodingInterface
         }
     }
 
-    public function __toString(): string
+    /**
+     * {@inheritDoc}
+     */
+    public static function getInstance(): CharacterEncoding
     {
-        return $this->name;
+        if (null === self::$instance) {
+            self::$instance = new self(mb_internal_encoding());
+        }
+
+        return self::$instance;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public static function isCharacterEncodingValid(string $name): bool
+    {
+        return in_array(
+            $name,
+            mb_list_encodings(),
+            true,
+        );
     }
 
     public function getName(): string
@@ -77,27 +96,8 @@ class CharacterEncoding implements CharacterEncodingInterface
         return $this->getName() === $characterEncoding->getName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public static function isCharacterEncodingValid(string $name): bool
+    public function __toString(): string
     {
-        return in_array(
-            $name,
-            mb_list_encodings(),
-            true,
-        );
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public static function getInstance(): CharacterEncoding
-    {
-        if (null === self::$instance) {
-            self::$instance = new self(mb_internal_encoding());
-        }
-
-        return self::$instance;
+        return $this->name;
     }
 }

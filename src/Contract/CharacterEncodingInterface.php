@@ -11,7 +11,15 @@ namespace Eboreum\Caster\Contract;
  */
 interface CharacterEncodingInterface extends ImmutableObjectInterface
 {
-    public function __toString(): string;
+    /**
+     * Must always return the same instance.
+     */
+    public static function getInstance(): CharacterEncodingInterface;
+
+    /**
+     * Must determine whether the given character encoding by name is valid on the current system.
+     */
+    public static function isCharacterEncodingValid(string $name): bool;
 
     public function getName(): string;
 
@@ -20,13 +28,5 @@ interface CharacterEncodingInterface extends ImmutableObjectInterface
      */
     public function isSame(CharacterEncodingInterface $characterEncoding): bool;
 
-    /**
-     * Must determine whether the given character encoding by name is valid on the current system.
-     */
-    public static function isCharacterEncodingValid(string $name): bool;
-
-    /**
-     * Must always return the same instance.
-     */
-    public static function getInstance(): CharacterEncodingInterface;
+    public function __toString(): string;
 }

@@ -29,6 +29,14 @@ class StringFormatterCollection extends AbstractObjectCollection implements Form
 
     /**
      * {@inheritDoc}
+     */
+    public static function getHandledClassName(): string
+    {
+        return StringFormatterInterface::class;
+    }
+
+    /**
+     * {@inheritDoc}
      *
      * @return array<int, StringFormatterInterface>
      */
@@ -46,13 +54,5 @@ class StringFormatterCollection extends AbstractObjectCollection implements Form
     public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->elements);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public static function getHandledClassName(): string
-    {
-        return StringFormatterInterface::class;
     }
 }

@@ -26,6 +26,14 @@ class ArrayFormatterCollection extends AbstractObjectCollection implements Forma
 
     /**
      * {@inheritDoc}
+     */
+    public static function getHandledClassName(): string
+    {
+        return ArrayFormatterInterface::class;
+    }
+
+    /**
+     * {@inheritDoc}
      *
      * @return array<int, ArrayFormatterInterface>
      */
@@ -43,13 +51,5 @@ class ArrayFormatterCollection extends AbstractObjectCollection implements Forma
     public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->elements);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public static function getHandledClassName(): string
-    {
-        return ArrayFormatterInterface::class;
     }
 }

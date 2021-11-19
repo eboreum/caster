@@ -26,6 +26,14 @@ class ResourceFormatterCollection extends AbstractObjectCollection implements Fo
 
     /**
      * {@inheritDoc}
+     */
+    public static function getHandledClassName(): string
+    {
+        return ResourceFormatterInterface::class;
+    }
+
+    /**
+     * {@inheritDoc}
      *
      * @return array<int, ResourceFormatterInterface>
      */
@@ -43,13 +51,5 @@ class ResourceFormatterCollection extends AbstractObjectCollection implements Fo
     public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->elements);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public static function getHandledClassName(): string
-    {
-        return ResourceFormatterInterface::class;
     }
 }

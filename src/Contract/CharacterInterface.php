@@ -10,8 +10,6 @@ namespace Eboreum\Caster\Contract;
  */
 interface CharacterInterface extends ImmutableObjectInterface, TextuallyIdentifiableInterface
 {
-    public function __toString(): string;
-
     public function getCharacter(): string;
 
     public function getCharacterEncoding(): CharacterEncodingInterface;
@@ -21,4 +19,6 @@ interface CharacterInterface extends ImmutableObjectInterface, TextuallyIdentifi
      * Must also check if character encodings are identical.
      */
     public function isSame(CharacterInterface $character): bool;
+
+    public function __toString(): string;
 }

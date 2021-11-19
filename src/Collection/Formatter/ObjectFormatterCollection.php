@@ -26,6 +26,14 @@ class ObjectFormatterCollection extends AbstractObjectCollection implements Form
 
     /**
      * {@inheritDoc}
+     */
+    public static function getHandledClassName(): string
+    {
+        return ObjectFormatterInterface::class;
+    }
+
+    /**
+     * {@inheritDoc}
      *
      * @return array<int, ObjectFormatterInterface>
      */
@@ -43,13 +51,5 @@ class ObjectFormatterCollection extends AbstractObjectCollection implements Form
     public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->elements);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public static function getHandledClassName(): string
-    {
-        return ObjectFormatterInterface::class;
     }
 }

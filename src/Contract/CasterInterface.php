@@ -31,6 +31,16 @@ interface CasterInterface extends ImmutableObjectInterface
     public const STRING_SAMPLE_SIZE_DEFAULT = 1000;
 
     /**
+     * Must return a new instance every time.
+     */
+    public static function create(?CharacterEncodingInterface $characterEncoding = null): CasterInterface;
+
+    /**
+     * Must always return the same instance.
+     */
+    public static function getInstance(): CasterInterface;
+
+    /**
      * Returns the spelled-out value. E.g. `true` will be output as "true", strings will be wrapped in quotes (like
      * `"foo"`), etc.
      *
@@ -337,14 +347,4 @@ interface CasterInterface extends ImmutableObjectInterface
      * Otherwise, must return false.
      */
     public function isPrependingType(): bool;
-
-    /**
-     * Must return a new instance every time.
-     */
-    public static function create(?CharacterEncodingInterface $characterEncoding = null): CasterInterface;
-
-    /**
-     * Must always return the same instance.
-     */
-    public static function getInstance(): CasterInterface;
 }

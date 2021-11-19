@@ -68,6 +68,22 @@ abstract class AbstractInteger implements IntegerInterface
     /**
      * {@inheritDoc}
      */
+    public static function getMaximumLimit(): ?int
+    {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public static function getMinimumLimit(): ?int
+    {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function jsonSerialize(): string
     {
         return strval($this->integer);
@@ -87,21 +103,5 @@ abstract class AbstractInteger implements IntegerInterface
     public function isSame(IntegerInterface $integer): bool
     {
         return $this->toInteger() === $integer->toInteger();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public static function getMaximumLimit(): ?int
-    {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public static function getMinimumLimit(): ?int
-    {
-        return null;
     }
 }

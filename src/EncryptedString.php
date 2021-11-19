@@ -109,6 +109,19 @@ class EncryptedString implements ImmutableObjectInterface, ElementInterface
     }
 
     /**
+     * @throws Exception
+     */
+    public static function generateRandomSalt(): string
+    {
+        return \bin2hex(\random_bytes(64));
+    }
+
+    public static function isEncryptionMethodValid(string $encryptionMethod): bool
+    {
+        return in_array($encryptionMethod, \openssl_get_cipher_methods(), true);
+    }
+
+    /**
      * Decrypts the value, making it readable in clear text (memory) yet again, and returns it.
      */
     public function decrypt(): string
@@ -195,18 +208,5 @@ class EncryptedString implements ImmutableObjectInterface, ElementInterface
     protected function getInitializationVector(): string
     {
         return substr(\hash('sha256', $this->initializationVectorBase), 0, 16);
-    }
-
-    /**
-     * @throws Exception
-     */
-    public static function generateRandomSalt(): string
-    {
-        return \bin2hex(\random_bytes(64));
-    }
-
-    public static function isEncryptionMethodValid(string $encryptionMethod): bool
-    {
-        return in_array($encryptionMethod, \openssl_get_cipher_methods(), true);
     }
 }

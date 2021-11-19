@@ -19,7 +19,6 @@ use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\Contract\CharacterEncodingInterface;
 use Eboreum\Caster\Contract\CharacterInterface;
 use Eboreum\Caster\Exception\CasterException;
-use Eboreum\Caster\Exception\RuntimeException;
 use Eboreum\Caster\Formatter\DefaultArrayFormatter;
 use Eboreum\Caster\Formatter\DefaultObjectFormatter;
 use Eboreum\Caster\Formatter\DefaultResourceFormatter;
@@ -32,13 +31,6 @@ use Eboreum\Caster\Formatter\Object_\TextuallyIdentifiableInterfaceFormatter;
  */
 class Caster implements CasterInterface
 {
-    private static ?Caster $instance = null;
-
-    /**
-     * The instance used internally by this instance of Caster.
-     */
-    private static ?Caster $internalInstance = null;
-
     protected CharacterEncodingInterface $characterEncoding;
 
     /**
@@ -119,6 +111,13 @@ class Caster implements CasterInterface
      */
     protected ContextInterface $context;
 
+    private static ?Caster $instance = null;
+
+    /**
+     * The instance used internally by this instance of Caster.
+     */
+    private static ?Caster $internalInstance = null;
+
     public function __construct(CharacterEncodingInterface $characterEncoding)
     {
         $this->characterEncoding = $characterEncoding;
@@ -142,17 +141,72 @@ class Caster implements CasterInterface
         $this->context = new Context();
     }
 
-    public function __clone()
+    /**
+     * {@inheritDoc}
+     */
+    public static function getInstance(): Caster
     {
-        $this->defaultArrayFormatter = clone $this->defaultArrayFormatter;
-        $this->defaultObjectFormatter = clone $this->defaultObjectFormatter;
-        $this->defaultResourceFormatter = clone $this->defaultResourceFormatter;
-        $this->defaultStringFormatter = clone $this->defaultStringFormatter;
-        $this->maskedEncryptedStringCollection = clone $this->maskedEncryptedStringCollection;
-        $this->customArrayFormatterCollection = clone $this->customArrayFormatterCollection;
-        $this->customObjectFormatterCollection = clone $this->customObjectFormatterCollection;
-        $this->customResourceFormatterCollection = clone $this->customResourceFormatterCollection;
-        $this->customStringFormatterCollection = clone $this->customStringFormatterCollection;
+        if (null === self::$instance) {
+            self::$instance = static::create();
+        }
+
+        return self::$instance;
+    }
+
+    /**
+     * An instance meant for use internally within this library (eboreum/caster).
+     */
+    public static function getInternalInstance(): Caster
+    {
+        if (null === self::$internalInstance) {
+            self::$internalInstance = self::getInstance();
+
+            self::$internalInstance = self::$internalInstance->withCustomObjectFormatterCollection(
+                new ObjectFormatterCollection(
+                    new DebugIdentifierAnnotationInterfaceFormatter(),
+                    new TextuallyIdentifiableInterfaceFormatter(),
+                ),
+            );
+        }
+
+        return self::$internalInstance;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public static function create(?CharacterEncodingInterface $characterEncoding = null): Caster
+    {
+        if (null === $characterEncoding) {
+            $characterEncoding = CharacterEncoding::getInstance();
+        }
+
+        return new self($characterEncoding);
+    }
+
+    /**
+     * @param \ReflectionClass<object> $reflectionClass
+     */
+    public static function makeNormalizedClassName(\ReflectionClass $reflectionClass): string
+    {
+        if ($reflectionClass->isAnonymous()) {
+            assert(is_string($reflectionClass->getFileName()));
+
+            return sprintf(
+                'class@anonymous/in/%s:%d',
+                preg_replace(
+                    '/^\//',
+                    '',
+                    $reflectionClass->getFileName(),
+                ),
+                $reflectionClass->getStartLine(),
+            );
+        }
+
+        return sprintf(
+            '\\%s',
+            $reflectionClass->getName(),
+        );
     }
 
     /**
@@ -970,71 +1024,16 @@ class Caster implements CasterInterface
         return $this->isPrependingType;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public static function create(?CharacterEncodingInterface $characterEncoding = null): Caster
+    public function __clone()
     {
-        if (null === $characterEncoding) {
-            $characterEncoding = CharacterEncoding::getInstance();
-        }
-
-        return new self($characterEncoding);
-    }
-
-    /**
-     * @param \ReflectionClass<object> $reflectionClass
-     */
-    public static function makeNormalizedClassName(\ReflectionClass $reflectionClass): string
-    {
-        if ($reflectionClass->isAnonymous()) {
-            assert(is_string($reflectionClass->getFileName()));
-
-            return sprintf(
-                'class@anonymous/in/%s:%d',
-                preg_replace(
-                    '/^\//',
-                    '',
-                    $reflectionClass->getFileName(),
-                ),
-                $reflectionClass->getStartLine(),
-            );
-        }
-
-        return sprintf(
-            '\\%s',
-            $reflectionClass->getName(),
-        );
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public static function getInstance(): Caster
-    {
-        if (null === self::$instance) {
-            self::$instance = static::create();
-        }
-
-        return self::$instance;
-    }
-
-    /**
-     * An instance meant for use internally within this library (eboreum/caster).
-     */
-    public static function getInternalInstance(): Caster
-    {
-        if (null === self::$internalInstance) {
-            self::$internalInstance = self::getInstance();
-
-            self::$internalInstance = self::$internalInstance->withCustomObjectFormatterCollection(
-                new ObjectFormatterCollection(...[
-                    new DebugIdentifierAnnotationInterfaceFormatter(),
-                    new TextuallyIdentifiableInterfaceFormatter(),
-                ]),
-            );
-        }
-
-        return self::$internalInstance;
+        $this->defaultArrayFormatter = clone $this->defaultArrayFormatter;
+        $this->defaultObjectFormatter = clone $this->defaultObjectFormatter;
+        $this->defaultResourceFormatter = clone $this->defaultResourceFormatter;
+        $this->defaultStringFormatter = clone $this->defaultStringFormatter;
+        $this->maskedEncryptedStringCollection = clone $this->maskedEncryptedStringCollection;
+        $this->customArrayFormatterCollection = clone $this->customArrayFormatterCollection;
+        $this->customObjectFormatterCollection = clone $this->customObjectFormatterCollection;
+        $this->customResourceFormatterCollection = clone $this->customResourceFormatterCollection;
+        $this->customStringFormatterCollection = clone $this->customStringFormatterCollection;
     }
 }

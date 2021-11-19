@@ -18,6 +18,17 @@ use Eboreum\Caster\Contract\DebugIdentifierAnnotationInterface;
  */
 class DebugIdentifierAnnotationInterfaceFormatter extends AbstractObjectFormatter
 {
+    public static function doReflectionPropertiesHaveSameVisibilityWhenInsideA(
+        \ReflectionProperty $a,
+        \ReflectionProperty $b
+    ): bool {
+        return (
+            $a->isPublic() && $b->isPublic()
+            || $a->isPublic() && $b->isProtected()
+            || $a->isProtected() && $b->isProtected()
+        );
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -172,17 +183,6 @@ class DebugIdentifierAnnotationInterfaceFormatter extends AbstractObjectFormatte
         return (
             class_exists(AnnotationReader::class)
             && $object instanceof DebugIdentifierAnnotationInterface
-        );
-    }
-
-    public static function doReflectionPropertiesHaveSameVisibilityWhenInsideA(
-        \ReflectionProperty $a,
-        \ReflectionProperty $b
-    ): bool {
-        return (
-            $a->isPublic() && $b->isPublic()
-            || $a->isPublic() && $b->isProtected()
-            || $a->isProtected() && $b->isProtected()
         );
     }
 }

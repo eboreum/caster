@@ -72,6 +72,20 @@ abstract class AbstractObjectCollection implements ObjectCollectionInterface
     /**
      * {@inheritDoc}
      */
+    public static function isElementAccepted($element): bool
+    {
+        if (is_object($element)) {
+            $className = static::getHandledClassName();
+
+            return ($element instanceof $className);
+        }
+
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function count(): int
     {
         return count($this->elements);
@@ -103,19 +117,5 @@ abstract class AbstractObjectCollection implements ObjectCollectionInterface
     public function isEmpty(): bool
     {
         return !$this->elements;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public static function isElementAccepted($element): bool
-    {
-        if (is_object($element)) {
-            $className = static::getHandledClassName();
-
-            return ($element instanceof $className);
-        }
-
-        return false;
     }
 }
