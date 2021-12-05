@@ -18,7 +18,9 @@ Eboreum/Caster: A PHP type formatter
 
 With Eboreum/Caster, you will be able to provide excellent information about all PHP values, which is great in both **debugging** and **failure scenarios**. Are the exception messages in your application lacklustre? Expand your options and displayed values greatly with Eboreum/Caster!
 
-Additionally, Eboreum/Caster **gives you -- the developer -- the ultimate power** to control how output is handled, parsed and presented through opt-in utilization of custom formatters.
+This package can be thought of as an extended version of the magic method `__debugInfo` ([https://www.php.net/manual/en/language.oop5.magic.php#object.debuginfo](https://www.php.net/manual/en/language.oop5.magic.php#object.debuginfo)). However, contrary to `__debugInfo`, where only the internals of the implementing class is used for building sensible debug information – with the occasional (often abominable) static method calls to other classes – Caster allows for much more variety, including customer formatters utilizing proper dependency injection.
+
+Eboreum/Caster **gives you -- the developer -- the ultimate power** to control how output is handled, parsed and presented through opt-in utilization of custom formatters.
 
 Lastly, you may provide a series of **sensitive text strings** like passwords, authentication tokens, social security numbers, and similar, preventing these from being output inside strings. Wouldn't want these to show up in error logs, emails, and what have you. Upon encountering sensitive strings, said sensitive substrings will be masked, instead showing a static length string replacement (like `******`).
 
@@ -278,6 +280,19 @@ For all unit tests, first follow these steps:
 cd tests
 php ../vendor/bin/phpunit
 ```
+
+# PHPStan
+
+## Suppression codes
+
+For a few cases, we need to suppress the PHPStan output, for various reasons. We strive to avoid `@phpstan-ignore-line` (and `@phpstan-ignore-next-line`, and similar), but in very few cases – primarily in tests – this is just not possible, as the very thing we test for is something PHPStan does not like.
+
+|Code|Remark|
+|-|-|
+|babdc1d2|A property is never read, only written. See: [https://phpstan.org/developing-extensions/always-read-written-properties](https://phpstan.org/developing-extensions/always-read-written-properties). For tests, where the existence of such properties is integral to the tests, PHPStan shouldn't show it as an error. Sometimes, it is because a property is read through the Reflection API and not directly accessed, which confuses PHPStan.|
+|136348fe|False positive by PHPStan on the error: "Dead catch - Exception is never thrown in the try block."|
+|42a9f1bf|Improper – by PHPStan – covariance check on `getIterator` method, described by interface `IteratorAggregate`. Returned objects (in the array) implement `\Eboreum\Caster\Contract\Collection\ElementInterface`, but PHPStan fails to recognize this.|
+|03dec37a|On-purpose testing for an invalid argument in a test, which **is** the very test, and as such, PHPStan should not report on it.|
 
 # License & Disclaimer
 

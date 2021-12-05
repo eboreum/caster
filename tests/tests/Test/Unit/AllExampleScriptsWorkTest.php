@@ -15,7 +15,7 @@ class AllExampleScriptsWorkTest extends TestCase
     {
         $globbedFilePaths = glob(TEST_ROOT_PATH . '/../script/misc/readme/example-*.php');
 
-        assert(is_array($globbedFilePaths));
+        assert(is_array($globbedFilePaths)); // Make phpstan happy
 
         $filePaths = [];
 
@@ -42,7 +42,7 @@ class AllExampleScriptsWorkTest extends TestCase
                 ), 0, $t);
             }
 
-            assert(is_string($output));
+            assert(is_string($output)); // Make phpstan happy
 
             $this->assertGreaterThan(0, mb_strlen($output), 'File: ' . $filePath);
         }

@@ -25,19 +25,18 @@ class DefaultResourceFormatterTest extends TestCase
 
         $this->assertTrue($defaultResourceFormatter->isHandling($resource), $message);
 
-        $this->assertMatchesRegularExpression(
-            $expected,
-            $defaultResourceFormatter->format($caster, $resource),
-            $message,
-        );
+        $formatted = $defaultResourceFormatter->format($caster, $resource);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted)); // Make phpstan happy
+
+        $this->assertMatchesRegularExpression($expected, $formatted, $message);
 
         $caster = $caster->withIsPrependingType(true);
+        $formatted = $defaultResourceFormatter->format($caster, $resource);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted)); // Make phpstan happy
 
-        $this->assertMatchesRegularExpression(
-            $expectedWithType,
-            $defaultResourceFormatter->format($caster, $resource),
-            $message,
-        );
+        $this->assertMatchesRegularExpression($expectedWithType, $formatted, $message);
     }
 
     /**
@@ -54,7 +53,7 @@ class DefaultResourceFormatterTest extends TestCase
                 (static function () {
                     $resource = \fopen(__FILE__, 'r+');
 
-                    assert(is_resource($resource));
+                    assert(is_resource($resource)); // Make phpstan happy
 
                     return new Resource_($resource);
                 })(),

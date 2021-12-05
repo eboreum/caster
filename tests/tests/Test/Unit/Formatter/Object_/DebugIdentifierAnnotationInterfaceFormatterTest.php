@@ -37,8 +37,12 @@ class DebugIdentifierAnnotationInterfaceFormatterTest extends TestCase
             protected int $bar = 42;
 
             /** @DebugIdentifier */
-            private float $baz = 3.14;
+            private float $baz = 3.14; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
         };
+
+        $formatted = $debugIdentifierAnnotationInterfaceFormatter->format($caster, $object);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted)); // Make phpstan happy
 
         $this->assertTrue($debugIdentifierAnnotationInterfaceFormatter->isHandling($object));
         $this->assertMatchesRegularExpression(
@@ -52,7 +56,7 @@ class DebugIdentifierAnnotationInterfaceFormatterTest extends TestCase
                 '$',
                 '/',
             ]),
-            $debugIdentifierAnnotationInterfaceFormatter->format($caster, $object),
+            $formatted,
         );
     }
 
@@ -87,6 +91,10 @@ class DebugIdentifierAnnotationInterfaceFormatterTest extends TestCase
         );
         $this->assertTrue($propertyNameToReflectionProperties['bar'][0]->isPrivate());
 
+        $formatted = $debugIdentifierAnnotationInterfaceFormatter->format($caster, $object);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted)); // Make phpstan happy
+
         $this->assertMatchesRegularExpression(
             sprintf(
                 implode('', [
@@ -102,7 +110,7 @@ class DebugIdentifierAnnotationInterfaceFormatterTest extends TestCase
                 preg_quote($className, '/'),
                 preg_quote(testFormatWorksWithAOjectWithAParentButWithNoConflictingProperties\ClassB::class, '/'),
             ),
-            $debugIdentifierAnnotationInterfaceFormatter->format($caster, $object),
+            $formatted,
         );
     }
 
@@ -354,6 +362,10 @@ class DebugIdentifierAnnotationInterfaceFormatterTest extends TestCase
         );
         $this->assertTrue($propertyNameToReflectionProperties['onlyInC'][0]->isPrivate());
 
+        $formatted = $debugIdentifierAnnotationInterfaceFormatter->format($caster, $object);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted)); // Make phpstan happy
+
         $this->assertMatchesRegularExpression(
             sprintf(
                 implode('', [
@@ -422,7 +434,7 @@ class DebugIdentifierAnnotationInterfaceFormatterTest extends TestCase
                 preg_quote(testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassB::class, '/'),
                 preg_quote(testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassC::class, '/'),
             ),
-            $debugIdentifierAnnotationInterfaceFormatter->format($caster, $object),
+            $formatted,
         );
     }
 
@@ -433,8 +445,12 @@ class DebugIdentifierAnnotationInterfaceFormatterTest extends TestCase
 
         $object = new class implements DebugIdentifierAnnotationInterface
         {
-            private string $foo = 'a';
+            private string $foo = 'a'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
         };
+
+        $formatted = $debugIdentifierAnnotationInterfaceFormatter->format($caster, $object);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted)); // Make phpstan happy
 
         $this->assertMatchesRegularExpression(
             implode('', [
@@ -444,7 +460,7 @@ class DebugIdentifierAnnotationInterfaceFormatterTest extends TestCase
                 '$',
                 '/',
             ]),
-            $debugIdentifierAnnotationInterfaceFormatter->format($caster, $object),
+            $formatted,
         );
     }
 }

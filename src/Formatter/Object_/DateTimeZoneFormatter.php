@@ -22,7 +22,7 @@ class DateTimeZoneFormatter extends AbstractObjectFormatter
             return null;
         }
 
-        assert($object instanceof \DateTimeZone);
+        assert($object instanceof \DateTimeZone); // Make phpstan happy
 
         return sprintf(
             '%s (name: %s)',

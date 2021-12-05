@@ -25,19 +25,18 @@ class DefaultStringFormatterTest extends TestCase
 
         $this->assertTrue($defaultStringFormatter->isHandling($string), $message);
 
-        $this->assertMatchesRegularExpression(
-            $expected,
-            $defaultStringFormatter->format($caster, $string),
-            $message,
-        );
+        $formatted = $defaultStringFormatter->format($caster, $string);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted)); // Make phpstan happy
+
+        $this->assertMatchesRegularExpression($expected, $formatted, $message);
 
         $caster = $caster->withIsPrependingType(true);
+        $formatted = $defaultStringFormatter->format($caster, $string);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted)); // Make phpstan happy
 
-        $this->assertMatchesRegularExpression(
-            $expectedWithType,
-            $defaultStringFormatter->format($caster, $string),
-            $message,
-        );
+        $this->assertMatchesRegularExpression($expectedWithType, $formatted, $message);
     }
 
     /**

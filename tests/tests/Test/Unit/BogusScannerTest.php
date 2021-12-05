@@ -25,15 +25,21 @@ class BogusScannerTest extends TestCase
 
         $contents = file_get_contents(dirname(TEST_ROOT_PATH) . '/composer.json');
 
-        assert(is_string($contents));
+        assert(is_string($contents)); // Make phpstan happy
 
         $composerJsonArray = json_decode($contents, true);
+
+        assert(is_array($composerJsonArray)); // Make phpstan happy
 
         $authorNames = [];
 
         if ($composerJsonArray['authors'] ?? false) {
+            assert(is_array($composerJsonArray['authors'])); // Make phpstan happy
+
             foreach ($composerJsonArray['authors'] as $author) {
                 if ($author['homepage'] ?? false) {
+                    assert(is_string($author['homepage'])); // Make phpstan happy
+
                     preg_match(
                         sprintf(
                             '/^%s\/([^\/]+)(\/|$)/',
@@ -69,7 +75,7 @@ class BogusScannerTest extends TestCase
 
             $contents = file_get_contents($filePath);
 
-            assert(is_string($contents));
+            assert(is_string($contents)); // Make phpstan happy
 
             foreach ($authorNames as $authorName) {
                 preg_match_all(
@@ -99,6 +105,9 @@ class BogusScannerTest extends TestCase
 
             if (preg_match('/^\<\?php/', ltrim($contents))) {
                 $ast = $parser->parse($contents);
+
+                assert(is_array($ast)); // Make phpstan happy
+
                 $comments = $this->recursivelyFindAllCommentsInPHPFileAST($ast);
 
                 foreach ($comments as $comment) {
@@ -172,6 +181,8 @@ class BogusScannerTest extends TestCase
             if (false === is_array($var)) {
                 $vars = [$var];
             }
+
+            assert(is_array($vars)); // Make phpstan happy
 
             foreach ($vars as $var) {
                 if ($var instanceof \PhpParser\Node) {

@@ -99,6 +99,8 @@ class CharacterTest extends TestCase
             );
 
             $currentException = $currentException->getPrevious();
+            $this->assertIsObject($currentException);
+            assert(is_object($currentException)); // Make phpstan happy
             $this->assertSame(RuntimeException::class, get_class($currentException), $message);
             $this->assertMatchesRegularExpression(
                 sprintf(

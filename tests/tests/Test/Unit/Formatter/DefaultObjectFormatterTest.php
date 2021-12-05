@@ -24,19 +24,18 @@ class DefaultObjectFormatterTest extends TestCase
 
         $this->assertTrue($defaultObjectFormatter->isHandling($object), $message);
 
-        $this->assertMatchesRegularExpression(
-            $expected,
-            $defaultObjectFormatter->format($caster, $object),
-            $message,
-        );
+        $formatted = $defaultObjectFormatter->format($caster, $object);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted));
+
+        $this->assertMatchesRegularExpression($expected, $formatted, $message);
 
         $caster = $caster->withIsPrependingType(true);
+        $formatted = $defaultObjectFormatter->format($caster, $object);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted)); // Make phpstan happy
 
-        $this->assertMatchesRegularExpression(
-            $expectedWithType,
-            $defaultObjectFormatter->format($caster, $object),
-            $message,
-        );
+        $this->assertMatchesRegularExpression($expectedWithType, $formatted, $message);
 
         $this->assertFalse($defaultObjectFormatter->isAppendingSplObjectHash());
     }
@@ -69,20 +68,23 @@ class DefaultObjectFormatterTest extends TestCase
         $this->assertNotSame($defaultObjectFormatterA, $defaultObjectFormatterB);
         $this->assertNotSame($defaultObjectFormatterA, $defaultObjectFormatterC);
         $this->assertNotSame($defaultObjectFormatterB, $defaultObjectFormatterC);
+
         $this->assertFalse($defaultObjectFormatterA->isAppendingSplObjectHash());
-        $this->assertMatchesRegularExpression(
-            '/^\\\\DateTimeImmutable$/',
-            $defaultObjectFormatterA->format($caster, $object),
-        );
+        $formatted = $defaultObjectFormatterA->format($caster, $object);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted)); // Make phpstan happy
+        $this->assertMatchesRegularExpression('/^\\\\DateTimeImmutable$/', $formatted);
+
         $this->assertFalse($defaultObjectFormatterB->isAppendingSplObjectHash());
-        $this->assertMatchesRegularExpression(
-            '/^\\\\DateTimeImmutable$/',
-            $defaultObjectFormatterB->format($caster, $object),
-        );
+        $formatted = $defaultObjectFormatterB->format($caster, $object);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted)); // Make phpstan happy
+        $this->assertMatchesRegularExpression('/^\\\\DateTimeImmutable$/', $formatted);
+
         $this->assertTrue($defaultObjectFormatterC->isAppendingSplObjectHash());
-        $this->assertMatchesRegularExpression(
-            '/^\\\\DateTimeImmutable \([0-9a-f]+\)$/',
-            $defaultObjectFormatterC->format($caster, $object),
-        );
+        $formatted = $defaultObjectFormatterC->format($caster, $object);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted)); // Make phpstan happy
+        $this->assertMatchesRegularExpression('/^\\\\DateTimeImmutable \([0-9a-f]+\)$/', $formatted);
     }
 }

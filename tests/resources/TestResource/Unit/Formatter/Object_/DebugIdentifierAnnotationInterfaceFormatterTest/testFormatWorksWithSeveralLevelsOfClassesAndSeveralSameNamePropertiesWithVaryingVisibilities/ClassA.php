@@ -36,13 +36,13 @@ class ClassA extends ClassB
     protected string $protectedPrivatePrivate = 'a';
 
     /** @DebugIdentifier */
-    private string $privatePrivatePrivate = 'a';
+    private string $privatePrivatePrivate = 'a'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
 
     /** @DebugIdentifier */
-    private static string $staticPrivatePrivatePrivate = 'a';
+    private static string $staticPrivatePrivatePrivate = 'a'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
 
     /** @DebugIdentifier */
-    private string $onlyInA = 'a';
+    private string $onlyInA = 'a'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
 
     public $publicDoNotIncludeMe;
 

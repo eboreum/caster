@@ -63,6 +63,9 @@ class PublicVariableFormatterTest extends TestCase
         };
 
         $this->assertTrue($publicVariableFormatter->isHandling($object));
+        $formatted = $publicVariableFormatter->format($caster, $object);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted)); // Make phpstan happy
         $this->assertMatchesRegularExpression(
             implode('', [
                 '/',
@@ -73,7 +76,7 @@ class PublicVariableFormatterTest extends TestCase
                 '$',
                 '/',
             ]),
-            $publicVariableFormatter->format($caster, $object),
+            $formatted,
         );
     }
 
@@ -87,11 +90,14 @@ class PublicVariableFormatterTest extends TestCase
             public int $foo = 1;
             public ?string $bar = null;
             public string $baz = 'hmm';
-            private ?string $private = null;
+            private ?string $private = null; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
             protected ?string $protected = null;
         };
 
         $this->assertTrue($publicVariableFormatter->isHandling($object));
+        $formatted = $publicVariableFormatter->format($caster, $object);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted)); // Make phpstan happy
         $this->assertMatchesRegularExpression(
             implode('', [
                 '/',
@@ -104,7 +110,7 @@ class PublicVariableFormatterTest extends TestCase
                 '$',
                 '/',
             ]),
-            $publicVariableFormatter->format($caster, $object),
+            $formatted,
         );
     }
 
@@ -116,6 +122,9 @@ class PublicVariableFormatterTest extends TestCase
         $object = new testFormatWorksWhenObjectHasMultipleSameNamePublicVariables\ClassA();
 
         $this->assertTrue($publicVariableFormatter->isHandling($object));
+        $formatted = $publicVariableFormatter->format($caster, $object);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted)); // Make phpstan happy
         $this->assertMatchesRegularExpression(
             sprintf(
                 implode('', [
@@ -129,7 +138,7 @@ class PublicVariableFormatterTest extends TestCase
                 ]),
                 preg_quote(testFormatWorksWhenObjectHasMultipleSameNamePublicVariables\ClassA::class, '/'),
             ),
-            $publicVariableFormatter->format($caster, $object),
+            $formatted,
         );
     }
 }

@@ -9,7 +9,7 @@ use Eboreum\Caster\Annotation\DebugIdentifier;
 class ClassA extends ClassB
 {
     /** @DebugIdentifier */
-    private string $foo = 'a';
+    private string $foo = 'a'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
 
-    private string $doNotIncludeMe = '';
+    private string $doNotIncludeMe = ''; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
 }

@@ -45,7 +45,7 @@ class ResourceFormatterCollection extends AbstractObjectCollection implements Fo
     /**
      * {@inheritDoc}
      *
-     * @phpstan-ignore-next-line
+     * @phpstan-ignore-next-line Suppression code 42a9f1bf; see README.md
      * @return \ArrayIterator<int, ResourceFormatterInterface>
      */
     public function getIterator(): \ArrayIterator

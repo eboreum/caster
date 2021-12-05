@@ -31,6 +31,9 @@ class ClosureFormatterTest extends TestCase
         $closureFormatter = new ClosureFormatter();
 
         $this->assertTrue($closureFormatter->isHandling($closure), $message);
+        $formatted = $closureFormatter->format($caster, $closure);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted)); // Make phpstan happy
         $this->assertMatchesRegularExpression(
             sprintf(
                 implode('', [
@@ -42,7 +45,7 @@ class ClosureFormatterTest extends TestCase
                 ]),
                 preg_quote($expectedArguments, '/'),
             ),
-            $closureFormatter->format($caster, $closure),
+            $formatted,
             $message,
         );
     }

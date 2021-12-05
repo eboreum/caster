@@ -28,9 +28,12 @@ class SplFileInfoFormatterTest extends TestCase
         $object = new \SplFileInfo(__FILE__);
 
         $this->assertTrue($splFileInfoFormatter->isHandling($object));
+        $formatted = $splFileInfoFormatter->format($caster, $object);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted)); // Make phpstan happy
         $this->assertMatchesRegularExpression(
             '/^\\\\SplFileInfo \(".+"\)$/',
-            $splFileInfoFormatter->format($caster, $object),
+            $formatted,
         );
     }
 }

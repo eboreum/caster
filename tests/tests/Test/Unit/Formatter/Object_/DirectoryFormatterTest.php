@@ -27,12 +27,12 @@ class DirectoryFormatterTest extends TestCase
 
         $object = dir(__DIR__);
 
-        assert($object instanceof \Directory);
+        assert($object instanceof \Directory); // Make phpstan happy
 
         $this->assertTrue($directoryFormatter->isHandling($object));
-        $this->assertMatchesRegularExpression(
-            '/^\\\\Directory \{\$path = "(.+)"\}$/',
-            $directoryFormatter->format($caster, $object),
-        );
+        $formatted = $directoryFormatter->format($caster, $object);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted)); // Make phpstan happy
+        $this->assertMatchesRegularExpression('/^\\\\Directory \{\$path = "(.+)"\}$/', $formatted);
     }
 }

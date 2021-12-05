@@ -24,7 +24,7 @@ abstract class ClassB extends ClassC
     protected string $publicProtectedPrivate = 'b';
 
     /** @DebugIdentifier */
-    private string $publicPrivatePrivate = 'b';
+    private string $publicPrivatePrivate = 'b'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
 
     /** @DebugIdentifier */
     protected string $protectedProtectedProtected = 'b';
@@ -33,16 +33,16 @@ abstract class ClassB extends ClassC
     protected string $protectedProtectedPrivate = 'b';
 
     /** @DebugIdentifier */
-    private string $protectedPrivatePrivate = 'b';
+    private string $protectedPrivatePrivate = 'b'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
 
     /** @DebugIdentifier */
-    private string $privatePrivatePrivate = 'b';
+    private string $privatePrivatePrivate = 'b'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
 
     /** @DebugIdentifier */
-    private static string $staticPrivatePrivatePrivate = 'b';
+    private static string $staticPrivatePrivatePrivate = 'b'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
 
     /** @DebugIdentifier */
-    private string $onlyInB = 'b';
+    private string $onlyInB = 'b'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
 
     /** @DebugIdentifier */
     public string $onlyInBAndCPublicPublic = 'b';

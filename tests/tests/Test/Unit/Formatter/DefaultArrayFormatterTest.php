@@ -14,7 +14,7 @@ class DefaultArrayFormatterTest extends TestCase
 {
     /**
      * @dataProvider dataProvier_testBasics
-     * @param array<string|array> $array
+     * @param array<string|array<mixed>> $array
      */
     public function testBasics(
         string $message,
@@ -27,23 +27,22 @@ class DefaultArrayFormatterTest extends TestCase
 
         $this->assertTrue($defaultArrayFormatter->isHandling($array), $message);
 
-        $this->assertMatchesRegularExpression(
-            $expected,
-            $defaultArrayFormatter->format($caster, $array),
-            $message,
-        );
+        $formatted = $defaultArrayFormatter->format($caster, $array);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted)); // Make phpstan happy
+
+        $this->assertMatchesRegularExpression($expected, $formatted, $message);
 
         $caster = $caster->withIsPrependingType(true);
+        $formatted = $defaultArrayFormatter->format($caster, $array);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted)); // Make phpstan happy
 
-        $this->assertMatchesRegularExpression(
-            $expectedWithType,
-            $defaultArrayFormatter->format($caster, $array),
-            $message,
-        );
+        $this->assertMatchesRegularExpression($expectedWithType, $formatted, $message);
     }
 
     /**
-     * @return array<int, array{0: string, 1: string, 2: string, 3: Caster, 4: array}>
+     * @return array<int, array{string, string, string, Caster, array<mixed>}>
      */
     public function dataProvier_testBasics(): array
     {

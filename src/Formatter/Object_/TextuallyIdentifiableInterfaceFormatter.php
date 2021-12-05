@@ -23,7 +23,7 @@ class TextuallyIdentifiableInterfaceFormatter extends AbstractObjectFormatter
             return null; // Pass on
         }
 
-        assert($object instanceof TextuallyIdentifiableInterface);
+        assert($object instanceof TextuallyIdentifiableInterface); // Make phpstan happy
 
         return sprintf(
             '%s: %s',

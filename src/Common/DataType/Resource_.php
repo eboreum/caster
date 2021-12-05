@@ -28,7 +28,7 @@ class Resource_ // @codingStandardsIgnoreLine
      */
     public function __construct($resource)
     {
-        if (false === is_resource($resource)) { /** @phpstan-ignore-line */
+        if (! is_resource($resource)) {
             throw new \InvalidArgumentException(sprintf(
                 'Expects argument $resource to be a resource, but it is not. Found: %s',
                 Caster::getInternalInstance()->castTyped($resource),

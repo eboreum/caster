@@ -190,7 +190,7 @@ class Caster implements CasterInterface
     public static function makeNormalizedClassName(\ReflectionClass $reflectionClass): string
     {
         if ($reflectionClass->isAnonymous()) {
-            assert(is_string($reflectionClass->getFileName()));
+            assert(is_string($reflectionClass->getFileName())); // Make phpstan happy
 
             return sprintf(
                 'class@anonymous/in/%s:%d',
@@ -396,7 +396,7 @@ class Caster implements CasterInterface
             return $return;
         }
 
-        assert(is_resource($value));
+        assert(is_resource($value)); // Make phpstan happy
 
         foreach ($this->customResourceFormatterCollection as $resourceFormatter) {
             $return = $resourceFormatter->format($this, new Resource_($value));
@@ -526,7 +526,7 @@ class Caster implements CasterInterface
                     -1,
                 );
 
-                assert(is_array($split));
+                assert(is_array($split)); // Make phpstan happy
 
                 if (count($split) > 1) {
                     $split = array_values($split);

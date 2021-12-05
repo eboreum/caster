@@ -88,7 +88,7 @@ class EncryptedString implements ImmutableObjectInterface, ElementInterface
                 $this->getInitializationVector()
             );
 
-            assert(is_string($encryptedString));
+            assert(is_string($encryptedString)); // Make phpstan happy
 
             $this->encryptedString = $encryptedString;
         } catch (\Throwable $t) {
@@ -134,7 +134,7 @@ class EncryptedString implements ImmutableObjectInterface, ElementInterface
             $this->getInitializationVector(),
         );
 
-        assert(is_string($decrypted));
+        assert(is_string($decrypted)); // Make phpstan happy
 
         return $decrypted;
     }
@@ -178,7 +178,7 @@ class EncryptedString implements ImmutableObjectInterface, ElementInterface
                 $clone->getInitializationVector(),
             );
 
-            assert(is_string($encryptedString));
+            assert(is_string($encryptedString)); // Make phpstan happy
 
             $clone->encryptedString = $encryptedString;
         } catch (\Throwable $t) {

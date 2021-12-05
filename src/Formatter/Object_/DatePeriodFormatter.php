@@ -22,7 +22,7 @@ class DatePeriodFormatter extends AbstractObjectFormatter
             return null;
         }
 
-        assert($object instanceof \DatePeriod);
+        assert($object instanceof \DatePeriod); // Make phpstan happy
 
         return sprintf(
             '%s (start: %s, end: %s, recurrences: %s, interval: %s)',

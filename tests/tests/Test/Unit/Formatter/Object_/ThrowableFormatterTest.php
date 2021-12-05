@@ -30,6 +30,9 @@ class ThrowableFormatterTest extends TestCase
         $object = new \Exception('foo');
 
         $this->assertTrue($throwableFormatter->isHandling($object));
+        $formatted = $throwableFormatter->format($caster, $object);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted)); // Make phpstan happy
         $this->assertMatchesRegularExpression(
             implode('', [
                 '/',
@@ -44,7 +47,7 @@ class ThrowableFormatterTest extends TestCase
                 '$',
                 '/',
             ]),
-            $throwableFormatter->format($caster, $object)
+            $formatted,
         );
     }
 
@@ -66,6 +69,9 @@ class ThrowableFormatterTest extends TestCase
          */
 
         $this->assertTrue($throwableFormatter->isHandling($object));
+        $formatted = $throwableFormatter->format($caster, $object);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted)); // Make phpstan happy
         $this->assertMatchesRegularExpression(
             implode('', [
                 '/',
@@ -92,7 +98,7 @@ class ThrowableFormatterTest extends TestCase
                 '$',
                 '/',
             ]),
-            $throwableFormatter->format($caster, $object),
+            $formatted,
         );
     }
 
@@ -116,6 +122,10 @@ class ThrowableFormatterTest extends TestCase
          */
 
         $this->assertTrue($throwableFormatter->isHandling($object));
+
+        $formatted = $throwableFormatter->format($caster, $object);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted)); // Make phpstan happy
         $this->assertMatchesRegularExpression(
             implode('', [
                 '/',
@@ -136,7 +146,7 @@ class ThrowableFormatterTest extends TestCase
                 '$',
                 '/',
             ]),
-            $throwableFormatter->format($caster, $object),
+            $formatted,
         );
     }
 

@@ -275,7 +275,7 @@ class CasterTest extends TestCase
                 new class implements DebugIdentifierAnnotationInterface
                 {
                     /** @DebugIdentifier */
-                    private string $foo = 'bar';
+                    private string $foo = 'bar'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
                 },
                 (static function () {
                     $caster = Caster::create();
@@ -886,7 +886,7 @@ class CasterTest extends TestCase
                 new class implements DebugIdentifierAnnotationInterface
                 {
                     /** @DebugIdentifier */
-                    private string $foo = 'bar';
+                    private string $foo = 'bar'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
                 },
                 (static function () {
                     $caster = Caster::create();
@@ -1099,7 +1099,7 @@ class CasterTest extends TestCase
                         return null;
                     }
 
-                    assert($object instanceof \DateTimeInterface);
+                    assert($object instanceof \DateTimeInterface); // Make phpstan happy
 
                     return sprintf(
                         '\\%s (%s)',
@@ -1127,7 +1127,7 @@ class CasterTest extends TestCase
                         return null;
                     }
 
-                    assert($object instanceof \Throwable);
+                    assert($object instanceof \Throwable); // Make phpstan happy
 
                     return sprintf(
                         '\\%s {$code = %s, $file = %s, $line = %s, $message = %s}',
@@ -2127,6 +2127,8 @@ class CasterTest extends TestCase
             );
 
             $currentException = $currentException->getPrevious();
+            $this->assertIsObject($currentException);
+            assert(is_object($currentException)); // Make phpstan happy
             $this->assertSame(CasterException::class, get_class($currentException));
             $this->assertMatchesRegularExpression(
                 sprintf(
@@ -2178,6 +2180,8 @@ class CasterTest extends TestCase
             );
 
             $currentException = $currentException->getPrevious();
+            $this->assertIsObject($currentException);
+            assert(is_object($currentException)); // Make phpstan happy
             $this->assertSame(CasterException::class, get_class($currentException));
             $this->assertMatchesRegularExpression(
                 implode('', [
@@ -2227,6 +2231,8 @@ class CasterTest extends TestCase
             );
 
             $currentException = $currentException->getPrevious();
+            $this->assertIsObject($currentException);
+            assert(is_object($currentException)); // Make phpstan happy
             $this->assertSame(CasterException::class, get_class($currentException));
             $this->assertMatchesRegularExpression(
                 implode('', [
@@ -2317,6 +2323,8 @@ class CasterTest extends TestCase
             );
 
             $currentException = $currentException->getPrevious();
+            $this->assertIsObject($currentException);
+            assert(is_object($currentException)); // Make phpstan happy
             $this->assertSame(CasterException::class, get_class($currentException));
             $this->assertMatchesRegularExpression(
                 sprintf(

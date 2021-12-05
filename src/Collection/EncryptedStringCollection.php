@@ -44,7 +44,7 @@ class EncryptedStringCollection extends AbstractObjectCollection
     /**
      * {@inheritDoc}
      *
-     * @phpstan-ignore-next-line
+     * @phpstan-ignore-next-line Suppression code 42a9f1bf; see README.md
      * @return \ArrayIterator<int, EncryptedString>
      */
     public function getIterator(): \ArrayIterator

@@ -10,7 +10,7 @@ use Eboreum\Caster\Contract\DebugIdentifierAnnotationInterface;
 abstract class ClassB implements DebugIdentifierAnnotationInterface
 {
     /** @DebugIdentifier */
-    private string $bar = 'b';
+    private string $bar = 'b'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
 
-    private string $doNotIncludeMe = '';
+    private string $doNotIncludeMe = ''; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
 }

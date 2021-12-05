@@ -22,7 +22,7 @@ class ClosureFormatter extends AbstractObjectFormatter
             return null; // Pass on
         }
 
-        assert($object instanceof \Closure);
+        assert($object instanceof \Closure); // Make phpstan happy
 
         $arguments = [];
 
@@ -45,7 +45,7 @@ class ClosureFormatter extends AbstractObjectFormatter
             if ($reflectionParameter->hasType()) {
                 $reflectionType = $reflectionParameter->getType();
 
-                assert($reflectionType instanceof \ReflectionNamedType);
+                assert($reflectionType instanceof \ReflectionNamedType); // Make phpstan happy
 
                 $typeText = $reflectionType->getName();
 

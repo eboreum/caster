@@ -45,7 +45,7 @@ class ArrayFormatterCollection extends AbstractObjectCollection implements Forma
     /**
      * {@inheritDoc}
      *
-     * @phpstan-ignore-next-line
+     * @phpstan-ignore-next-line Suppression code 42a9f1bf; see README.md
      * @return \ArrayIterator<int, ArrayFormatterInterface>
      */
     public function getIterator(): \ArrayIterator

@@ -22,7 +22,7 @@ class DirectoryFormatter extends AbstractObjectFormatter
             return null; // Pass on
         }
 
-        assert($object instanceof \Directory);
+        assert($object instanceof \Directory); // Make phpstan happy
 
         return sprintf(
             '%s {$path = %s}',

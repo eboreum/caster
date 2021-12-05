@@ -34,7 +34,7 @@ class ThrowableFormatter extends AbstractObjectFormatter
             return null; // Pass on
         }
 
-        assert($object instanceof \Throwable);
+        assert($object instanceof \Throwable); // Make phpstan happy
 
         if (1 === $caster->getContext()->count()) {
             /*

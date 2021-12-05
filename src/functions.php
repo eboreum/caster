@@ -15,11 +15,11 @@ function rglob(string $pattern, int $flags = 0): array
 {
     $filePaths = glob($pattern, $flags);
 
-    assert(is_array($filePaths));
+    assert(is_array($filePaths)); // Make phpstan happy
 
     $globbedDirectoryPaths = glob(dirname($pattern) . '/*', GLOB_ONLYDIR | GLOB_NOSORT);
 
-    assert(is_array($globbedDirectoryPaths));
+    assert(is_array($globbedDirectoryPaths)); // Make phpstan happy
 
     foreach ($globbedDirectoryPaths as $directoryPath) {
         $filePaths = array_merge(

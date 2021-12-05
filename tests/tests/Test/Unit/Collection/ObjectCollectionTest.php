@@ -24,8 +24,8 @@ class ObjectCollectionTest extends TestCase
 
         $handledClassName = $handledClassNameCollection::getHandledClassName();
 
-        assert(is_string($handledClassName));
-        assert(class_exists($handledClassName) || interface_exists($handledClassName));
+        assert(is_string($handledClassName)); // Make phpstan happy
+        assert(class_exists($handledClassName) || interface_exists($handledClassName)); // Make phpstan happy
 
         $reflectionClassHandledClass = new \ReflectionClass($handledClassName);
 
@@ -39,9 +39,9 @@ class ObjectCollectionTest extends TestCase
             $this->mockHandledClass($reflectionClassHandledClass),
         ];
 
-        assert($elements[0] instanceof ElementInterface);
-        assert($elements[1] instanceof ElementInterface);
-        assert($elements[2] instanceof ElementInterface);
+        assert($elements[0] instanceof ElementInterface); // Make phpstan happy
+        assert($elements[1] instanceof ElementInterface); // Make phpstan happy
+        assert($elements[2] instanceof ElementInterface); // Make phpstan happy
 
         $collectionB = new $handledClassNameCollection(...$elements);
 
@@ -110,7 +110,7 @@ class ObjectCollectionTest extends TestCase
                     return 'stdClass';
                 }
             };
-        } catch (\Exception $e) {
+        } catch (\Exception $e) { // @phpstan-ignore-line Suppression code 136348fe; see README.md
             $currentException = $e;
             $this->assertSame(RuntimeException::class, get_class($currentException));
             $this->assertMatchesRegularExpression(
@@ -206,7 +206,7 @@ class ObjectCollectionTest extends TestCase
             dirname(TEST_ROOT_PATH),
         ));
 
-        assert($srcDirectory instanceof \Directory);
+        assert($srcDirectory instanceof \Directory); // Make phpstan happy
 
         $pattern = sprintf(
             '%s/Collection/*.php',
@@ -214,18 +214,28 @@ class ObjectCollectionTest extends TestCase
         );
 
         foreach (\Eboreum\Caster\functions\rglob($pattern) as $filePath) {
+            $className = mb_substr(
+                $filePath,
+                mb_strlen($srcDirectory->path) + 1,
+            );
+
+            assert(is_string($className)); // Make phpstan happy
+
+            $className = preg_replace(
+                '/\.php$/',
+                '',
+                $className,
+            );
+
+            assert(is_string($className)); // Make phpstan happy
+
             $className = 'Eboreum\\Caster\\' . str_replace(
                 '/',
                 '\\',
-                preg_replace(
-                    '/\.php$/',
-                    '',
-                    mb_substr(
-                        $filePath,
-                        mb_strlen($srcDirectory->path) + 1,
-                    ),
-                ),
+                $className,
             );
+
+            assert(is_string($className)); // Make phpstan happy
 
             if (false === class_exists($className)) {
                 throw new \RuntimeException(sprintf(

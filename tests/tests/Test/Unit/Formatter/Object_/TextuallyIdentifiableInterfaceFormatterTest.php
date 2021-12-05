@@ -46,6 +46,9 @@ class TextuallyIdentifiableInterfaceFormatterTest extends TestCase
         };
 
         $this->assertTrue($textuallyIdentifiableInterfaceFormatter->isHandling($object));
+        $formatted = $textuallyIdentifiableInterfaceFormatter->format($caster, $object);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted)); // Make phpstan happy
         $this->assertMatchesRegularExpression(
             sprintf(
                 implode('', [
@@ -59,7 +62,7 @@ class TextuallyIdentifiableInterfaceFormatterTest extends TestCase
                 ]),
                 preg_quote(basename(__FILE__), '/'),
             ),
-            $textuallyIdentifiableInterfaceFormatter->format($caster, $object),
+            $formatted,
         );
     }
 }

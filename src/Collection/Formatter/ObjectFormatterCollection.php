@@ -45,7 +45,7 @@ class ObjectFormatterCollection extends AbstractObjectCollection implements Form
     /**
      * {@inheritDoc}
      *
-     * @phpstan-ignore-next-line
+     * @phpstan-ignore-next-line Suppression code 42a9f1bf; see README.md
      * @return \ArrayIterator<int, ObjectFormatterInterface>
      */
     public function getIterator(): \ArrayIterator

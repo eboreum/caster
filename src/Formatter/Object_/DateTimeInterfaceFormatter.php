@@ -22,7 +22,7 @@ class DateTimeInterfaceFormatter extends AbstractObjectFormatter
             return null;
         }
 
-        assert($object instanceof \DateTimeInterface);
+        assert($object instanceof \DateTimeInterface); // Make phpstan happy
 
         return sprintf(
             '%s (%s)',

@@ -22,8 +22,8 @@ class SplFileInfoFormatter extends AbstractObjectFormatter
             return null; // Pass on
         }
 
-        assert($object instanceof \SplFileInfo);
-        assert(is_string($object->getRealPath()));
+        assert($object instanceof \SplFileInfo); // Make phpstan happy
+        assert(is_string($object->getRealPath())); // Make phpstan happy
 
         return sprintf(
             '%s (%s)',
