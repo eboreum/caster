@@ -2,65 +2,65 @@
 
 declare(strict_types=1);
 
-namespace TestResource\Unit\Eboreum\Caster\Formatter\Object_\DebugIdentifierAnnotationInterfaceFormatterTest\testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities;
+namespace TestResource\Unit\Eboreum\Caster\Formatter\Object_\DebugIdentifierAttributeInterfaceFormatterTest\testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities;
 
-use Eboreum\Caster\Annotation\DebugIdentifier;
-use Eboreum\Caster\Contract\DebugIdentifierAnnotationInterface;
+use Eboreum\Caster\Attribute\DebugIdentifier;
+use Eboreum\Caster\Contract\DebugIdentifierAttributeInterface;
 
-abstract class ClassC implements DebugIdentifierAnnotationInterface
+abstract class ClassC implements DebugIdentifierAttributeInterface
 {
-    /** @DebugIdentifier */
+    #[DebugIdentifier]
     public string $publicPublicPublic = 'c';
 
-    /** @DebugIdentifier */
+    #[DebugIdentifier]
     protected string $publicPublicProtected = 'c';
 
-    /** @DebugIdentifier */
+    #[DebugIdentifier]
     private string $publicPublicPrivate = 'c'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
 
-    /** @DebugIdentifier */
+    #[DebugIdentifier]
     protected string $publicProtectedProtected = 'c';
 
-    /** @DebugIdentifier */
+    #[DebugIdentifier]
     private string $publicProtectedPrivate = 'c'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
 
-    /** @DebugIdentifier */
+    #[DebugIdentifier]
     private string $publicPrivatePrivate = 'c'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
 
-    /** @DebugIdentifier */
+    #[DebugIdentifier]
     protected string $protectedProtectedProtected = 'c';
 
-    /** @DebugIdentifier */
+    #[DebugIdentifier]
     private string $protectedProtectedPrivate = 'c'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
 
-    /** @DebugIdentifier */
+    #[DebugIdentifier]
     private string $protectedPrivatePrivate = 'c'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
 
-    /** @DebugIdentifier */
+    #[DebugIdentifier]
     private string $privatePrivatePrivate = 'c'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
 
-    /** @DebugIdentifier */
+    #[DebugIdentifier]
     private static string $staticPrivatePrivatePrivate = 'c'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
 
-    /** @DebugIdentifier */
+    #[DebugIdentifier]
     private string $onlyInC = 'c'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
 
-    /** @DebugIdentifier */
+    #[DebugIdentifier]
     public string $onlyInBAndCPublicPublic = 'c';
 
-    /** @DebugIdentifier */
+    #[DebugIdentifier]
     protected string $onlyInBAndCPublicProtected = 'c';
 
-    /** @DebugIdentifier */
+    #[DebugIdentifier]
     private string $onlyInBAndCPublicPrivate = 'c'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
 
-    /** @DebugIdentifier */
+    #[DebugIdentifier]
     protected string $onlyInBAndCProtectedProtected = 'c';
 
-    /** @DebugIdentifier */
+    #[DebugIdentifier]
     private string $onlyInBAndCProtectedPrivate = 'c'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
 
-    /** @DebugIdentifier */
+    #[DebugIdentifier]
     private string $onlyInBAndCPrivatePrivate = 'c'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
 
     /**

@@ -4,19 +4,16 @@ declare(strict_types=1);
 
 namespace Eboreum\Caster\Formatter\Object_;
 
-use Doctrine\Common\Annotations\AnnotationReader;
 use Eboreum\Caster\Abstraction\Formatter\AbstractObjectFormatter;
-use Eboreum\Caster\Annotation\DebugIdentifier;
+use Eboreum\Caster\Attribute\DebugIdentifier;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\CasterInterface;
-use Eboreum\Caster\Contract\DebugIdentifierAnnotationInterface;
+use Eboreum\Caster\Contract\DebugIdentifierAttributeInterface;
 
 /**
- * Handles classes, which implement `DebugIdentifierAnnotationInterface`.
- *
- * Requires package: doctrine/annotations
+ * Handles classes, which implement `DebugIdentifierAttributeInterface`.
  */
-class DebugIdentifierAnnotationInterfaceFormatter extends AbstractObjectFormatter
+class DebugIdentifierAttributeInterfaceFormatter extends AbstractObjectFormatter
 {
     public static function doReflectionPropertiesHaveSameVisibilityWhenInsideA(
         \ReflectionProperty $a,
@@ -122,25 +119,28 @@ class DebugIdentifierAnnotationInterfaceFormatter extends AbstractObjectFormatte
          *     protected    protected
          */
 
-        $annotationReader = new AnnotationReader();
         $reflectionClassCurrent = $reflectionObject;
         $propertyNameToReflectionProperties = [];
 
         while ($reflectionClassCurrent) {
             foreach ($reflectionClassCurrent->getProperties() as $reflectionProperty) {
-                $annotation = $annotationReader->getPropertyAnnotation($reflectionProperty, DebugIdentifier::class);
+                $debugIdentifiers = $reflectionProperty->getAttributes(DebugIdentifier::class);
 
-                if ($annotation) {
+                if ($debugIdentifiers) {
                     if (array_key_exists($reflectionProperty->getName(), $propertyNameToReflectionProperties)) {
                         $indexPrevious = count($propertyNameToReflectionProperties[$reflectionProperty->getName()]) - 1;
 
                         if ($indexPrevious >= 0) {
-                            $reflectionPropertyPrevious = (
-                                $propertyNameToReflectionProperties[$reflectionProperty->getName()][$indexPrevious]
-                                ?? null
+                            $exists = array_key_exists(
+                                $indexPrevious,
+                                $propertyNameToReflectionProperties[$reflectionProperty->getName()],
                             );
 
-                            if ($reflectionPropertyPrevious) {
+                            if ($exists) {
+                                $reflectionPropertyPrevious = $propertyNameToReflectionProperties
+                                    [$reflectionProperty->getName()]
+                                    [$indexPrevious];
+
                                 if (
                                     static::doReflectionPropertiesHaveSameVisibilityWhenInsideA(
                                         $reflectionPropertyPrevious,
@@ -180,9 +180,6 @@ class DebugIdentifierAnnotationInterfaceFormatter extends AbstractObjectFormatte
      */
     public function isHandling(object $object): bool
     {
-        return (
-            class_exists(AnnotationReader::class)
-            && $object instanceof DebugIdentifierAnnotationInterface
-        );
+        return $object instanceof DebugIdentifierAttributeInterface;
     }
 }

@@ -31,7 +31,7 @@ Lastly, you may provide a series of **sensitive text strings** like passwords, a
 # Requirements
 
 ```json
-"php": "^7.4 || ^8.0",
+"php": "^8.0",
 "ext-mbstring": "*",
 "ext-openssl": "*"
 ```
@@ -318,7 +318,7 @@ The following object formatters are readily available. You may use them as-is or
 |`DateIntervalFormatter`|Formats `\DateInterval` objects.|`\DateInterval {$y = 0, $m = 1, $d = 2, $h = 12, $i = 34, $s = 56, $f = 0, $weekday = 0, $weekday_behavior = 0, $first_last_day_of = 0, $invert = 0, $days = 33, $special_type = 0, $special_amount = 0, $have_weekday_relative = 0, $have_special_relative = 0}`|
 |`DatePeriodFormatter`|Formats `\DatePeriod` objects.|`\DatePeriod (start: \DateTimeImmutable ("2020-01-01T00:00:00+00:00"), end: \DateTimeImmutable ("2020-01-01T00:00:00+00:00"), recurrences: null, interval: \DateInterval)`|
 |`DateTimeInterfaceFormatter`|Formats `\DateTimeInterface` objects, appending ISO 8601 time in parenthesis.|`\DateTimeImmutable ("2019-01-01T00:00:00+00:00")`|
-|`DebugIdentifierAnnotationInterfaceFormatter`|Formats objects, which implement the interface `\Eboreum\Caster\Contract\DebugIdentifierAnnotationInterface` .|`class@anonymous/in/foo/bar/baz.php:22 {$foo = 42} ($path = "/foo.php")`|
+|`DebugIdentifierAttributeInterfaceFormatter`|Formats objects, which implement the interface `\Eboreum\Caster\Contract\DebugIdentifierAttributeInterface` .|`class@anonymous/in/foo/bar/baz.php:22 {$foo = 42} ($path = "/foo.php")`|
 |`DirectoryFormatter`|Formats `\Directory` objects, as produced by `dir(__DIR__)`.|`\Directory ($path = "/foo.php")`|
 |`PublicVariableFormatter`|Formats any object which has publicly accessible variables.|`\stdClass {$foo = "bar"}`|
 |`SplFileInfoFormater`|Formats `\SplFileInfo` objects.|`\SplFileInfo ("/my/system/foo.txt")`|
@@ -702,9 +702,8 @@ echo $caster->castTyped("0123456789") . "\n"; // Notice: 3456 are masked because
 ## Test/development requirements
 
 ```json
-"doctrine/common": "^3.1",
 "nikic/php-parser": "^4.12",
-"phpstan/phpstan": "^1.3",
+"phpstan/phpstan": "^1.4",
 "phpunit/phpunit": "^9.5"
 ```
 

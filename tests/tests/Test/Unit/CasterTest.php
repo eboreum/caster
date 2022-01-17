@@ -8,7 +8,7 @@ use Eboreum\Caster\Abstraction\Formatter\AbstractArrayFormatter;
 use Eboreum\Caster\Abstraction\Formatter\AbstractObjectFormatter;
 use Eboreum\Caster\Abstraction\Formatter\AbstractResourceFormatter;
 use Eboreum\Caster\Abstraction\Formatter\AbstractStringFormatter;
-use Eboreum\Caster\Annotation\DebugIdentifier;
+use Eboreum\Caster\Attribute\DebugIdentifier;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Caster\Context;
 use Eboreum\Caster\CharacterEncoding;
@@ -23,7 +23,7 @@ use Eboreum\Caster\Common\DataType\Resource_;
 use Eboreum\Caster\Common\DataType\String_\Character;
 use Eboreum\Caster\Contract\Caster\ContextInterface;
 use Eboreum\Caster\Contract\CasterInterface;
-use Eboreum\Caster\Contract\DebugIdentifierAnnotationInterface;
+use Eboreum\Caster\Contract\DebugIdentifierAttributeInterface;
 use Eboreum\Caster\Contract\TextuallyIdentifiableInterface;
 use Eboreum\Caster\EncryptedString;
 use Eboreum\Caster\Exception\CasterException;
@@ -34,7 +34,7 @@ use Eboreum\Caster\Formatter\DefaultStringFormatter;
 use Eboreum\Caster\Formatter\Object_\DateIntervalFormatter;
 use Eboreum\Caster\Formatter\Object_\DatePeriodFormatter;
 use Eboreum\Caster\Formatter\Object_\DateTimeInterfaceFormatter;
-use Eboreum\Caster\Formatter\Object_\DebugIdentifierAnnotationInterfaceFormatter;
+use Eboreum\Caster\Formatter\Object_\DebugIdentifierAttributeInterfaceFormatter;
 use Eboreum\Caster\Formatter\Object_\DirectoryFormatter;
 use Eboreum\Caster\Formatter\Object_\PublicVariableFormatter;
 use Eboreum\Caster\Formatter\Object_\SplFileInfoFormatter;
@@ -270,18 +270,18 @@ class CasterTest extends TestCase
                 })(),
             ],
             [
-                'DebugIdentifierAnnotationInterfaceFormatter',
+                'DebugIdentifierAttributeInterfaceFormatter',
                 '/^class@anonymous\/in\/.+\/CasterTest\.php:\d+ \{\$foo = \(string\(3\)\) "bar"\}$/',
-                new class implements DebugIdentifierAnnotationInterface
+                new class implements DebugIdentifierAttributeInterface
                 {
-                    /** @DebugIdentifier */
+                    #[DebugIdentifier]
                     private string $foo = 'bar'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
                 },
                 (static function () {
                     $caster = Caster::create();
                     $caster = $caster->withCustomObjectFormatterCollection(
                         new ObjectFormatterCollection(...[
-                            new DebugIdentifierAnnotationInterfaceFormatter(),
+                            new DebugIdentifierAttributeInterfaceFormatter(),
                         ]),
                     );
 
@@ -881,18 +881,18 @@ class CasterTest extends TestCase
                 })(),
             ],
             [
-                'DebugIdentifierAnnotationInterfaceFormatter',
+                'DebugIdentifierAttributeInterfaceFormatter',
                 '/^\(object\) class@anonymous\/in\/.+\/CasterTest\.php:\d+ \{\$foo = \(string\(3\)\) "bar"\}$/',
-                new class implements DebugIdentifierAnnotationInterface
+                new class implements DebugIdentifierAttributeInterface
                 {
-                    /** @DebugIdentifier */
+                    #[DebugIdentifier]
                     private string $foo = 'bar'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
                 },
                 (static function () {
                     $caster = Caster::create();
                     $caster = $caster->withCustomObjectFormatterCollection(
                         new ObjectFormatterCollection(...[
-                            new DebugIdentifierAnnotationInterfaceFormatter(),
+                            new DebugIdentifierAttributeInterfaceFormatter(),
                         ]),
                     );
 

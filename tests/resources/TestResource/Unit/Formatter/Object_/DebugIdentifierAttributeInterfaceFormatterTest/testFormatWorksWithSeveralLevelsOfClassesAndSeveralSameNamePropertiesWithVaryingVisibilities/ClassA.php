@@ -2,46 +2,46 @@
 
 declare(strict_types=1);
 
-namespace TestResource\Unit\Eboreum\Caster\Formatter\Object_\DebugIdentifierAnnotationInterfaceFormatterTest\testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities;
+namespace TestResource\Unit\Eboreum\Caster\Formatter\Object_\DebugIdentifierAttributeInterfaceFormatterTest\testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities;
 
-use Eboreum\Caster\Annotation\DebugIdentifier;
+use Eboreum\Caster\Attribute\DebugIdentifier;
 
 class ClassA extends ClassB
 {
-    /** @DebugIdentifier */
+    #[DebugIdentifier]
     public string $publicPublicPublic = 'a';
 
-    /** @DebugIdentifier */
+    #[DebugIdentifier]
     public string $publicPublicProtected = 'a';
 
-    /** @DebugIdentifier */
+    #[DebugIdentifier]
     public string $publicPublicPrivate = 'a';
 
-    /** @DebugIdentifier */
+    #[DebugIdentifier]
     public string $publicProtectedProtected = 'a';
 
-    /** @DebugIdentifier */
+    #[DebugIdentifier]
     public string $publicProtectedPrivate = 'a';
 
-    /** @DebugIdentifier */
+    #[DebugIdentifier]
     public string $publicPrivatePrivate = 'a';
 
-    /** @DebugIdentifier */
+    #[DebugIdentifier]
     protected string $protectedProtectedProtected = 'a';
 
-    /** @DebugIdentifier */
+    #[DebugIdentifier]
     protected string $protectedProtectedPrivate = 'a';
 
-    /** @DebugIdentifier */
+    #[DebugIdentifier]
     protected string $protectedPrivatePrivate = 'a';
 
-    /** @DebugIdentifier */
+    #[DebugIdentifier]
     private string $privatePrivatePrivate = 'a'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
 
-    /** @DebugIdentifier */
+    #[DebugIdentifier]
     private static string $staticPrivatePrivatePrivate = 'a'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
 
-    /** @DebugIdentifier */
+    #[DebugIdentifier]
     private string $onlyInA = 'a'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
 
     public $publicDoNotIncludeMe;

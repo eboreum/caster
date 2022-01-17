@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Eboreum\Caster\Common\DataType\Integer;
 
-use Eboreum\Caster\Annotation\DebugIdentifier;
+use Eboreum\Caster\Attribute\DebugIdentifier;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\DataType\Integer\IntegerInterface;
 use Eboreum\Caster\Exception\RuntimeException;
@@ -14,7 +14,7 @@ use Eboreum\Caster\Exception\RuntimeException;
  */
 abstract class AbstractInteger implements IntegerInterface
 {
-    /** @DebugIdentifier */
+    #[DebugIdentifier]
     protected int $integer;
 
     /**

@@ -4,24 +4,24 @@ declare(strict_types=1);
 
 namespace Eboreum\Caster\Common\DataType\String_;
 
-use Eboreum\Caster\Annotation\DebugIdentifier;
+use Eboreum\Caster\Attribute\DebugIdentifier;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\CharacterEncoding;
 use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\Contract\CharacterEncodingInterface;
 use Eboreum\Caster\Contract\CharacterInterface;
-use Eboreum\Caster\Contract\DebugIdentifierAnnotationInterface;
+use Eboreum\Caster\Contract\DebugIdentifierAttributeInterface;
 use Eboreum\Caster\Exception\RuntimeException;
 
 /**
  * Contains a single character. No more. No less.
  */
-class Character implements CharacterInterface, DebugIdentifierAnnotationInterface
+class Character implements CharacterInterface, DebugIdentifierAttributeInterface
 {
-    /** @DebugIdentifier */
+    #[DebugIdentifier]
     protected string $character;
 
-    /** @DebugIdentifier */
+    #[DebugIdentifier]
     protected CharacterEncodingInterface $characterEncoding;
 
     /**

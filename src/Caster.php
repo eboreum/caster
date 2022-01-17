@@ -23,7 +23,7 @@ use Eboreum\Caster\Formatter\DefaultArrayFormatter;
 use Eboreum\Caster\Formatter\DefaultObjectFormatter;
 use Eboreum\Caster\Formatter\DefaultResourceFormatter;
 use Eboreum\Caster\Formatter\DefaultStringFormatter;
-use Eboreum\Caster\Formatter\Object_\DebugIdentifierAnnotationInterfaceFormatter;
+use Eboreum\Caster\Formatter\Object_\DebugIdentifierAttributeInterfaceFormatter;
 use Eboreum\Caster\Formatter\Object_\TextuallyIdentifiableInterfaceFormatter;
 
 /**
@@ -163,7 +163,7 @@ class Caster implements CasterInterface
 
             self::$internalInstance = self::$internalInstance->withCustomObjectFormatterCollection(
                 new ObjectFormatterCollection(
-                    new DebugIdentifierAnnotationInterfaceFormatter(),
+                    new DebugIdentifierAttributeInterfaceFormatter(),
                     new TextuallyIdentifiableInterfaceFormatter(),
                 ),
             );

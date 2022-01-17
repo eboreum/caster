@@ -4,52 +4,52 @@ declare(strict_types=1);
 
 namespace Test\Unit\Eboreum\Caster\Formatter\Object_;
 
-use Eboreum\Caster\Annotation\DebugIdentifier;
+use Eboreum\Caster\Attribute\DebugIdentifier;
 use Eboreum\Caster\Caster;
-use Eboreum\Caster\Contract\DebugIdentifierAnnotationInterface;
-use Eboreum\Caster\Formatter\Object_\DebugIdentifierAnnotationInterfaceFormatter;
+use Eboreum\Caster\Contract\DebugIdentifierAttributeInterface;
+use Eboreum\Caster\Formatter\Object_\DebugIdentifierAttributeInterfaceFormatter;
 use PHPUnit\Framework\TestCase;
-use TestResource\Unit\Eboreum\Caster\Formatter\Object_\DebugIdentifierAnnotationInterfaceFormatterTest\testFormatWorksWithAOjectWithAParentButWithNoConflictingProperties;
-use TestResource\Unit\Eboreum\Caster\Formatter\Object_\DebugIdentifierAnnotationInterfaceFormatterTest\testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities;
+use TestResource\Unit\Eboreum\Caster\Formatter\Object_\DebugIdentifierAttributeInterfaceFormatterTest\testFormatWorksWithAOjectWithAParentButWithNoConflictingProperties;
+use TestResource\Unit\Eboreum\Caster\Formatter\Object_\DebugIdentifierAttributeInterfaceFormatterTest\testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities;
 
-class DebugIdentifierAnnotationInterfaceFormatterTest extends TestCase
+class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
 {
     public function testFormatReturnsNullWhenObjectIsNotQualified(): void
     {
         $caster = Caster::create();
-        $debugIdentifierAnnotationInterfaceFormatter = new DebugIdentifierAnnotationInterfaceFormatter();
+        $debugIdentifierAttributeInterfaceFormatter = new DebugIdentifierAttributeInterfaceFormatter();
         $object = new \stdClass();
 
-        $this->assertFalse($debugIdentifierAnnotationInterfaceFormatter->isHandling($object));
-        $this->assertNull($debugIdentifierAnnotationInterfaceFormatter->format($caster, $object));
+        $this->assertFalse($debugIdentifierAttributeInterfaceFormatter->isHandling($object));
+        $this->assertNull($debugIdentifierAttributeInterfaceFormatter->format($caster, $object));
     }
 
     public function testFormatWorksWithAParentlessObject(): void
     {
         $caster = Caster::create();
-        $debugIdentifierAnnotationInterfaceFormatter = new DebugIdentifierAnnotationInterfaceFormatter();
+        $debugIdentifierAttributeInterfaceFormatter = new DebugIdentifierAttributeInterfaceFormatter();
 
-        $object = new class implements DebugIdentifierAnnotationInterface
+        $object = new class implements DebugIdentifierAttributeInterface
         {
             public string $foo = '123';
 
-            /** @DebugIdentifier */
+            #[DebugIdentifier]
             protected int $bar = 42;
 
-            /** @DebugIdentifier */
+            #[DebugIdentifier]
             private float $baz = 3.14; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
         };
 
-        $formatted = $debugIdentifierAnnotationInterfaceFormatter->format($caster, $object);
+        $formatted = $debugIdentifierAttributeInterfaceFormatter->format($caster, $object);
         $this->assertIsString($formatted);
         assert(is_string($formatted)); // Make phpstan happy
 
-        $this->assertTrue($debugIdentifierAnnotationInterfaceFormatter->isHandling($object));
+        $this->assertTrue($debugIdentifierAttributeInterfaceFormatter->isHandling($object));
         $this->assertMatchesRegularExpression(
             implode('', [
                 '/',
                 '^',
-                'class@anonymous\/in\/.+\/DebugIdentifierAnnotationInterfaceFormatterTest\.php:\d+ \{',
+                'class@anonymous\/in\/.+\/DebugIdentifierAttributeInterfaceFormatterTest\.php:\d+ \{',
                     '\$bar = \(int\) 42',
                     ', \$baz = \(float\) 3.14',
                 '\}',
@@ -63,16 +63,16 @@ class DebugIdentifierAnnotationInterfaceFormatterTest extends TestCase
     public function testFormatWorksWithAOjectWithAParentButWithNoConflictingProperties(): void
     {
         $caster = Caster::create();
-        $debugIdentifierAnnotationInterfaceFormatter = new DebugIdentifierAnnotationInterfaceFormatter();
+        $debugIdentifierAttributeInterfaceFormatter = new DebugIdentifierAttributeInterfaceFormatter();
         $className = testFormatWorksWithAOjectWithAParentButWithNoConflictingProperties\ClassA::class;
 
         $object = new $className();
 
-        $propertyNameToReflectionProperties = $debugIdentifierAnnotationInterfaceFormatter
+        $propertyNameToReflectionProperties = $debugIdentifierAttributeInterfaceFormatter
             ->getPropertyNameToReflectionProperties(new \ReflectionObject($object));
         $propertyNames = array_keys($propertyNameToReflectionProperties);
 
-        $this->assertTrue($debugIdentifierAnnotationInterfaceFormatter->isHandling($object));
+        $this->assertTrue($debugIdentifierAttributeInterfaceFormatter->isHandling($object));
         $this->assertCount(2, $propertyNameToReflectionProperties);
 
         $this->assertSame('foo', $propertyNames[0]);
@@ -91,7 +91,7 @@ class DebugIdentifierAnnotationInterfaceFormatterTest extends TestCase
         );
         $this->assertTrue($propertyNameToReflectionProperties['bar'][0]->isPrivate());
 
-        $formatted = $debugIdentifierAnnotationInterfaceFormatter->format($caster, $object);
+        $formatted = $debugIdentifierAttributeInterfaceFormatter->format($caster, $object);
         $this->assertIsString($formatted);
         assert(is_string($formatted)); // Make phpstan happy
 
@@ -117,16 +117,16 @@ class DebugIdentifierAnnotationInterfaceFormatterTest extends TestCase
     public function testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities(): void
     {
         $caster = Caster::create();
-        $debugIdentifierAnnotationInterfaceFormatter = new DebugIdentifierAnnotationInterfaceFormatter();
+        $debugIdentifierAttributeInterfaceFormatter = new DebugIdentifierAttributeInterfaceFormatter();
         $className = testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassA::class;
 
         $object = new $className();
 
-        $propertyNameToReflectionProperties = $debugIdentifierAnnotationInterfaceFormatter
+        $propertyNameToReflectionProperties = $debugIdentifierAttributeInterfaceFormatter
             ->getPropertyNameToReflectionProperties(new \ReflectionObject($object));
         $propertyNames = array_keys($propertyNameToReflectionProperties);
 
-        $this->assertTrue($debugIdentifierAnnotationInterfaceFormatter->isHandling($object));
+        $this->assertTrue($debugIdentifierAttributeInterfaceFormatter->isHandling($object));
         $this->assertCount(20, $propertyNameToReflectionProperties);
 
         $this->assertSame('publicPublicPublic', $propertyNames[0]);
@@ -362,7 +362,7 @@ class DebugIdentifierAnnotationInterfaceFormatterTest extends TestCase
         );
         $this->assertTrue($propertyNameToReflectionProperties['onlyInC'][0]->isPrivate());
 
-        $formatted = $debugIdentifierAnnotationInterfaceFormatter->format($caster, $object);
+        $formatted = $debugIdentifierAttributeInterfaceFormatter->format($caster, $object);
         $this->assertIsString($formatted);
         assert(is_string($formatted)); // Make phpstan happy
 
@@ -441,14 +441,14 @@ class DebugIdentifierAnnotationInterfaceFormatterTest extends TestCase
     public function testFormatWorksWhenNoPropertiesAreAnnotated(): void
     {
         $caster = Caster::create();
-        $debugIdentifierAnnotationInterfaceFormatter = new DebugIdentifierAnnotationInterfaceFormatter();
+        $debugIdentifierAttributeInterfaceFormatter = new DebugIdentifierAttributeInterfaceFormatter();
 
-        $object = new class implements DebugIdentifierAnnotationInterface
+        $object = new class implements DebugIdentifierAttributeInterface
         {
             private string $foo = 'a'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
         };
 
-        $formatted = $debugIdentifierAnnotationInterfaceFormatter->format($caster, $object);
+        $formatted = $debugIdentifierAttributeInterfaceFormatter->format($caster, $object);
         $this->assertIsString($formatted);
         assert(is_string($formatted)); // Make phpstan happy
 
@@ -456,7 +456,7 @@ class DebugIdentifierAnnotationInterfaceFormatterTest extends TestCase
             implode('', [
                 '/',
                 '^',
-                'class@anonymous\/in\/.+\/DebugIdentifierAnnotationInterfaceFormatterTest\.php:\d+ \{\}',
+                'class@anonymous\/in\/.+\/DebugIdentifierAttributeInterfaceFormatterTest\.php:\d+ \{\}',
                 '$',
                 '/',
             ]),
