@@ -67,15 +67,18 @@ class PublicVariableFormatterTest extends TestCase
         $this->assertIsString($formatted);
         assert(is_string($formatted)); // Make phpstan happy
         $this->assertMatchesRegularExpression(
-            implode('', [
-                '/',
-                '^',
-                'class@anonymous\/in\/.+\/PublicVariableFormatterTest\.php:\d+ \{',
-                    '\$foo = "bar"',
-                '\}',
-                '$',
-                '/',
-            ]),
+            sprintf(
+                implode('', [
+                    '/',
+                    '^',
+                    'class@anonymous\/in\/.+\/%s:\d+ \{',
+                        '\$foo = "bar"',
+                    '\}',
+                    '$',
+                    '/',
+                ]),
+                preg_quote(basename(__FILE__), '/'),
+            ),
             $formatted,
         );
     }
@@ -99,17 +102,20 @@ class PublicVariableFormatterTest extends TestCase
         $this->assertIsString($formatted);
         assert(is_string($formatted)); // Make phpstan happy
         $this->assertMatchesRegularExpression(
-            implode('', [
-                '/',
-                '^',
-                'class@anonymous\/in\/.+\/PublicVariableFormatterTest\.php:\d+ \{',
-                    '\$foo = 1',
-                    ', \$bar = null',
-                    ', \$baz = "hmm"',
-                '\}',
-                '$',
-                '/',
-            ]),
+            sprintf(
+                implode('', [
+                    '/',
+                    '^',
+                    'class@anonymous\/in\/.+\/%s:\d+ \{',
+                        '\$foo = 1',
+                        ', \$bar = null',
+                        ', \$baz = "hmm"',
+                    '\}',
+                    '$',
+                    '/',
+                ]),
+                preg_quote(basename(__FILE__), '/'),
+            ),
             $formatted,
         );
     }

@@ -271,7 +271,10 @@ class CasterTest extends TestCase
             ],
             [
                 'DebugIdentifierAttributeInterfaceFormatter',
-                '/^class@anonymous\/in\/.+\/CasterTest\.php:\d+ \{\$foo = \(string\(3\)\) "bar"\}$/',
+                sprintf(
+                    '/^class@anonymous\/in\/.+\/%s:\d+ \{\$foo = \(string\(3\)\) "bar"\}$/',
+                    preg_quote(basename(__FILE__), '/'),
+                ),
                 new class implements DebugIdentifierAttributeInterface
                 {
                     #[DebugIdentifier]
@@ -305,16 +308,19 @@ class CasterTest extends TestCase
             ],
             [
                 'PublicVariableFormatter',
-                implode('', [
-                    '/',
-                    '^',
-                    'class@anonymous\/in\/.+\/CasterTest\.php:\d+ \{',
-                        '\$foo = "aaa"',
-                        ', \$bar = 42',
-                    '\}',
-                    '$',
-                    '/',
-                ]),
+                sprintf(
+                    implode('', [
+                        '/',
+                        '^',
+                        'class@anonymous\/in\/.+\/%s:\d+ \{',
+                            '\$foo = "aaa"',
+                            ', \$bar = 42',
+                        '\}',
+                        '$',
+                        '/',
+                    ]),
+                    preg_quote(basename(__FILE__), '/'),
+                ),
                 new class
                 {
                     public string $foo = 'aaa';
@@ -360,7 +366,10 @@ class CasterTest extends TestCase
             ],
             [
                 'TextuallyIdentifiableInterfaceFormatter',
-                '/^class@anonymous\/in\/.+\/CasterTest\.php\:\d+\: AnonymousClass$/',
+                sprintf(
+                    '/^class@anonymous\/in\/.+\/%s\:\d+\: AnonymousClass$/',
+                    preg_quote(basename(__FILE__), '/'),
+                ),
                 new class implements TextuallyIdentifiableInterface
                 {
                     public function toTextualIdentifier(CasterInterface $caster): string
@@ -465,13 +474,16 @@ class CasterTest extends TestCase
         };
 
         $this->assertMatchesRegularExpression(
-            implode('', [
-                '/',
-                '^',
-                'class@anonymous\/in\/.+\/CasterTest\.php:\d+',
-                '$',
-                '/',
-            ]),
+            sprintf(
+                implode('', [
+                    '/',
+                    '^',
+                    'class@anonymous\/in\/.+\/%s:\d+',
+                    '$',
+                    '/',
+                ]),
+                preg_quote(basename(__FILE__), '/'),
+            ),
             Caster::create()->cast($class),
         );
     }
@@ -882,7 +894,10 @@ class CasterTest extends TestCase
             ],
             [
                 'DebugIdentifierAttributeInterfaceFormatter',
-                '/^\(object\) class@anonymous\/in\/.+\/CasterTest\.php:\d+ \{\$foo = \(string\(3\)\) "bar"\}$/',
+                sprintf(
+                    '/^\(object\) class@anonymous\/in\/.+\/%s:\d+ \{\$foo = \(string\(3\)\) "bar"\}$/',
+                    preg_quote(basename(__FILE__), '/'),
+                ),
                 new class implements DebugIdentifierAttributeInterface
                 {
                     #[DebugIdentifier]
@@ -916,16 +931,19 @@ class CasterTest extends TestCase
             ],
             [
                 'PublicVariableFormatter',
-                implode('', [
-                    '/',
-                    '^',
-                    '\(object\) class@anonymous\/in\/.+\/CasterTest\.php:\d+ \{',
-                        '\$foo = \(string\(3\)\) "aaa"',
-                        ', \$bar = \(int\) 42',
-                    '\}',
-                    '$',
-                    '/',
-                ]),
+                sprintf(
+                    implode('', [
+                        '/',
+                        '^',
+                        '\(object\) class@anonymous\/in\/.+\/%s:\d+ \{',
+                            '\$foo = \(string\(3\)\) "aaa"',
+                            ', \$bar = \(int\) 42',
+                        '\}',
+                        '$',
+                        '/',
+                    ]),
+                    preg_quote(basename(__FILE__), '/'),
+                ),
                 new class
                 {
                     public string $foo = 'aaa';
@@ -971,7 +989,10 @@ class CasterTest extends TestCase
             ],
             [
                 'TextuallyIdentifiableInterfaceFormatter',
-                '/^\(object\) class@anonymous\/in\/.+\/CasterTest\.php\:\d+\: AnonymousClass$/',
+                sprintf(
+                    '/^\(object\) class@anonymous\/in\/.+\/%s\:\d+\: AnonymousClass$/',
+                    preg_quote(basename(__FILE__), '/'),
+                ),
                 new class implements TextuallyIdentifiableInterface
                 {
                     public function toTextualIdentifier(CasterInterface $caster): string
@@ -1247,13 +1268,16 @@ class CasterTest extends TestCase
         };
 
         $this->assertMatchesRegularExpression(
-            implode('', [
-                '/',
-                '^',
-                '\(object\) class@anonymous\/in\/.+\/CasterTest\.php:\d+',
-                '$',
-                '/',
-            ]),
+            sprintf(
+                implode('', [
+                    '/',
+                    '^',
+                    '\(object\) class@anonymous\/in\/.+\/%s:\d+',
+                    '$',
+                    '/',
+                ]),
+                preg_quote(basename(__FILE__), '/'),
+            ),
             Caster::create()->withIsPrependingType(true)->cast($class),
         );
     }

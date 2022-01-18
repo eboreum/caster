@@ -46,16 +46,19 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
 
         $this->assertTrue($debugIdentifierAttributeInterfaceFormatter->isHandling($object));
         $this->assertMatchesRegularExpression(
-            implode('', [
-                '/',
-                '^',
-                'class@anonymous\/in\/.+\/DebugIdentifierAttributeInterfaceFormatterTest\.php:\d+ \{',
-                    '\$bar = \(int\) 42',
-                    ', \$baz = \(float\) 3.14',
-                '\}',
-                '$',
-                '/',
-            ]),
+            sprintf(
+                implode('', [
+                    '/',
+                    '^',
+                    'class@anonymous\/in\/.+\/%s:\d+ \{',
+                        '\$bar = \(int\) 42',
+                        ', \$baz = \(float\) 3.14',
+                    '\}',
+                    '$',
+                    '/',
+                ]),
+                preg_quote(basename(__FILE__), '/'),
+            ),
             $formatted,
         );
     }
@@ -453,13 +456,16 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
         assert(is_string($formatted)); // Make phpstan happy
 
         $this->assertMatchesRegularExpression(
-            implode('', [
-                '/',
-                '^',
-                'class@anonymous\/in\/.+\/DebugIdentifierAttributeInterfaceFormatterTest\.php:\d+ \{\}',
-                '$',
-                '/',
-            ]),
+            sprintf(
+                implode('', [
+                    '/',
+                    '^',
+                    'class@anonymous\/in\/.+\/%s:\d+ \{\}',
+                    '$',
+                    '/',
+                ]),
+                preg_quote(basename(__FILE__), '/'),
+            ),
             $formatted,
         );
     }
