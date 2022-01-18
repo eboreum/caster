@@ -2391,10 +2391,61 @@ class CasterTest extends TestCase
         $this->assertInstanceOf(Caster::class, $caster);
     }
 
-    public function testMakeNormalizedClassNameWorks(): void
+    /**
+     * @dataProvider dataProvider_testMakeNormalizedClassNameWorks
+     */
+    public function testMakeNormalizedClassNameWorks(string $expectedRegex, object $object): void
     {
-        $caster = Caster::create();
-        $this->assertInstanceOf(Caster::class, $caster);
+        $this->assertMatchesRegularExpression(
+            $expectedRegex,
+            Caster::makeNormalizedClassName(new \ReflectionObject($object)),
+        );
+    }
+
+    public function dataProvider_testMakeNormalizedClassNameWorks(): array
+    {
+        return [
+            [
+                sprintf(
+                    implode('', [
+                        '/',
+                        '^',
+                        'class@anonymous\/in\/.+\/%s:\d+',
+                        '$',
+                        '/',
+                    ]),
+                    preg_quote(basename(__FILE__), '/'),
+                ),
+                new class {},
+            ],
+            [
+                sprintf(
+                    implode('', [
+                        '/',
+                        '^',
+                        '\\\\DateTime@anonymous\/in\/.+\/%s:\d+',
+                        '$',
+                        '/',
+                    ]),
+                    preg_quote(basename(__FILE__), '/'),
+                ),
+                new class ('2022-01-01T00:00:00+00:00') extends \DateTime {},
+            ],
+            [
+                sprintf(
+                    implode('', [
+                        '/',
+                        '^',
+                        '\\\\%s@anonymous\/in\/.+\/%s:\d+',
+                        '$',
+                        '/',
+                    ]),
+                    preg_quote(Character::class, '/'),
+                    preg_quote(basename(__FILE__), '/'),
+                ),
+                new class ('-') extends Character {},
+            ],
+        ];
     }
 
     /**

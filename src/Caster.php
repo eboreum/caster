@@ -192,8 +192,22 @@ class Caster implements CasterInterface
         if ($reflectionClass->isAnonymous()) {
             assert(is_string($reflectionClass->getFileName())); // Make phpstan happy
 
+            $pretext = 'class';
+            $reflectionClassCurrent = $reflectionClass->getParentClass();
+
+            while ($reflectionClassCurrent) {
+                if (false === $reflectionClassCurrent->isAnonymous()) {
+                    $pretext = '\\' . $reflectionClassCurrent->getName();
+
+                    break;
+                }
+
+                $reflectionClassCurrent = $reflectionClassCurrent->getParentClass();
+            }
+
             return sprintf(
-                'class@anonymous/in/%s:%d',
+                '%s@anonymous/in/%s:%d',
+                $pretext,
                 preg_replace(
                     '/^\//',
                     '',
