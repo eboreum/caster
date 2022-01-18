@@ -444,6 +444,45 @@ class CasterTest extends TestCase
                 \fopen(__FILE__, 'r+'),
                 Caster::create(),
             ],
+            (function(){
+                $class = new class extends \DateTime {};
+                class_alias(get_class($class), 'FooBar_9f8a3c814a1d42dda2672abede7ce454');
+
+                $caster = Caster::create();
+                $caster = $caster->withCustomObjectFormatterCollection(
+                    new ObjectFormatterCollection(...[
+                        new DateTimeInterfaceFormatter(),
+                    ]),
+                );
+
+                return [
+                    'class_alias(...) works.',
+                    sprintf(
+                        implode('', [
+                            '/',
+                            '^',
+                            '\\\\DateTime@anonymous\/in\/.+\/%s\:\d+ \("2022-01-01T00:00:00\+00:00"\)',
+                            '$',
+                            '/',
+                        ]),
+                        preg_quote(basename(__FILE__), '/'),
+                    ),
+                    new \FooBar_9f8a3c814a1d42dda2672abede7ce454('2022-01-01T00:00:00.000000+00:00'),
+                    $caster,
+                ];
+            })(),
+            [
+                'An array',
+                '/^\[0 \=\> "foo", 1 \=\> 42\]$/',
+                ['foo', 42],
+                Caster::create(),
+            ],
+            [
+                'A resource',
+                '/^`stream` Resource id #\d+$/',
+                \fopen(__FILE__, 'r+'),
+                Caster::create(),
+            ],
         ];
     }
 
