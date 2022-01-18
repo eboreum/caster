@@ -193,16 +193,9 @@ class Caster implements CasterInterface
             assert(is_string($reflectionClass->getFileName())); // Make phpstan happy
 
             $pretext = 'class';
-            $reflectionClassCurrent = $reflectionClass->getParentClass();
 
-            while ($reflectionClassCurrent) {
-                if (false === $reflectionClassCurrent->isAnonymous()) {
-                    $pretext = '\\' . $reflectionClassCurrent->getName();
-
-                    break;
-                }
-
-                $reflectionClassCurrent = $reflectionClassCurrent->getParentClass();
+            if ($reflectionClass->getParentClass()) {
+                $pretext = '\\' . $reflectionClass->getParentClass()->getName();
             }
 
             return sprintf(
