@@ -467,7 +467,7 @@ class CasterTest extends TestCase
                         ]),
                         preg_quote(basename(__FILE__), '/'),
                     ),
-                    new \FooBar_9f8a3c814a1d42dda2672abede7ce454('2022-01-01T00:00:00.000000+00:00'),
+                    new \FooBar_9f8a3c814a1d42dda2672abede7ce454('2022-01-01T00:00:00.000000+00:00'), // @phpstan-ignore-line
                     $caster,
                 ];
             })(),
@@ -2441,6 +2441,9 @@ class CasterTest extends TestCase
         );
     }
 
+    /**
+     * @return array<array{string, object}>
+     */
     public function dataProvider_testMakeNormalizedClassNameWorks(): array
     {
         return [
