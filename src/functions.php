@@ -30,3 +30,11 @@ function rglob(string $pattern, int $flags = 0): array
 
     return $filePaths;
 }
+
+/**
+ * The missing PHP 8.1 function. Same functionality as is_object, is_array, is_null, etc. but for (actual) enums.
+ */
+function is_enum(mixed $value): bool
+{
+    return is_object($value) && enum_exists(get_class($value));
+}

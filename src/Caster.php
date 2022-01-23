@@ -7,6 +7,7 @@ namespace Eboreum\Caster;
 use Eboreum\Caster\Caster\Context;
 use Eboreum\Caster\Collection\EncryptedStringCollection;
 use Eboreum\Caster\Collection\Formatter\ArrayFormatterCollection;
+use Eboreum\Caster\Collection\Formatter\EnumFormatterCollection;
 use Eboreum\Caster\Collection\Formatter\ObjectFormatterCollection;
 use Eboreum\Caster\Collection\Formatter\ResourceFormatterCollection;
 use Eboreum\Caster\Collection\Formatter\StringFormatterCollection;
@@ -20,11 +21,14 @@ use Eboreum\Caster\Contract\CharacterEncodingInterface;
 use Eboreum\Caster\Contract\CharacterInterface;
 use Eboreum\Caster\Exception\CasterException;
 use Eboreum\Caster\Formatter\DefaultArrayFormatter;
+use Eboreum\Caster\Formatter\DefaultEnumFormatter;
 use Eboreum\Caster\Formatter\DefaultObjectFormatter;
 use Eboreum\Caster\Formatter\DefaultResourceFormatter;
 use Eboreum\Caster\Formatter\DefaultStringFormatter;
 use Eboreum\Caster\Formatter\Object_\DebugIdentifierAttributeInterfaceFormatter;
 use Eboreum\Caster\Formatter\Object_\TextuallyIdentifiableInterfaceFormatter;
+
+use function Eboreum\Caster\functions\is_enum;
 
 /**
  * {@inheritDoc}
@@ -82,6 +86,8 @@ class Caster implements CasterInterface
 
     protected DefaultArrayFormatter $defaultArrayFormatter;
 
+    protected DefaultEnumFormatter $defaultEnumFormatter;
+
     protected DefaultObjectFormatter $defaultObjectFormatter;
 
     protected DefaultResourceFormatter $defaultResourceFormatter;
@@ -99,6 +105,8 @@ class Caster implements CasterInterface
     protected EncryptedStringCollection $maskedEncryptedStringCollection;
 
     protected ArrayFormatterCollection $customArrayFormatterCollection;
+
+    protected EnumFormatterCollection $customEnumFormatterCollection;
 
     protected ObjectFormatterCollection $customObjectFormatterCollection;
 
@@ -129,12 +137,14 @@ class Caster implements CasterInterface
         $this->sampleEllipsis = CasterInterface::SAMPLE_ELLIPSIS_DEFAULT;
         $this->defaultStringFormatter = new DefaultStringFormatter();
         $this->defaultArrayFormatter = new DefaultArrayFormatter();
+        $this->defaultEnumFormatter = new DefaultEnumFormatter();
         $this->defaultObjectFormatter = new DefaultObjectFormatter();
         $this->defaultResourceFormatter = new DefaultResourceFormatter();
         $this->maskingCharacter = new Character('*', $characterEncoding);
         $this->maskingStringLength = new PositiveInteger(6);
         $this->maskedEncryptedStringCollection = new EncryptedStringCollection();
         $this->customArrayFormatterCollection = new ArrayFormatterCollection();
+        $this->customEnumFormatterCollection = new EnumFormatterCollection();
         $this->customObjectFormatterCollection = new ObjectFormatterCollection();
         $this->customResourceFormatterCollection = new ResourceFormatterCollection();
         $this->customStringFormatterCollection = new StringFormatterCollection();
@@ -294,13 +304,16 @@ class Caster implements CasterInterface
 
         if (is_object($value)) {
             $caster = $this;
+            $isEnum = is_enum($value);
+            $typePrefixText = ($isEnum ? 'enum' : 'object');
 
             if ($caster->getContext()->hasVisitedObject($value)) {
                 $return = $caster->getRecursionMessage($value);
 
                 if ($caster->isPrependingType()) {
                     $return = sprintf(
-                        '(object) %s',
+                        '(%s) %s',
+                        $typePrefixText,
                         $return
                     );
                 }
@@ -317,7 +330,8 @@ class Caster implements CasterInterface
 
                 if ($caster->isPrependingType()) {
                     $return = sprintf(
-                        '(object) %s',
+                        '(%s) %s',
+                        $typePrefixText,
                         $return
                     );
                 }
@@ -333,21 +347,36 @@ class Caster implements CasterInterface
                 new PositiveInteger($caster->getDepthCurrent()->toInteger() + 1)
             );
 
-            foreach ($caster->customObjectFormatterCollection as $objectFormatter) {
-                $return = $objectFormatter->format($caster, $value);
+            if ($isEnum) {
+                foreach ($caster->customEnumFormatterCollection as $enumFormatter) {
+                    $return = $enumFormatter->format($caster, $value);
 
-                if (is_string($return)) {
-                    break;
+                    if (is_string($return)) {
+                        break;
+                    }
                 }
-            }
 
-            if (null === $return) {
-                $return = strval($caster->getDefaultObjectFormatter()->format($caster, $value));
+                if (null === $return) {
+                    $return = strval($caster->getDefaultEnumFormatter()->format($caster, $value));
+                }
+            } else {
+                foreach ($caster->customObjectFormatterCollection as $objectFormatter) {
+                    $return = $objectFormatter->format($caster, $value);
+
+                    if (is_string($return)) {
+                        break;
+                    }
+                }
+
+                if (null === $return) {
+                    $return = strval($caster->getDefaultObjectFormatter()->format($caster, $value));
+                }
             }
 
             if ($caster->isPrependingType()) {
                 $return = sprintf(
-                    '(object) %s',
+                    '(%s) %s',
+                    $typePrefixText,
                     $return,
                 );
             }
@@ -619,6 +648,18 @@ class Caster implements CasterInterface
     /**
      * {@inheritDoc}
      */
+    public function withCustomEnumFormatterCollection(
+        EnumFormatterCollection $customEnumFormatterCollection
+    ): Caster {
+        $clone = clone $this;
+        $clone->customEnumFormatterCollection = $customEnumFormatterCollection;
+
+        return $clone;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function withCustomObjectFormatterCollection(
         ObjectFormatterCollection $customObjectFormatterCollection
     ): Caster {
@@ -867,6 +908,14 @@ class Caster implements CasterInterface
     /**
      * {@inheritDoc}
      */
+    public function getCustomEnumFormatterCollection(): EnumFormatterCollection
+    {
+        return $this->customEnumFormatterCollection;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getCustomObjectFormatterCollection(): ObjectFormatterCollection
     {
         return $this->customObjectFormatterCollection;
@@ -894,6 +943,14 @@ class Caster implements CasterInterface
     public function getDefaultArrayFormatter(): DefaultArrayFormatter
     {
         return $this->defaultArrayFormatter;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getDefaultEnumFormatter(): DefaultEnumFormatter
+    {
+        return $this->defaultEnumFormatter;
     }
 
     /**
@@ -1034,11 +1091,13 @@ class Caster implements CasterInterface
     public function __clone()
     {
         $this->defaultArrayFormatter = clone $this->defaultArrayFormatter;
+        $this->defaultEnumFormatter = clone $this->defaultEnumFormatter;
         $this->defaultObjectFormatter = clone $this->defaultObjectFormatter;
         $this->defaultResourceFormatter = clone $this->defaultResourceFormatter;
         $this->defaultStringFormatter = clone $this->defaultStringFormatter;
         $this->maskedEncryptedStringCollection = clone $this->maskedEncryptedStringCollection;
         $this->customArrayFormatterCollection = clone $this->customArrayFormatterCollection;
+        $this->customEnumFormatterCollection = clone $this->customEnumFormatterCollection;
         $this->customObjectFormatterCollection = clone $this->customObjectFormatterCollection;
         $this->customResourceFormatterCollection = clone $this->customResourceFormatterCollection;
         $this->customStringFormatterCollection = clone $this->customStringFormatterCollection;

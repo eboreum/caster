@@ -11,13 +11,6 @@ use Eboreum\Caster\Contract\CasterInterface;
 class DefaultObjectFormatter extends AbstractObjectFormatter
 {
     /**
-     * Determines whether or not the `spl_object_hash` is appended to the string in a parenthesis.
-     *
-     * @see https://www.php.net/manual/en/function.spl-object-hash.php
-     */
-    protected bool $isAppendingSplObjectHash = false;
-
-    /**
      * {@inheritDoc}
      */
     public function format(CasterInterface $caster, object $object): ?string
@@ -32,27 +25,6 @@ class DefaultObjectFormatter extends AbstractObjectFormatter
         }
 
         return $str;
-    }
-
-    /**
-     * Must return a clone.
-     */
-    public function withIsAppendingSplObjectHash(bool $isAppendingSplObjectHash): DefaultObjectFormatter
-    {
-        $clone = clone $this;
-        $clone->isAppendingSplObjectHash = $isAppendingSplObjectHash;
-
-        return $clone;
-    }
-
-    /**
-     * Returns whether or not the `spl_object_hash` is appended to the string in a parenthesis.
-     *
-     * @see https://www.php.net/manual/en/function.spl-object-hash.php
-     */
-    public function isAppendingSplObjectHash(): bool
-    {
-        return $this->isAppendingSplObjectHash;
     }
 
     /**

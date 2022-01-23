@@ -16,7 +16,7 @@ class DefaultObjectFormatterTest extends TestCase
     public function testBasics(
         string $message,
         string $expected,
-        string $expectedWithType,
+        string $expectedWithAppendedSplObjectHash,
         Caster $caster,
         object $object
     ): void {
@@ -28,16 +28,16 @@ class DefaultObjectFormatterTest extends TestCase
         $this->assertIsString($formatted);
         assert(is_string($formatted));
 
+        $this->assertFalse($defaultObjectFormatter->isAppendingSplObjectHash());
         $this->assertMatchesRegularExpression($expected, $formatted, $message);
 
-        $caster = $caster->withIsPrependingType(true);
+        $defaultObjectFormatter = $defaultObjectFormatter->withIsAppendingSplObjectHash(true);
+        $this->assertTrue($defaultObjectFormatter->isAppendingSplObjectHash());
+
         $formatted = $defaultObjectFormatter->format($caster, $object);
         $this->assertIsString($formatted);
         assert(is_string($formatted)); // Make phpstan happy
-
-        $this->assertMatchesRegularExpression($expectedWithType, $formatted, $message);
-
-        $this->assertFalse($defaultObjectFormatter->isAppendingSplObjectHash());
+        $this->assertMatchesRegularExpression($expectedWithAppendedSplObjectHash, $formatted, $message);
     }
 
     /**
@@ -49,7 +49,7 @@ class DefaultObjectFormatterTest extends TestCase
             [
                 'stdClass',
                 '/^\\\\stdClass$/',
-                '/^\\\\stdClass$/',
+                '/^\\\\stdClass \([0-9a-f]+\)$/',
                 Caster::getInstance(),
                 new \stdClass(),
             ],

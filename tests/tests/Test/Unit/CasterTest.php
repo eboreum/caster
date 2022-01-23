@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Test\Unit\Eboreum\Caster;
 
 use Eboreum\Caster\Abstraction\Formatter\AbstractArrayFormatter;
+use Eboreum\Caster\Abstraction\Formatter\AbstractEnumFormatter;
 use Eboreum\Caster\Abstraction\Formatter\AbstractObjectFormatter;
 use Eboreum\Caster\Abstraction\Formatter\AbstractResourceFormatter;
 use Eboreum\Caster\Abstraction\Formatter\AbstractStringFormatter;
@@ -14,6 +15,7 @@ use Eboreum\Caster\Caster\Context;
 use Eboreum\Caster\CharacterEncoding;
 use Eboreum\Caster\Collection\EncryptedStringCollection;
 use Eboreum\Caster\Collection\Formatter\ArrayFormatterCollection;
+use Eboreum\Caster\Collection\Formatter\EnumFormatterCollection;
 use Eboreum\Caster\Collection\Formatter\ObjectFormatterCollection;
 use Eboreum\Caster\Collection\Formatter\ResourceFormatterCollection;
 use Eboreum\Caster\Collection\Formatter\StringFormatterCollection;
@@ -24,6 +26,7 @@ use Eboreum\Caster\Common\DataType\String_\Character;
 use Eboreum\Caster\Contract\Caster\ContextInterface;
 use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\Contract\DebugIdentifierAttributeInterface;
+use Eboreum\Caster\Contract\Formatter\EnumFormatterInterface;
 use Eboreum\Caster\Contract\TextuallyIdentifiableInterface;
 use Eboreum\Caster\EncryptedString;
 use Eboreum\Caster\Exception\CasterException;
@@ -42,6 +45,9 @@ use Eboreum\Caster\Formatter\Object_\TextuallyIdentifiableInterfaceFormatter;
 use Eboreum\Caster\Formatter\Object_\ThrowableFormatter;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use TestResource\Unit\Eboreum\Caster\CasterTest\testCastWorks\StringEnum;
+
+use function Eboreum\Caster\functions\is_enum;
 
 class CasterTest extends TestCase
 {
@@ -57,6 +63,7 @@ class CasterTest extends TestCase
         $this->assertSame($characterEncoding, $caster->getCharacterEncoding());
         $this->assertCount(0, $caster->getContext());
         $this->assertCount(0, $caster->getCustomArrayFormatterCollection());
+        $this->assertCount(0, $caster->getCustomEnumFormatterCollection());
         $this->assertCount(0, $caster->getCustomObjectFormatterCollection());
         $this->assertCount(0, $caster->getCustomResourceFormatterCollection());
         $this->assertCount(0, $caster->getCustomStringFormatterCollection());
@@ -481,6 +488,15 @@ class CasterTest extends TestCase
                 'A resource',
                 '/^`stream` Resource id #\d+$/',
                 \fopen(__FILE__, 'r+'),
+                Caster::create(),
+            ],
+            [
+                'An enum',
+                sprintf(
+                    '/^\\\\%s \{\$name = "Lorem"\}$/',
+                    preg_quote(StringEnum::class, '/'),
+                ),
+                StringEnum::Lorem,
                 Caster::create(),
             ],
         ];
@@ -1147,6 +1163,52 @@ class CasterTest extends TestCase
                 }
             },
         ]));
+        $caster = $caster->withCustomEnumFormatterCollection(new EnumFormatterCollection(...[
+            new class extends AbstractObjectFormatter implements EnumFormatterInterface
+            {
+                /**
+                 * {@inheritDoc}
+                 */
+                public function format(CasterInterface $caster, object $enum): ?string
+                {
+                    if (false === $this->isHandling($enum)) {
+                        return null;
+                    }
+
+                    assert($enum instanceof \DateTimeInterface); // Make phpstan happy
+
+                    return sprintf(
+                        '\\%s {$name = %s, $value = %s}',
+                        get_class($enum),
+                        $caster->cast($enum->name), // @phpstan-ignore-line
+                        $caster->cast($enum->value), // @phpstan-ignore-line
+                    );
+                }
+
+                /**
+                 * {@inheritDoc}
+                 */
+                public function isHandling(object $enum): bool
+                {
+                    if (is_enum($enum)) {
+                        $reflectionEnum = new \ReflectionEnum($enum);
+                        $reflectionType = $reflectionEnum->getBackingType();
+
+                        if ($reflectionType) {
+                            /**
+                             * PHPStan is clearly confused here. It is true that it is not listed here –
+                             * https://www.php.net/manual/en/class.reflectiontype.php – but the method `getName` does in
+                             * fact exist.
+                             */
+                            // @phpstan-ignore-next-line
+                            return 'string' === $reflectionType->getName();
+                        }
+                    }
+
+                    return false;
+                }
+            },
+        ]));
         $caster = $caster->withCustomObjectFormatterCollection(new ObjectFormatterCollection(...[
             new class extends AbstractObjectFormatter
             {
@@ -1258,6 +1320,13 @@ class CasterTest extends TestCase
         ]));
         $this->assertSame('[0 => 1]', $caster->cast([1]));
         $this->assertSame('["replaceme" => "replaced"]', $caster->cast(['replaceme' => 'original']));
+        $this->assertSame(
+            sprintf(
+                '\\%s {$name = "Lorem", $value = "Lorem"}',
+                StringEnum::class,
+            ),
+            $caster->cast(StringEnum::Lorem),
+        );
         $this->assertSame('\\stdClass', $caster->cast(new \stdClass()));
         $this->assertSame(
             '\\DateTimeImmutable (2019-01-01T00:00:00+00:00)',
@@ -1826,6 +1895,56 @@ class CasterTest extends TestCase
         $this->assertCount(
             1,
             $casterB->getCustomArrayFormatterCollection(),
+        );
+    }
+
+    public function testWithCustomEnumFormatterCollectionWorks(): void
+    {
+        $casterA = Caster::create();
+        $enumFormatterCollectionA = $casterA->getCustomEnumFormatterCollection();
+
+        $enumFormatterCollectionB = new EnumFormatterCollection(...[
+            new class extends AbstractEnumFormatter
+            {
+                /**
+                 * {@inheritDoc}
+                 */
+                public function format(CasterInterface $caster, object $enum): ?string
+                {
+                    return null;
+                }
+
+                /**
+                 * {@inheritDoc}
+                 */
+                public function isHandling(object $enum): bool
+                {
+                    return is_enum($enum);
+                }
+            }
+        ]);
+        $casterB = $casterA->withCustomEnumFormatterCollection($enumFormatterCollectionB);
+
+        $this->assertNotSame($casterA, $casterB);
+        $this->assertNotSame(
+            $casterA->getCustomEnumFormatterCollection(),
+            $casterB->getCustomEnumFormatterCollection(),
+        );
+        $this->assertSame(
+            $enumFormatterCollectionA,
+            $casterA->getCustomEnumFormatterCollection(),
+        );
+        $this->assertCount(
+            0,
+            $casterA->getCustomEnumFormatterCollection(),
+        );
+        $this->assertSame(
+            $enumFormatterCollectionB,
+            $casterB->getCustomEnumFormatterCollection(),
+        );
+        $this->assertCount(
+            1,
+            $casterB->getCustomEnumFormatterCollection(),
         );
     }
 
