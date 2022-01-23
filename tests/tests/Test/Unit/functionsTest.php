@@ -6,11 +6,13 @@ namespace Test\Unit\Eboreum\Caster;
 
 use PHPUnit\Framework\TestCase;
 
+use function Eboreum\Caster\functions\rglob;
+
 class functionsTest extends TestCase
 {
-    public function testRglobWorks(): void
+    public function test_rglob_works(): void
     {
-        $filePaths = \Eboreum\Caster\functions\rglob(dirname(TEST_ROOT_PATH) . '/src/*.php');
+        $filePaths = rglob(dirname(TEST_ROOT_PATH) . '/src/*.php');
 
         $this->assertGreaterThan(0, $filePaths);
 
