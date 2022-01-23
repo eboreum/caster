@@ -7,6 +7,8 @@ namespace Test\Unit\Eboreum\Caster;
 use PhpParser\ParserFactory;
 use PHPUnit\Framework\TestCase;
 
+use function Eboreum\Caster\functions\rglob;
+
 /**
  * Did we leave bogus comments, names, file paths, etc. lying around in the project?
  */
@@ -17,10 +19,10 @@ class BogusScannerTest extends TestCase
         $errorMessages = [];
 
         $filePaths = array_merge(
-            \Eboreum\Caster\functions\rglob(dirname(TEST_ROOT_PATH) . '/src/*.php'),
-            \Eboreum\Caster\functions\rglob(dirname(TEST_ROOT_PATH) . '/script/misc/readme/*.php'),
-            \Eboreum\Caster\functions\rglob(TEST_ROOT_PATH . '/resources'),
-            \Eboreum\Caster\functions\rglob(TEST_ROOT_PATH . '/tests/*Test.php'),
+            rglob(dirname(TEST_ROOT_PATH) . '/src/*.php'),
+            rglob(dirname(TEST_ROOT_PATH) . '/script/misc/readme/*.php'),
+            rglob(TEST_ROOT_PATH . '/resources'),
+            rglob(TEST_ROOT_PATH . '/tests/*Test.php'),
         );
 
         $contents = file_get_contents(dirname(TEST_ROOT_PATH) . '/composer.json');

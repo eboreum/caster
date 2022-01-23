@@ -12,6 +12,8 @@ use Eboreum\Caster\Exception\RuntimeException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
+use function Eboreum\Caster\functions\rglob;
+
 class ObjectCollectionTest extends TestCase
 {
     /**
@@ -216,7 +218,7 @@ class ObjectCollectionTest extends TestCase
             $srcDirectory->path,
         );
 
-        foreach (\Eboreum\Caster\functions\rglob($pattern) as $filePath) {
+        foreach (rglob($pattern) as $filePath) {
             $className = mb_substr(
                 $filePath,
                 mb_strlen($srcDirectory->path) + 1,
