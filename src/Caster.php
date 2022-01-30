@@ -157,7 +157,7 @@ class Caster implements CasterInterface
     public static function getInstance(): Caster
     {
         if (null === self::$instance) {
-            self::$instance = static::create();
+            self::$instance = self::create();
         }
 
         return self::$instance;
