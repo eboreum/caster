@@ -16,12 +16,15 @@ class Caster extends EboreumCaster
 {
     private static ?Caster $instance = null;
 
-    public static function getInstance(): Caster // PHP 7.4 Liskov substitution will allow this
+    /**
+     * {@inheritDoc}
+     */
+    public static function getInstance(): self
     {
         if (null === self::$instance) {
             self::$instance = new self(CharacterEncoding::getInstance());
 
-            self::$instance = self::$instance->withCustomArrayFormatterCollection(new ArrayFormatterCollection(...[
+            $instance = self::$instance->withCustomArrayFormatterCollection(new ArrayFormatterCollection([
                 new class extends AbstractArrayFormatter
                 {
                     /**
@@ -41,6 +44,10 @@ class Caster extends EboreumCaster
                     }
                 }
             ]));
+
+            assert($instance instanceof Caster);
+
+            self::$instance = $instance;
 
             // Do more custom configuring before the instance is forever locked and returned
         }

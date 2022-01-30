@@ -11,7 +11,7 @@ use Eboreum\Caster\Contract\CasterInterface;
 require_once dirname(__DIR__, 2) . "/bootstrap.php"; // README.md.remove
 
 $caster = Caster::create();
-$caster = $caster->withCustomArrayFormatterCollection(new ArrayFormatterCollection(...[
+$caster = $caster->withCustomArrayFormatterCollection(new ArrayFormatterCollection([
     new class extends AbstractArrayFormatter
     {
         /**

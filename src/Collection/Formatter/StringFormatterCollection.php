@@ -7,52 +7,21 @@ namespace Eboreum\Caster\Collection\Formatter;
 use Eboreum\Caster\Abstraction\Collection\AbstractObjectCollection;
 use Eboreum\Caster\Contract\Collection\Formatter\FormatterCollectionInterface;
 use Eboreum\Caster\Contract\Formatter\StringFormatterInterface;
-use Eboreum\Caster\Exception\RuntimeException;
 
 /**
  * {@inheritDoc}
+ *
+ * @template T of StringFormatterInterface
+ * @extends AbstractObjectCollection<T>
+ * @implements FormatterCollectionInterface<T>
  */
 class StringFormatterCollection extends AbstractObjectCollection implements FormatterCollectionInterface
 {
-    /** @var array<int, StringFormatterInterface> */
-    protected array $elements;
-
-    /**
-     * {@inheritDoc}
-     *
-     * @throws RuntimeException
-     */
-    public function __construct(StringFormatterInterface ...$elements)
-    {
-        parent::__construct(...$elements);
-    }
-
     /**
      * {@inheritDoc}
      */
     public static function getHandledClassName(): string
     {
         return StringFormatterInterface::class;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return array<int, StringFormatterInterface>
-     */
-    public function toArray(): array
-    {
-        return $this->elements;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @phpstan-ignore-next-line Suppression code 42a9f1bf; see README.md
-     * @return \ArrayIterator<int, StringFormatterInterface>
-     */
-    public function getIterator(): \ArrayIterator
-    {
-        return new \ArrayIterator($this->elements);
     }
 }

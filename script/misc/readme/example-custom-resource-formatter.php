@@ -14,7 +14,7 @@ require_once dirname(__DIR__, 2) . "/bootstrap.php"; // README.md.remove
 
 $caster = Caster::create();
 
-$caster = $caster->withCustomResourceFormatterCollection(new ResourceFormatterCollection(...[
+$caster = $caster->withCustomResourceFormatterCollection(new ResourceFormatterCollection([
     new class extends AbstractResourceFormatter
     {
         /**
@@ -52,13 +52,17 @@ $caster = $caster->withCustomResourceFormatterCollection(new ResourceFormatterCo
             }
 
             if ("xml" === get_resource_type($resource->getResource())) {
+                $identifier = preg_replace(
+                    '/^(Resource id) #\d+$/',
+                    '$1 #42',
+                    (string)$resource->getResource(),
+                );
+
+                assert(is_string($identifier));
+
                 return sprintf(
                     "XML %s",
-                    preg_replace(
-                        '/^(Resource id) #\d+$/',
-                        '$1 #42',
-                        $resource->getResource(),
-                    ),
+                    $identifier,
                 );
             }
 

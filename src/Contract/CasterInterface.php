@@ -6,12 +6,19 @@ namespace Eboreum\Caster\Contract;
 
 use Eboreum\Caster\Collection\EncryptedStringCollection;
 use Eboreum\Caster\Collection\Formatter\ArrayFormatterCollection;
+use Eboreum\Caster\Collection\Formatter\EnumFormatterCollection;
 use Eboreum\Caster\Collection\Formatter\ObjectFormatterCollection;
 use Eboreum\Caster\Collection\Formatter\ResourceFormatterCollection;
 use Eboreum\Caster\Collection\Formatter\StringFormatterCollection;
 use Eboreum\Caster\Common\DataType\Integer\PositiveInteger;
 use Eboreum\Caster\Common\DataType\Integer\UnsignedInteger;
 use Eboreum\Caster\Contract\Caster\ContextInterface;
+use Eboreum\Caster\Contract\Formatter\ArrayFormatterInterface;
+use Eboreum\Caster\Contract\Formatter\EnumFormatterInterface;
+use Eboreum\Caster\Contract\Formatter\ObjectFormatterInterface;
+use Eboreum\Caster\Contract\Formatter\ResourceFormatterInterface;
+use Eboreum\Caster\Contract\Formatter\StringFormatterInterface;
+use Eboreum\Caster\EncryptedString;
 use Eboreum\Caster\Exception\CasterException;
 use Eboreum\Caster\Formatter\DefaultArrayFormatter;
 use Eboreum\Caster\Formatter\DefaultObjectFormatter;
@@ -32,13 +39,15 @@ interface CasterInterface extends ImmutableObjectInterface
 
     /**
      * Must return a new instance every time.
+     *
+     * @return static
      */
-    public static function create(?CharacterEncodingInterface $characterEncoding = null): CasterInterface;
+    public static function create(?CharacterEncodingInterface $characterEncoding = null): self;
 
     /**
      * Must always return the same instance.
      */
-    public static function getInstance(): CasterInterface;
+    public static function getInstance(): self;
 
     /**
      * Returns the spelled-out value. E.g. `true` will be output as "true", strings will be wrapped in quotes (like
@@ -79,109 +88,155 @@ interface CasterInterface extends ImmutableObjectInterface
     /**
      * Must set the maximum number of elements to be displayed in an array on a clone of the current instance.
      * Must return said clone.
+     *
+     * @return static
      */
-    public function withArraySampleSize(UnsignedInteger $arraySampleSize): CasterInterface;
+    public function withArraySampleSize(UnsignedInteger $arraySampleSize): self;
 
     /**
      * Must change the utilized character encoding on a clone of the current instance.
      * Must return said clone.
+     *
+     * @return static
      */
-    public function withCharacterEncoding(CharacterEncodingInterface $characterEncoding): CasterInterface;
+    public function withCharacterEncoding(CharacterEncodingInterface $characterEncoding): self;
 
     /**
      * Must change the utilized context on a clone of the current instance.
      * Must return said clone.
+     *
+     * @return static
      */
-    public function withContext(ContextInterface $context): CasterInterface;
+    public function withContext(ContextInterface $context): self;
 
     /**
      * Must change the utilized custom ArrayFormatterCollection on a clone of the current instance.
      * The order of elements in the collection is significant. Lower indexes will be handled first. However, if a given
      * formatter does not handle the provided value, it is passed on to the next formatter.
      * Must return said clone.
+     *
+     * @param ArrayFormatterCollection<ArrayFormatterInterface> $customArrayFormatterCollection
+     * @return static
      */
     public function withCustomArrayFormatterCollection(
         ArrayFormatterCollection $customArrayFormatterCollection
-    ): CasterInterface;
+    ): self;
+
+    /**
+     * Must change the utilized custom EnumFormatterCollection on a clone of the current instance.
+     * The order of elements in the collection is significant. Lower indexes will be handled first. However, if a given
+     * formatter does not handle the provided value, it is passed on to the next formatter.
+     * Must return said clone.
+     *
+     * @param EnumFormatterCollection<EnumFormatterInterface> $customEnumFormatterCollection
+     * @return static
+     */
+    public function withCustomEnumFormatterCollection(
+        EnumFormatterCollection $customEnumFormatterCollection
+    ): self;
 
     /**
      * Must change the utilized custom ObjectFormatterCollection on a clone of the current instance.
      * The order of elements in the collection is significant. Lower indexes will be handled first. However, if a given
      * formatter does not handle the provided value, it is passed on to the next formatter.
      * Must return said clone.
+     *
+     * @param ObjectFormatterCollection<ObjectFormatterInterface> $customObjectFormatterCollection
+     * @return static
      */
     public function withCustomObjectFormatterCollection(
         ObjectFormatterCollection $customObjectFormatterCollection
-    ): CasterInterface;
+    ): self;
 
     /**
      * Must change the utilized custom ResourceFormatterCollection on a clone of the current instance.
      * The order of elements in the collection is significant. Lower indexes will be handled first. However, if a given
      * formatter does not handle the provided value, it is passed on to the next formatter.
      * Must return said clone.
+     *
+     * @param ResourceFormatterCollection<ResourceFormatterInterface> $customResourceFormatterCollection
+     * @return static
      */
     public function withCustomResourceFormatterCollection(
         ResourceFormatterCollection $customResourceFormatterCollection
-    ): CasterInterface;
+    ): self;
 
     /**
      * Must change the utilized custom StringFormatterCollection on a clone of the current instance.
      * The order of elements in the collection is significant. Lower indexes will be handled first. However, if a given
      * formatter does not handle the provided value, it is passed on to the next formatter.
      * Must return said clone.
+     *
+     * @param StringFormatterCollection<StringFormatterInterface> $customStringFormatterCollection
+     * @return static
      */
     public function withCustomStringFormatterCollection(
         StringFormatterCollection $customStringFormatterCollection
-    ): CasterInterface;
+    ): self;
 
     /**
      * Must change the current depth on a clone of the current instance. The current depth is used to determine how for
      * into an array or object structure, the casting logic has moved.
      * Must return said clone.
+     *
+     * @return static
      */
-    public function withDepthCurrent(PositiveInteger $depthCurrent): CasterInterface;
+    public function withDepthCurrent(PositiveInteger $depthCurrent): self;
 
     /**
      * Must change the maximum depth on a clone of the current instance. The maximum depth is used to determine depth
      * the casting logic is allowed to reach in arrays and object, after which contents will be omitted.
      * Must return said clone.
+     *
+     * @return static
      */
-    public function withDepthMaximum(PositiveInteger $depthMaximum): CasterInterface;
+    public function withDepthMaximum(PositiveInteger $depthMaximum): self;
 
     /**
      * Must change a clone of the current instance, instructing whether it should make samples of values with large
      * amounts of data such as arrays with many elements and long text strings.
      * Must return said clone.
+     *
+     * @return static
      */
-    public function withIsMakingSamples(bool $isMakingSamples): CasterInterface;
+    public function withIsMakingSamples(bool $isMakingSamples): self;
 
     /**
      * Must change a clone of the current instance, instructing whether it should prepend type (in parentheses) or not.
      * A prepended type is for instance the "(int)" part of: (int) 42
      * Must return said clone.
+     *
+     * @return static
      */
-    public function withIsPrependingType(bool $isPrependingType): CasterInterface;
+    public function withIsPrependingType(bool $isPrependingType): self;
 
     /**
      * Must change the utilized masked EncryptedStringCollection on a clone of the current instance.
      * Must return said clone.
+     *
+     * @param EncryptedStringCollection<EncryptedString> $maskedEncryptedStringCollection
+     * @return static
      */
     public function withMaskedEncryptedStringCollection(
         EncryptedStringCollection $maskedEncryptedStringCollection
-    ): CasterInterface;
+    ): self;
 
     /**
      * Must change the utilized masked character on a clone of the current instance.
      * Must return said clone.
+     *
+     * @return static
      */
-    public function withMaskingCharacter(CharacterInterface $maskingCharacter): CasterInterface;
+    public function withMaskingCharacter(CharacterInterface $maskingCharacter): self;
 
     /**
      * Must change the masking string length, i.e. the number of times the masking character is repeated (see
      * `getMaskingCharacter` and `getMaskingString`), on a clone of the current instance.
      * Must return said clone.
+     *
+     * @return static
      */
-    public function withMaskingStringLength(PositiveInteger $maskingStringLength): CasterInterface;
+    public function withMaskingStringLength(PositiveInteger $maskingStringLength): self;
 
     /**
      * Must change the utilized sample ellipsis on a clone of the current instance.
@@ -191,16 +246,19 @@ interface CasterInterface extends ImmutableObjectInterface
      *
      * Must return said clone.
      *
+     * @return static
      * @throws CasterException
      */
-    public function withSampleEllipsis(string $sampleEllipsis): CasterInterface;
+    public function withSampleEllipsis(string $sampleEllipsis): self;
 
     /**
      * Must change the string sample size on a clone of the current instance. The string sample size is the point after
      * which a string is truncated and turned into a sample.
      * Must return said clone.
+     *
+     * @return static
      */
-    public function withStringSampleSize(UnsignedInteger $stringSampleSize): CasterInterface;
+    public function withStringSampleSize(UnsignedInteger $stringSampleSize): self;
 
     /**
      * Must change the character used for quoting on a clone of the current instance.
@@ -208,9 +266,10 @@ interface CasterInterface extends ImmutableObjectInterface
      *
      * @param CharacterInterface $stringQuotingCharacter
      *                                          Must not be backlash. Otherwise, must throw a CasterException.
+     * @return static
      * @throws CasterException
      */
-    public function withStringQuotingCharacter(CharacterInterface $stringQuotingCharacter): CasterInterface;
+    public function withStringQuotingCharacter(CharacterInterface $stringQuotingCharacter): self;
 
     /**
      * Must return the number of elements in an array is being showed, before the array is truncated and a sample of it
@@ -231,21 +290,36 @@ interface CasterInterface extends ImmutableObjectInterface
 
     /**
      * Must return the custom ArrayFormatterCollection, which is used for applying custom formattings for array.
+     *
+     * @return ArrayFormatterCollection<ArrayFormatterInterface>
      */
     public function getCustomArrayFormatterCollection(): ArrayFormatterCollection;
 
     /**
+     * Must return the custom EnumFormatterCollection, which is used for applying custom formattings for enums.
+     *
+     * @return EnumFormatterCollection<EnumFormatterInterface>
+     */
+    public function getCustomEnumFormatterCollection(): EnumFormatterCollection;
+
+    /**
      * Must return the custom ObjectFormatterCollection, which is used for applying custom formattings for objects.
+     *
+     * @return ObjectFormatterCollection<ObjectFormatterInterface>
      */
     public function getCustomObjectFormatterCollection(): ObjectFormatterCollection;
 
     /**
      * Must return the custom ResourceFormatterCollection, which is used for applying custom formattings for resources.
+     *
+     * @return ResourceFormatterCollection<ResourceFormatterInterface>
      */
     public function getCustomResourceFormatterCollection(): ResourceFormatterCollection;
 
     /**
      * Must return the custom StringFormatterCollection, which is used for applying custom formattings for strings.
+     *
+     * @return StringFormatterCollection<StringFormatterInterface>
      */
     public function getCustomStringFormatterCollection(): StringFormatterCollection;
 
@@ -288,6 +362,8 @@ interface CasterInterface extends ImmutableObjectInterface
     /**
      * Must return the masked EncryptedStringCollection for the current instance. Masked strings are used to prevent
      * the displaying of sensitive information such as passwords, authentication tokens, and social security numbers.
+     *
+     * @return EncryptedStringCollection<EncryptedString>
      */
     public function getMaskedEncryptedStringCollection(): EncryptedStringCollection;
 

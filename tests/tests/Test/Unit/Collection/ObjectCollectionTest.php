@@ -45,7 +45,7 @@ class ObjectCollectionTest extends TestCase
         assert($elements[1] instanceof ElementInterface); // Make phpstan happy
         assert($elements[2] instanceof ElementInterface); // Make phpstan happy
 
-        $collectionB = new $handledClassNameCollection(...$elements);
+        $collectionB = new $handledClassNameCollection($elements);
 
         $this->assertFalse($collectionB->isEmpty(), $message);
         $this->assertCount(3, $collectionB, $message);
@@ -94,7 +94,7 @@ class ObjectCollectionTest extends TestCase
         ];
 
         try {
-            new class (...$elements) extends AbstractObjectCollection
+            new class ($elements) extends AbstractObjectCollection
             {
                 /**
                  * {@inheritDoc}
@@ -176,7 +176,7 @@ class ObjectCollectionTest extends TestCase
             },
         ];
 
-        $collection = new class (...$elements) extends AbstractObjectCollection
+        $collection = new class ($elements) extends AbstractObjectCollection
         {
             /**
              * {@inheritDoc}
@@ -200,7 +200,7 @@ class ObjectCollectionTest extends TestCase
 
     /**
      * @throws \RuntimeException
-     * @return array<int, array{0: string, 1: \ReflectionClass<ObjectCollectionInterface>}>
+     * @return array<array{string, \ReflectionClass<ObjectCollectionInterface<ElementInterface>>}>
      */
     public function genericDataProvider_getAllObjectCollectionClasses(): array
     {
@@ -251,9 +251,12 @@ class ObjectCollectionTest extends TestCase
             }
 
             if (is_subclass_of($className, ObjectCollectionInterface::class, true)) {
+                /** @var \ReflectionClass<ObjectCollectionInterface<ElementInterface>> */
+                $reflectionClass = new \ReflectionClass($className);
+
                 $cases[] = [
                     'Class: \\' . $className,
-                    new \ReflectionClass($className),
+                    $reflectionClass,
                 ];
             }
         }

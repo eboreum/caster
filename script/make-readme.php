@@ -6,10 +6,25 @@ declare(strict_types=1);
 require_once __DIR__ . "/bootstrap.php";
 
 $content = file_get_contents(__DIR__ . "/README.source.md");
-$composerJsonArray = json_decode(file_get_contents(dirname(__DIR__) . "/composer.json"), true);
+
+assert(is_string($content));
+
+$composerJsonArray = (function (): array {
+    $contents = file_get_contents(dirname(__DIR__) . "/composer.json");
+
+    assert(is_string($contents));
+
+    $decoded = json_decode($contents, true);
+
+    assert(is_array($decoded));
+
+    return $decoded;
+})();
 
 $regexLineBreaks = '/(\r\n|\r|\n)/';
 $split = preg_split($regexLineBreaks, $content);
+
+assert(is_array($split));
 
 foreach ($split as $i => &$line) {
     if ('%composer.json.description%' === trim($line)) {
@@ -87,11 +102,16 @@ foreach ($split as $i => &$line) {
         $segments = [];
         $composerJsonArrayKey = $match[1];
 
+        assert(array_key_exists($composerJsonArrayKey, $composerJsonArray));
+
         foreach ($composerJsonArray[$composerJsonArrayKey] as $requireName => $requireVersion) {
+            assert(is_string($requireName));
+            assert(is_string($requireVersion));
+
             $segments[] = sprintf(
                 '"%s": "%s"',
                 $requireName,
-                $requireVersion
+                $requireVersion,
             );
         }
 
@@ -110,9 +130,16 @@ foreach ($split as $i => &$line) {
 
     if ($includeMatch) {
         $includeContent = file_get_contents(dirname(__DIR__) . "/" . $includeMatch[1]);
+
+        assert(is_string($includeContent));
+
         $includeSplit = preg_split($regexLineBreaks, $includeContent);
 
+        assert(is_array($includeSplit));
+
         foreach ($includeSplit as $j => &$includeLine) {
+            assert(is_string($includeLine));
+
             if (preg_match('/^(.+);\s*\/\/\s*README.md.remove\s*$/', trim($includeLine))) {
                 $includeLine = null;
 

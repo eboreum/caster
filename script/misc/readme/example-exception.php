@@ -7,10 +7,9 @@ use Eboreum\Caster\Caster;
 require_once dirname(__DIR__, 2) . "/bootstrap.php"; // README.md.remove
 
 /**
- * @param string|int $value
  * @throws \InvalidArgumentException
  */
-function foo($value){
+function foo(mixed $value): void {
     if (false === is_string($value) && false === is_int($value)) {
         throw new \InvalidArgumentException(sprintf(
             "Expects argument \$value to be a string or an integer. Found: %s",

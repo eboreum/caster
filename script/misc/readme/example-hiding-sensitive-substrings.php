@@ -9,7 +9,7 @@ use Eboreum\Caster\EncryptedString;
 require_once dirname(__DIR__, 2) . "/bootstrap.php"; // README.md.remove
 
 $caster = Caster::create();
-$caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection(...[
+$caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection([
     new EncryptedString("bar"),
     new EncryptedString("bim"),
     new EncryptedString("345"),

@@ -8,6 +8,9 @@ namespace Eboreum\Caster\Contract\Collection;
  * {@inheritDoc}
  *
  * The implementing class must contanin objects of a given instance, exclusively.
+ *
+ * @template T of object
+ * @extends CollectionInterface<T>
  */
 interface ObjectCollectionInterface extends CollectionInterface
 {

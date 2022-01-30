@@ -15,42 +15,44 @@ use Eboreum\Caster\Exception\RuntimeException;
  *
  * An array collection which holds objects of a certain class, exclusively. The class is deterined by the method
  * `getHandledClassName`.
+ *
+ * @template T of ElementInterface
+ * @implements ObjectCollectionInterface<T>
  */
 abstract class AbstractObjectCollection implements ObjectCollectionInterface
 {
-    /** @var array<ElementInterface> */
+    /** @var array<T> */
     protected array $elements;
 
     /**
      * {@inheritDoc}
      *
+     * @param array<T> $elements
      * @throws RuntimeException
      */
-    public function __construct(ElementInterface ...$elements)
+    public function __construct(array $elements = [])
     {
         try {
-            if ($elements) {
-                $invalids = [];
-                $className = static::getHandledClassName();
+            $invalids = [];
+            $className = static::getHandledClassName();
 
-                foreach ($elements as $k => $element) {
-                    if (false === static::isElementAccepted($element)) {
-                        $invalids[$k] = $element;
-                    }
+            foreach ($elements as $k => $element) {
+                if (false === static::isElementAccepted($element)) {
+                    $invalids[$k] = $element;
                 }
+            }
 
-                if ($invalids) {
-                    throw new RuntimeException(sprintf(
-                        implode('', [
-                            'In argument $elements, %d/%d values are invalid. Must contain objects, instance of \\%s,',
-                            ' exclusively, but it does not. Invalid values include: %s',
-                        ]),
-                        count($invalids),
-                        count($elements),
-                        $className,
-                        Caster::create()->castTyped($invalids)
-                    ));
-                }
+            if ($invalids) {
+                throw new RuntimeException(sprintf(
+                    implode('', [
+                        'In argument $elements, %d/%d values are invalid. Must contain objects, instance of \\%s,',
+                        ' exclusively, but it does not. Invalid values include: %s',
+                    ]),
+                    count($invalids),
+                    count($elements),
+                    $className,
+                    Caster::create()->castTyped($invalids)
+                ));
             }
 
             $this->elements = $elements;
@@ -93,6 +95,8 @@ abstract class AbstractObjectCollection implements ObjectCollectionInterface
 
     /**
      * {@inheritDoc}
+     *
+     * @return array<T>
      */
     public function toArray(): array
     {
@@ -109,6 +113,16 @@ abstract class AbstractObjectCollection implements ObjectCollectionInterface
             Caster::makeNormalizedClassName(new \ReflectionObject($this)),
             Caster::getInternalInstance()->castTyped($this->toArray()),
         );
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return \ArrayIterator<int|string, T>
+     */
+    public function getIterator(): \ArrayIterator
+    {
+        return new \ArrayIterator($this->elements);
     }
 
     /**

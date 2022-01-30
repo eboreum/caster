@@ -291,7 +291,6 @@ For a few cases, we need to suppress the PHPStan output, for various reasons. We
 |-|-|
 |babdc1d2|A property is never read, only written. See: [https://phpstan.org/developing-extensions/always-read-written-properties](https://phpstan.org/developing-extensions/always-read-written-properties). For tests, where the existence of such properties is integral to the tests, PHPStan shouldn't show it as an error. Sometimes, it is because a property is read through the Reflection API and not directly accessed, which confuses PHPStan.|
 |136348fe|False positive by PHPStan on the error: "Dead catch - Exception is never thrown in the try block."|
-|42a9f1bf|Improper – by PHPStan – covariance check on `getIterator` method, described by interface `IteratorAggregate`. Returned objects (in the array) implement `\Eboreum\Caster\Contract\Collection\ElementInterface`, but PHPStan fails to recognize this.|
 |03dec37a|On-purpose testing for an invalid argument in a test, which **is** the very test, and as such, PHPStan should not report on it.|
 
 # License & Disclaimer

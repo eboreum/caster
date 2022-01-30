@@ -10,13 +10,15 @@ use Eboreum\Caster\Contract\TextuallyIdentifiableInterface;
 /**
  * {@inheritDoc}
  *
- * @extends \IteratorAggregate<int, ElementInterface>
+ * @template T of mixed
+ * @extends \IteratorAggregate<int|string, T>
  */
-interface CollectionInterface extends
-    ImmutableObjectInterface,
-    TextuallyIdentifiableInterface,
-    \Countable,
-    \IteratorAggregate
+interface CollectionInterface
+    extends
+        ImmutableObjectInterface,
+        TextuallyIdentifiableInterface,
+        \Countable,
+        \IteratorAggregate
 {
     /**
      * Must return true when the $element argument is accepted by the implementing class.
@@ -27,14 +29,14 @@ interface CollectionInterface extends
     public static function isElementAccepted($element): bool;
 
     /**
-     * @return array<int, ElementInterface>
+     * @return array<T>
      */
     public function toArray(): array;
 
     /**
      * {@inheritDoc}
      *
-     * @return \ArrayIterator<int, ElementInterface>
+     * @return \ArrayIterator<int|string, T>
      */
     public function getIterator(): \ArrayIterator;
 

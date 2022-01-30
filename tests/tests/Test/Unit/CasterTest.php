@@ -217,7 +217,7 @@ class CasterTest extends TestCase
                 (static function () {
                     $caster = Caster::create();
                     $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection(...[
+                        new ObjectFormatterCollection([
                             new DateIntervalFormatter(),
                         ]),
                     );
@@ -247,7 +247,7 @@ class CasterTest extends TestCase
                 (static function () {
                     $caster = Caster::create();
                     $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection(...[
+                        new ObjectFormatterCollection([
                             new DatePeriodFormatter(),
                         ]),
                     );
@@ -268,7 +268,7 @@ class CasterTest extends TestCase
                 (static function () {
                     $caster = Caster::create();
                     $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection(...[
+                        new ObjectFormatterCollection([
                             new DateTimeInterfaceFormatter(),
                         ]),
                     );
@@ -290,7 +290,7 @@ class CasterTest extends TestCase
                 (static function () {
                     $caster = Caster::create();
                     $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection(...[
+                        new ObjectFormatterCollection([
                             new DebugIdentifierAttributeInterfaceFormatter(),
                         ]),
                     );
@@ -305,7 +305,7 @@ class CasterTest extends TestCase
                 (static function () {
                     $caster = Caster::create();
                     $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection(...[
+                        new ObjectFormatterCollection([
                             new DirectoryFormatter(),
                         ]),
                     );
@@ -342,7 +342,7 @@ class CasterTest extends TestCase
                 (static function () {
                     $caster = Caster::create();
                     $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection(...[
+                        new ObjectFormatterCollection([
                             new PublicVariableFormatter(),
                         ]),
                     );
@@ -363,7 +363,7 @@ class CasterTest extends TestCase
                 (static function () {
                     $caster = Caster::create();
                     $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection(...[
+                        new ObjectFormatterCollection([
                             new SplFileInfoFormatter(),
                         ]),
                     );
@@ -387,7 +387,7 @@ class CasterTest extends TestCase
                 (static function () {
                     $caster = Caster::create();
                     $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection(...[
+                        new ObjectFormatterCollection([
                             new TextuallyIdentifiableInterfaceFormatter(),
                         ]),
                     );
@@ -431,7 +431,7 @@ class CasterTest extends TestCase
                 (static function () {
                     $caster = Caster::create();
                     $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection(...[
+                        new ObjectFormatterCollection([
                             new ThrowableFormatter(),
                         ]),
                     );
@@ -457,7 +457,7 @@ class CasterTest extends TestCase
 
                 $caster = Caster::create();
                 $caster = $caster->withCustomObjectFormatterCollection(
-                    new ObjectFormatterCollection(...[
+                    new ObjectFormatterCollection([
                         new DateTimeInterfaceFormatter(),
                     ]),
                 );
@@ -652,7 +652,7 @@ class CasterTest extends TestCase
     public function testCastWorksWithMaskedStrings(): void
     {
         $caster = Caster::create();
-        $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection(...[
+        $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection([
             new EncryptedString('bar'),
             new EncryptedString('bim'),
         ]));
@@ -672,7 +672,7 @@ class CasterTest extends TestCase
         $caster = Caster::create();
         $caster = $caster->withIsMakingSamples(true);
         $caster = $caster->withStringSampleSize(new UnsignedInteger(10));
-        $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection(...[
+        $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection([
             new EncryptedString('bar'),
             new EncryptedString('bim'),
         ]));
@@ -686,7 +686,7 @@ class CasterTest extends TestCase
     public function testCastWillCorrectlyMaskArrayKeys(): void
     {
         $caster = Caster::create();
-        $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection(...[
+        $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection([
             new EncryptedString('bar'),
             new EncryptedString('bim'),
         ]));
@@ -706,7 +706,7 @@ class CasterTest extends TestCase
 
     /**
      * @dataProvider dataProvider_testCastOnMaskedStringsWillNotCauseMaskingToBePartOfOtherMaskings
-     * @param EncryptedStringCollection<int, EncryptedString> $encryptedStringCollection
+     * @param EncryptedStringCollection<EncryptedString> $encryptedStringCollection
      */
     public function testCastOnMaskedStringsWillNotCauseMaskingToBePartOfOtherMaskings(
         string $expected,
@@ -720,7 +720,7 @@ class CasterTest extends TestCase
     }
 
     /**
-     * @return array<int, array{0: string, 1: string, 2: EncryptedStringCollection}>
+     * @return array<int, array{string, string, EncryptedStringCollection<EncryptedString>}>
      */
     public function dataProvider_testCastOnMaskedStringsWillNotCauseMaskingToBePartOfOtherMaskings(): array
     {
@@ -732,7 +732,7 @@ class CasterTest extends TestCase
                     '******',
                 ),
                 'foo bar baz *** bim',
-                new EncryptedStringCollection(...[
+                new EncryptedStringCollection([
                     new EncryptedString('***'),
                     new EncryptedString('bar'),
                 ]),
@@ -744,7 +744,7 @@ class CasterTest extends TestCase
                     '******',
                 ),
                 'foo bar baz *** bim',
-                new EncryptedStringCollection(...[
+                new EncryptedStringCollection([
                     new EncryptedString('bar'),
                     new EncryptedString('***'),
                 ]),
@@ -756,7 +756,7 @@ class CasterTest extends TestCase
                     '******',
                 ),
                 'foo *** bar baz bim',
-                new EncryptedStringCollection(...[
+                new EncryptedStringCollection([
                     new EncryptedString('***'),
                     new EncryptedString('bar'),
                 ]),
@@ -768,7 +768,7 @@ class CasterTest extends TestCase
                     '******',
                 ),
                 'foo *** bar baz bim',
-                new EncryptedStringCollection(...[
+                new EncryptedStringCollection([
                     new EncryptedString('bar'),
                     new EncryptedString('***'),
                 ]),
@@ -779,7 +779,7 @@ class CasterTest extends TestCase
                     '******',
                 ),
                 'foo ********** bar',
-                new EncryptedStringCollection(...[
+                new EncryptedStringCollection([
                     new EncryptedString('***'),
                     new EncryptedString('**********'),
                 ]),
@@ -888,7 +888,7 @@ class CasterTest extends TestCase
                 (static function () {
                     $caster = Caster::create();
                     $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection(...[
+                        new ObjectFormatterCollection([
                             new DateIntervalFormatter(),
                         ]),
                     );
@@ -918,7 +918,7 @@ class CasterTest extends TestCase
                 (static function () {
                     $caster = Caster::create();
                     $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection(...[
+                        new ObjectFormatterCollection([
                             new DatePeriodFormatter(),
                         ]),
                     );
@@ -939,7 +939,7 @@ class CasterTest extends TestCase
                 (static function () {
                     $caster = Caster::create();
                     $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection(...[
+                        new ObjectFormatterCollection([
                             new DateTimeInterfaceFormatter(),
                         ]),
                     );
@@ -961,7 +961,7 @@ class CasterTest extends TestCase
                 (static function () {
                     $caster = Caster::create();
                     $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection(...[
+                        new ObjectFormatterCollection([
                             new DebugIdentifierAttributeInterfaceFormatter(),
                         ]),
                     );
@@ -976,7 +976,7 @@ class CasterTest extends TestCase
                 (static function () {
                     $caster = Caster::create();
                     $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection(...[
+                        new ObjectFormatterCollection([
                             new DirectoryFormatter(),
                         ]),
                     );
@@ -1013,7 +1013,7 @@ class CasterTest extends TestCase
                 (static function () {
                     $caster = Caster::create();
                     $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection(...[
+                        new ObjectFormatterCollection([
                             new PublicVariableFormatter(),
                         ]),
                     );
@@ -1034,7 +1034,7 @@ class CasterTest extends TestCase
                 (static function () {
                     $caster = Caster::create();
                     $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection(...[
+                        new ObjectFormatterCollection([
                             new SplFileInfoFormatter(),
                         ]),
                     );
@@ -1058,7 +1058,7 @@ class CasterTest extends TestCase
                 (static function () {
                     $caster = Caster::create();
                     $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection(...[
+                        new ObjectFormatterCollection([
                             new TextuallyIdentifiableInterfaceFormatter(),
                         ]),
                     );
@@ -1102,7 +1102,7 @@ class CasterTest extends TestCase
                 (static function () {
                     $caster = Caster::create();
                     $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection(...[
+                        new ObjectFormatterCollection([
                             new ThrowableFormatter(),
                         ]),
                     );
@@ -1137,7 +1137,7 @@ class CasterTest extends TestCase
     public function testCastWorksWithCustomFormatters(): void
     {
         $caster = Caster::create();
-        $caster = $caster->withCustomArrayFormatterCollection(new ArrayFormatterCollection(...[
+        $caster = $caster->withCustomArrayFormatterCollection(new ArrayFormatterCollection([
             new class extends AbstractArrayFormatter
             {
                 /**
@@ -1163,7 +1163,7 @@ class CasterTest extends TestCase
                 }
             },
         ]));
-        $caster = $caster->withCustomEnumFormatterCollection(new EnumFormatterCollection(...[
+        $caster = $caster->withCustomEnumFormatterCollection(new EnumFormatterCollection([
             new class extends AbstractObjectFormatter implements EnumFormatterInterface
             {
                 /**
@@ -1209,7 +1209,7 @@ class CasterTest extends TestCase
                 }
             },
         ]));
-        $caster = $caster->withCustomObjectFormatterCollection(new ObjectFormatterCollection(...[
+        $caster = $caster->withCustomObjectFormatterCollection(new ObjectFormatterCollection([
             new class extends AbstractObjectFormatter
             {
                 /**
@@ -1270,7 +1270,7 @@ class CasterTest extends TestCase
                 }
             },
         ]));
-        $caster = $caster->withCustomResourceFormatterCollection(new ResourceFormatterCollection(...[
+        $caster = $caster->withCustomResourceFormatterCollection(new ResourceFormatterCollection([
             new class extends AbstractResourceFormatter
             {
                 /**
@@ -1294,7 +1294,7 @@ class CasterTest extends TestCase
                 }
             },
         ]));
-        $caster = $caster->withCustomStringFormatterCollection(new StringFormatterCollection(...[
+        $caster = $caster->withCustomStringFormatterCollection(new StringFormatterCollection([
             new class extends AbstractStringFormatter
             {
                 /**
@@ -1531,7 +1531,7 @@ class CasterTest extends TestCase
     public function testCastWorksWithPrependedTypeAndWithMaskedStrings(): void
     {
         $caster = Caster::create();
-        $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection(...[
+        $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection([
             new EncryptedString('bar'),
             new EncryptedString('bim'),
         ]));
@@ -1551,7 +1551,7 @@ class CasterTest extends TestCase
         $caster = Caster::create();
         $caster = $caster->withIsMakingSamples(true);
         $caster = $caster->withStringSampleSize(new UnsignedInteger(10));
-        $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection(...[
+        $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection([
             new EncryptedString('bar'),
             new EncryptedString('bim'),
         ]));
@@ -1565,7 +1565,7 @@ class CasterTest extends TestCase
     public function testCastWorksWithPrependedTypeAndWillCorrectlyMaskArrayKeys(): void
     {
         $caster = Caster::create();
-        $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection(...[
+        $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection([
             new EncryptedString('bar'),
             new EncryptedString('bim'),
         ]));
@@ -1729,7 +1729,7 @@ class CasterTest extends TestCase
                 ),
                 (static function () {
                     $caster = Caster::create();
-                    $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection(...[
+                    $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection([
                         new EncryptedString('bar'),
                     ]));
 
@@ -1745,7 +1745,7 @@ class CasterTest extends TestCase
                 ),
                 (static function () {
                     $caster = Caster::create();
-                    $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection(...[
+                    $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection([
                         new EncryptedString('3'),
                         new EncryptedString('34'),
                         new EncryptedString('345'),
@@ -1764,7 +1764,7 @@ class CasterTest extends TestCase
                 ),
                 (static function () {
                     $caster = Caster::create();
-                    $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection(...[
+                    $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection([
                         new EncryptedString('34'),
                         new EncryptedString('45'),
                     ]));
@@ -1853,7 +1853,7 @@ class CasterTest extends TestCase
         $casterA = Caster::create();
         $arrayFormatterCollectionA = $casterA->getCustomArrayFormatterCollection();
 
-        $arrayFormatterCollectionB = new ArrayFormatterCollection(...[
+        $arrayFormatterCollectionB = new ArrayFormatterCollection([
             new class extends AbstractArrayFormatter
             {
                 /**
@@ -1903,7 +1903,7 @@ class CasterTest extends TestCase
         $casterA = Caster::create();
         $enumFormatterCollectionA = $casterA->getCustomEnumFormatterCollection();
 
-        $enumFormatterCollectionB = new EnumFormatterCollection(...[
+        $enumFormatterCollectionB = new EnumFormatterCollection([
             new class extends AbstractEnumFormatter
             {
                 /**
@@ -1953,7 +1953,7 @@ class CasterTest extends TestCase
         $casterA = Caster::create();
         $objectFormatterCollectionA = $casterA->getCustomObjectFormatterCollection();
 
-        $objectFormatterCollectionB = new ObjectFormatterCollection(...[
+        $objectFormatterCollectionB = new ObjectFormatterCollection([
             new class extends AbstractObjectFormatter
             {
                 /**
@@ -2003,7 +2003,7 @@ class CasterTest extends TestCase
         $casterA = Caster::create();
         $resourceFormatterCollectionA = $casterA->getCustomResourceFormatterCollection();
 
-        $resourceFormatterCollectionB = new ResourceFormatterCollection(...[
+        $resourceFormatterCollectionB = new ResourceFormatterCollection([
             new class extends AbstractResourceFormatter
             {
                 /**
@@ -2053,7 +2053,7 @@ class CasterTest extends TestCase
         $casterA = Caster::create();
         $stringFormatterCollectionA = $casterA->getCustomStringFormatterCollection();
 
-        $stringFormatterCollectionB = new StringFormatterCollection(...[
+        $stringFormatterCollectionB = new StringFormatterCollection([
             new class extends AbstractStringFormatter
             {
                 /**
@@ -2183,7 +2183,7 @@ class CasterTest extends TestCase
         $casterA = Caster::create();
         $maskedEncryptedStringCollectionA = $casterA->getMaskedEncryptedStringCollection();
 
-        $maskedEncryptedStringCollectionB = new EncryptedStringCollection(...[
+        $maskedEncryptedStringCollectionB = new EncryptedStringCollection([
             new EncryptedString('foo'),
         ]);
         $casterB = $casterA->withMaskedEncryptedStringCollection(

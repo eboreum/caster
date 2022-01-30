@@ -57,7 +57,7 @@ class ThrowableFormatterTest extends TestCase
         $caster = $caster->withDepthMaximum(new PositiveInteger(2));
         $throwableFormatter = new ThrowableFormatter();
         $caster = $caster->withCustomObjectFormatterCollection(
-            new ObjectFormatterCollection(...[$throwableFormatter]),
+            new ObjectFormatterCollection([$throwableFormatter]),
         );
         $third = new \LogicException('baz', 2);
         $second = new \RuntimeException('bar', 1, $third);
@@ -109,7 +109,7 @@ class ThrowableFormatterTest extends TestCase
         $throwableFormatter = new ThrowableFormatter();
         $throwableFormatter = $throwableFormatter->withDepthMaximum(new PositiveInteger(1));
         $caster = $caster->withCustomObjectFormatterCollection(
-            new ObjectFormatterCollection(...[$throwableFormatter]),
+            new ObjectFormatterCollection([$throwableFormatter]),
         );
 
         $third = new \LogicException('baz', 2);

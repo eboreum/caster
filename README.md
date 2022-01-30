@@ -124,10 +124,9 @@ true
 use Eboreum\Caster\Caster;
 
 /**
- * @param string|int $value
  * @throws \InvalidArgumentException
  */
-function foo($value){
+function foo(mixed $value): void {
     if (false === is_string($value) && false === is_int($value)) {
         throw new \InvalidArgumentException(sprintf(
             "Expects argument \$value to be a string or an integer. Found: %s",
@@ -173,12 +172,15 @@ class Caster extends EboreumCaster
 {
     private static ?Caster $instance = null;
 
-    public static function getInstance(): Caster // PHP 7.4 Liskov substitution will allow this
+    /**
+     * {@inheritDoc}
+     */
+    public static function getInstance(): self
     {
         if (null === self::$instance) {
             self::$instance = new self(CharacterEncoding::getInstance());
 
-            self::$instance = self::$instance->withCustomArrayFormatterCollection(new ArrayFormatterCollection(...[
+            $instance = self::$instance->withCustomArrayFormatterCollection(new ArrayFormatterCollection([
                 new class extends AbstractArrayFormatter
                 {
                     /**
@@ -198,6 +200,10 @@ class Caster extends EboreumCaster
                     }
                 }
             ]));
+
+            assert($instance instanceof Caster);
+
+            self::$instance = $instance;
 
             // Do more custom configuring before the instance is forever locked and returned
         }
@@ -340,7 +346,7 @@ use Eboreum\Caster\Collection\Formatter\ArrayFormatterCollection;
 use Eboreum\Caster\Contract\CasterInterface;
 
 $caster = Caster::create();
-$caster = $caster->withCustomArrayFormatterCollection(new ArrayFormatterCollection(...[
+$caster = $caster->withCustomArrayFormatterCollection(new ArrayFormatterCollection([
     new class extends AbstractArrayFormatter
     {
         /**
@@ -433,7 +439,7 @@ use PHPUnit\Framework\TestCase;
 
 $caster = Caster::create();
 
-$caster = $caster->withCustomObjectFormatterCollection(new ObjectFormatterCollection(...[
+$caster = $caster->withCustomObjectFormatterCollection(new ObjectFormatterCollection([
     new class extends AbstractObjectFormatter
     {
         /**
@@ -445,13 +451,13 @@ $caster = $caster->withCustomObjectFormatterCollection(new ObjectFormatterCollec
                 return null; // Pass on to next formatter or lastly DefaultObjectFormatter
             }
 
+            assert($object instanceof \DateTimeInterface);
+
             return sprintf(
                 "%s (%s)",
                 Caster::makeNormalizedClassName(new \ReflectionObject($object)),
                 $object->format("c"),
             );
-
-            return null; // Pass on to next formatter or lastly DefaultObjectFormatter
         }
 
         /**
@@ -473,13 +479,15 @@ $caster = $caster->withCustomObjectFormatterCollection(new ObjectFormatterCollec
                 return null; // Pass on to next formatter or lastly DefaultObjectFormatter
             }
 
+            assert($object instanceof \Throwable);
+
             return sprintf(
                 "%s {\$code = %s, \$file = %s, \$line = %s, \$message = %s}",
                 Caster::makeNormalizedClassName(new \ReflectionObject($object)),
                 $caster->cast($object->getCode()),
                 $caster->cast(".../" . basename($object->getFile())),
                 $caster->cast($object->getLine()),
-                $caster->cast($object->getMessage())
+                $caster->cast($object->getMessage()),
             );
         }
 
@@ -506,7 +514,7 @@ echo $caster->cast(new \RuntimeException("test", 1)) . "\n";
 ```php
 \stdClass
 \DateTimeImmutable (2019-01-01T00:00:00+00:00)
-\RuntimeException {$code = 1, $file = ".../example-custom-object-formatter.php", $line = 83, $message = "test"}
+\RuntimeException {$code = 1, $file = ".../example-custom-object-formatter.php", $line = 85, $message = "test"}
 
 ```
 
@@ -528,7 +536,7 @@ use Eboreum\Caster\Contract\CasterInterface;
 
 $caster = Caster::create();
 
-$caster = $caster->withCustomResourceFormatterCollection(new ResourceFormatterCollection(...[
+$caster = $caster->withCustomResourceFormatterCollection(new ResourceFormatterCollection([
     new class extends AbstractResourceFormatter
     {
         /**
@@ -566,13 +574,17 @@ $caster = $caster->withCustomResourceFormatterCollection(new ResourceFormatterCo
             }
 
             if ("xml" === get_resource_type($resource->getResource())) {
+                $identifier = preg_replace(
+                    '/^(Resource id) #\d+$/',
+                    '$1 #42',
+                    (string)$resource->getResource(),
+                );
+
+                assert(is_string($identifier));
+
                 return sprintf(
                     "XML %s",
-                    preg_replace(
-                        '/^(Resource id) #\d+$/',
-                        '$1 #42',
-                        $resource->getResource(),
-                    ),
+                    $identifier,
                 );
             }
 
@@ -606,7 +618,7 @@ use Eboreum\Caster\Collection\Formatter\StringFormatterCollection;
 use Eboreum\Caster\Contract\CasterInterface;
 
 $caster = Caster::create();
-$caster = $caster->withCustomStringFormatterCollection(new StringFormatterCollection(...[
+$caster = $caster->withCustomStringFormatterCollection(new StringFormatterCollection([
     new class extends AbstractStringFormatter
     {
         /**
@@ -672,7 +684,7 @@ use Eboreum\Caster\Collection\EncryptedStringCollection;
 use Eboreum\Caster\EncryptedString;
 
 $caster = Caster::create();
-$caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection(...[
+$caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection([
     new EncryptedString("bar"),
     new EncryptedString("bim"),
     new EncryptedString("345"),
@@ -726,7 +738,6 @@ For a few cases, we need to suppress the PHPStan output, for various reasons. We
 |-|-|
 |babdc1d2|A property is never read, only written. See: [https://phpstan.org/developing-extensions/always-read-written-properties](https://phpstan.org/developing-extensions/always-read-written-properties). For tests, where the existence of such properties is integral to the tests, PHPStan shouldn't show it as an error. Sometimes, it is because a property is read through the Reflection API and not directly accessed, which confuses PHPStan.|
 |136348fe|False positive by PHPStan on the error: "Dead catch - Exception is never thrown in the try block."|
-|42a9f1bf|Improper – by PHPStan – covariance check on `getIterator` method, described by interface `IteratorAggregate`. Returned objects (in the array) implement `\Eboreum\Caster\Contract\Collection\ElementInterface`, but PHPStan fails to recognize this.|
 |03dec37a|On-purpose testing for an invalid argument in a test, which **is** the very test, and as such, PHPStan should not report on it.|
 
 # License & Disclaimer
