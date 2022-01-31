@@ -21,7 +21,7 @@ Cast any PHP value to a sensible, human readable string. Great for type-safe out
 
 With Eboreum/Caster, you will be able to provide excellent information about all PHP values, which is great in both **debugging** and **failure scenarios**. Are the exception messages in your application lacklustre? Expand your options and displayed values greatly with Eboreum/Caster!
 
-This package can be thought of as an extended version of the magic method `__debugInfo` ([https://www.php.net/manual/en/language.oop5.magic.php#object.debuginfo](https://www.php.net/manual/en/language.oop5.magic.php#object.debuginfo)). However, contrary to `__debugInfo`, where only the internals of the implementing class is used for building sensible debug information – with the occasional (often abominable) static method calls to other classes – Caster allows for much more variety, including customer formatters utilizing proper dependency injection.
+This package can be thought of as an extended version of the magic method `__debugInfo` ([https://www.php.net/manual/en/language.oop5.magic.php#object.debuginfo](https://www.php.net/manual/en/language.oop5.magic.php#object.debuginfo)). However, contrary to `__debugInfo`, where only the internals of the implementing class is used for building sensible debug information – with the occasional (often abominable) static method calls to other classes – Caster allows for much more variety, including custom formatters utilizing proper dependency injection.
 
 Eboreum/Caster **gives you -- the developer -- the ultimate power** to control how output is handled, parsed and presented through opt-in utilization of custom formatters.
 
@@ -297,7 +297,7 @@ $caster->getStringQuotingCharacter(): `
 
 ## Type specific formatters
 
-The following type specific formatters exists, which may help providing additional information. Especially useful for printing relevant information relating to an object.
+The following type specific formatters exist, which may help providing additional information. Especially useful for printing relevant information relating to an object.
 
 Add formatters (immutably) to the `\Eboreum\Caster\Caster` using the `with*` methods (returns a clone).
 
