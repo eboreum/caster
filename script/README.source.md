@@ -6,7 +6,7 @@ Eboreum/Caster: A PHP type formatter
 ![License](https://img.shields.io/packagist/l/eboreum/caster.svg)
 ![Build Status](https://app.travis-ci.com/eboreum/caster.svg?branch=main)
 ![codecov](https://codecov.io/gh/eboreum/caster/branch/main/graph/badge.svg)
-![PHPStan](https://img.shields.io/badge/PHPStan-Level%207-brightgreen.svg?style=flat)
+%run "script/make-readme/make-phpstan-badge.php"%
 
 %composer.json.description%
 
