@@ -19,10 +19,8 @@ abstract class AbstractObjectTypeFormatter extends AbstractDimensionalFormatter
 
     /**
      * Must return a clone.
-     *
-     * @return static
      */
-    public function withIsAppendingSplObjectHash(bool $isAppendingSplObjectHash): self
+    public function withIsAppendingSplObjectHash(bool $isAppendingSplObjectHash): static
     {
         $clone = clone $this;
         $clone->isAppendingSplObjectHash = $isAppendingSplObjectHash;

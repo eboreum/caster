@@ -209,13 +209,13 @@ class Caster implements CasterInterface
     /**
      * {@inheritDoc}
      */
-    public static function create(?CharacterEncodingInterface $characterEncoding = null): self
+    public static function create(?CharacterEncodingInterface $characterEncoding = null): static
     {
         if (null === $characterEncoding) {
             $characterEncoding = CharacterEncoding::getInstance();
         }
 
-        return new self($characterEncoding);
+        return new static($characterEncoding);
     }
 
     /**
@@ -628,7 +628,7 @@ class Caster implements CasterInterface
     /**
      * {@inheritDoc}
      */
-    public function withArraySampleSize(UnsignedInteger $arraySampleSize): self
+    public function withArraySampleSize(UnsignedInteger $arraySampleSize): static
     {
         $clone = clone $this;
         $clone->arraySampleSize = $arraySampleSize;
@@ -639,7 +639,7 @@ class Caster implements CasterInterface
     /**
      * {@inheritDoc}
      */
-    public function withCharacterEncoding(CharacterEncodingInterface $characterEncoding): self
+    public function withCharacterEncoding(CharacterEncodingInterface $characterEncoding): static
     {
         $clone = clone $this;
         $clone->characterEncoding = $characterEncoding;
@@ -650,7 +650,7 @@ class Caster implements CasterInterface
     /**
      * {@inheritDoc}
      */
-    public function withContext(ContextInterface $context): self
+    public function withContext(ContextInterface $context): static
     {
         $clone = clone $this;
         $clone->context = $context;
@@ -661,7 +661,7 @@ class Caster implements CasterInterface
     /**
      * {@inheritDoc}
      */
-    public function withCustomArrayFormatterCollection(ArrayFormatterCollection $customArrayFormatterCollection): self
+    public function withCustomArrayFormatterCollection(ArrayFormatterCollection $customArrayFormatterCollection): static
     {
         $clone = clone $this;
         $clone->customArrayFormatterCollection = $customArrayFormatterCollection;
@@ -674,7 +674,7 @@ class Caster implements CasterInterface
      */
     public function withCustomEnumFormatterCollection(
         EnumFormatterCollection $customEnumFormatterCollection
-    ): self {
+    ): static {
         $clone = clone $this;
         $clone->customEnumFormatterCollection = $customEnumFormatterCollection;
 
@@ -686,7 +686,7 @@ class Caster implements CasterInterface
      */
     public function withCustomObjectFormatterCollection(
         ObjectFormatterCollection $customObjectFormatterCollection
-    ): self {
+    ): static {
         $clone = clone $this;
         $clone->customObjectFormatterCollection = $customObjectFormatterCollection;
 
@@ -698,7 +698,7 @@ class Caster implements CasterInterface
      */
     public function withCustomResourceFormatterCollection(
         ResourceFormatterCollection $customResourceFormatterCollection
-    ): self {
+    ): static {
         $clone = clone $this;
         $clone->customResourceFormatterCollection = $customResourceFormatterCollection;
 
@@ -710,7 +710,7 @@ class Caster implements CasterInterface
      */
     public function withCustomStringFormatterCollection(
         StringFormatterCollection $customStringFormatterCollection
-    ): self {
+    ): static {
         $clone = clone $this;
         $clone->customStringFormatterCollection = $customStringFormatterCollection;
 
@@ -720,7 +720,7 @@ class Caster implements CasterInterface
     /**
      * {@inheritDoc}
      */
-    public function withDepthCurrent(PositiveInteger $depthCurrent): self
+    public function withDepthCurrent(PositiveInteger $depthCurrent): static
     {
         $clone = clone $this;
         $clone->depthCurrent = $depthCurrent;
@@ -731,7 +731,7 @@ class Caster implements CasterInterface
     /**
      * {@inheritDoc}
      */
-    public function withDepthMaximum(PositiveInteger $depthMaximum): self
+    public function withDepthMaximum(PositiveInteger $depthMaximum): static
     {
         $clone = clone $this;
         $clone->depthMaximum = $depthMaximum;
@@ -742,7 +742,7 @@ class Caster implements CasterInterface
     /**
      * {@inheritDoc}
      */
-    public function withIsMakingSamples(bool $isMakingSamples): self
+    public function withIsMakingSamples(bool $isMakingSamples): static
     {
         $clone = clone $this;
         $clone->isMakingSamples = $isMakingSamples;
@@ -753,7 +753,7 @@ class Caster implements CasterInterface
     /**
      * {@inheritDoc}
      */
-    public function withIsPrependingType(bool $isPrependingType): self
+    public function withIsPrependingType(bool $isPrependingType): static
     {
         $clone = clone $this;
         $clone->isPrependingType = $isPrependingType;
@@ -766,7 +766,7 @@ class Caster implements CasterInterface
      */
     public function withMaskedEncryptedStringCollection(
         EncryptedStringCollection $maskedEncryptedStringCollection
-    ): self {
+    ): static {
         $clone = clone $this;
         $clone->maskedEncryptedStringCollection = $maskedEncryptedStringCollection;
 
@@ -776,7 +776,7 @@ class Caster implements CasterInterface
     /**
      * {@inheritDoc}
      */
-    public function withMaskingCharacter(CharacterInterface $maskingCharacter): self
+    public function withMaskingCharacter(CharacterInterface $maskingCharacter): static
     {
         $clone = clone $this;
         $clone->maskingCharacter = $maskingCharacter;
@@ -787,7 +787,7 @@ class Caster implements CasterInterface
     /**
      * {@inheritDoc}
      */
-    public function withMaskingStringLength(PositiveInteger $maskingStringLength): self
+    public function withMaskingStringLength(PositiveInteger $maskingStringLength): static
     {
         $clone = clone $this;
         $clone->maskingStringLength = $maskingStringLength;
@@ -798,7 +798,7 @@ class Caster implements CasterInterface
     /**
      * {@inheritDoc}
      */
-    public function withSampleEllipsis(string $sampleEllipsis): self
+    public function withSampleEllipsis(string $sampleEllipsis): static
     {
         try {
             if ('' === $sampleEllipsis) {
@@ -855,7 +855,7 @@ class Caster implements CasterInterface
     /**
      * {@inheritDoc}
      */
-    public function withStringSampleSize(UnsignedInteger $stringSampleSize): self
+    public function withStringSampleSize(UnsignedInteger $stringSampleSize): static
     {
         $clone = clone $this;
         $clone->stringSampleSize = $stringSampleSize;
@@ -866,7 +866,7 @@ class Caster implements CasterInterface
     /**
      * {@inheritDoc}
      */
-    public function withStringQuotingCharacter(CharacterInterface $stringQuotingCharacter): self
+    public function withStringQuotingCharacter(CharacterInterface $stringQuotingCharacter): static
     {
         try {
             if ('\\' === (string)$stringQuotingCharacter) {

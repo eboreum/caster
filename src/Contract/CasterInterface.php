@@ -37,12 +37,12 @@ interface CasterInterface extends ImmutableObjectInterface
     public const STRING_QUOTING_CHARACTER_DEFAULT = '"';
     public const STRING_SAMPLE_SIZE_DEFAULT = 1000;
 
+    public function __construct(CharacterEncodingInterface $characterEncoding);
+
     /**
      * Must return a new instance every time.
-     *
-     * @return static
      */
-    public static function create(?CharacterEncodingInterface $characterEncoding = null): self;
+    public static function create(?CharacterEncodingInterface $characterEncoding = null): static;
 
     /**
      * Must always return the same instance.
@@ -88,26 +88,20 @@ interface CasterInterface extends ImmutableObjectInterface
     /**
      * Must set the maximum number of elements to be displayed in an array on a clone of the current instance.
      * Must return said clone.
-     *
-     * @return static
      */
-    public function withArraySampleSize(UnsignedInteger $arraySampleSize): self;
+    public function withArraySampleSize(UnsignedInteger $arraySampleSize): static;
 
     /**
      * Must change the utilized character encoding on a clone of the current instance.
      * Must return said clone.
-     *
-     * @return static
      */
-    public function withCharacterEncoding(CharacterEncodingInterface $characterEncoding): self;
+    public function withCharacterEncoding(CharacterEncodingInterface $characterEncoding): static;
 
     /**
      * Must change the utilized context on a clone of the current instance.
      * Must return said clone.
-     *
-     * @return static
      */
-    public function withContext(ContextInterface $context): self;
+    public function withContext(ContextInterface $context): static;
 
     /**
      * Must change the utilized custom ArrayFormatterCollection on a clone of the current instance.
@@ -116,11 +110,10 @@ interface CasterInterface extends ImmutableObjectInterface
      * Must return said clone.
      *
      * @param ArrayFormatterCollection<ArrayFormatterInterface> $customArrayFormatterCollection
-     * @return static
      */
     public function withCustomArrayFormatterCollection(
         ArrayFormatterCollection $customArrayFormatterCollection
-    ): self;
+    ): static;
 
     /**
      * Must change the utilized custom EnumFormatterCollection on a clone of the current instance.
@@ -129,11 +122,10 @@ interface CasterInterface extends ImmutableObjectInterface
      * Must return said clone.
      *
      * @param EnumFormatterCollection<EnumFormatterInterface> $customEnumFormatterCollection
-     * @return static
      */
     public function withCustomEnumFormatterCollection(
         EnumFormatterCollection $customEnumFormatterCollection
-    ): self;
+    ): static;
 
     /**
      * Must change the utilized custom ObjectFormatterCollection on a clone of the current instance.
@@ -142,11 +134,10 @@ interface CasterInterface extends ImmutableObjectInterface
      * Must return said clone.
      *
      * @param ObjectFormatterCollection<ObjectFormatterInterface> $customObjectFormatterCollection
-     * @return static
      */
     public function withCustomObjectFormatterCollection(
         ObjectFormatterCollection $customObjectFormatterCollection
-    ): self;
+    ): static;
 
     /**
      * Must change the utilized custom ResourceFormatterCollection on a clone of the current instance.
@@ -155,11 +146,10 @@ interface CasterInterface extends ImmutableObjectInterface
      * Must return said clone.
      *
      * @param ResourceFormatterCollection<ResourceFormatterInterface> $customResourceFormatterCollection
-     * @return static
      */
     public function withCustomResourceFormatterCollection(
         ResourceFormatterCollection $customResourceFormatterCollection
-    ): self;
+    ): static;
 
     /**
      * Must change the utilized custom StringFormatterCollection on a clone of the current instance.
@@ -168,75 +158,61 @@ interface CasterInterface extends ImmutableObjectInterface
      * Must return said clone.
      *
      * @param StringFormatterCollection<StringFormatterInterface> $customStringFormatterCollection
-     * @return static
      */
     public function withCustomStringFormatterCollection(
         StringFormatterCollection $customStringFormatterCollection
-    ): self;
+    ): static;
 
     /**
      * Must change the current depth on a clone of the current instance. The current depth is used to determine how for
      * into an array or object structure, the casting logic has moved.
      * Must return said clone.
-     *
-     * @return static
      */
-    public function withDepthCurrent(PositiveInteger $depthCurrent): self;
+    public function withDepthCurrent(PositiveInteger $depthCurrent): static;
 
     /**
      * Must change the maximum depth on a clone of the current instance. The maximum depth is used to determine depth
      * the casting logic is allowed to reach in arrays and object, after which contents will be omitted.
      * Must return said clone.
-     *
-     * @return static
      */
-    public function withDepthMaximum(PositiveInteger $depthMaximum): self;
+    public function withDepthMaximum(PositiveInteger $depthMaximum): static;
 
     /**
      * Must change a clone of the current instance, instructing whether it should make samples of values with large
      * amounts of data such as arrays with many elements and long text strings.
      * Must return said clone.
-     *
-     * @return static
      */
-    public function withIsMakingSamples(bool $isMakingSamples): self;
+    public function withIsMakingSamples(bool $isMakingSamples): static;
 
     /**
      * Must change a clone of the current instance, instructing whether it should prepend type (in parentheses) or not.
      * A prepended type is for instance the "(int)" part of: (int) 42
      * Must return said clone.
-     *
-     * @return static
      */
-    public function withIsPrependingType(bool $isPrependingType): self;
+    public function withIsPrependingType(bool $isPrependingType): static;
 
     /**
      * Must change the utilized masked EncryptedStringCollection on a clone of the current instance.
      * Must return said clone.
      *
      * @param EncryptedStringCollection<EncryptedString> $maskedEncryptedStringCollection
-     * @return static
      */
     public function withMaskedEncryptedStringCollection(
         EncryptedStringCollection $maskedEncryptedStringCollection
-    ): self;
+    ): static;
 
     /**
      * Must change the utilized masked character on a clone of the current instance.
      * Must return said clone.
-     *
-     * @return static
      */
-    public function withMaskingCharacter(CharacterInterface $maskingCharacter): self;
+    public function withMaskingCharacter(CharacterInterface $maskingCharacter): static;
 
     /**
      * Must change the masking string length, i.e. the number of times the masking character is repeated (see
      * `getMaskingCharacter` and `getMaskingString`), on a clone of the current instance.
      * Must return said clone.
-     *
-     * @return static
      */
-    public function withMaskingStringLength(PositiveInteger $maskingStringLength): self;
+    public function withMaskingStringLength(PositiveInteger $maskingStringLength): static;
 
     /**
      * Must change the utilized sample ellipsis on a clone of the current instance.
@@ -246,19 +222,16 @@ interface CasterInterface extends ImmutableObjectInterface
      *
      * Must return said clone.
      *
-     * @return static
      * @throws CasterException
      */
-    public function withSampleEllipsis(string $sampleEllipsis): self;
+    public function withSampleEllipsis(string $sampleEllipsis): static;
 
     /**
      * Must change the string sample size on a clone of the current instance. The string sample size is the point after
      * which a string is truncated and turned into a sample.
      * Must return said clone.
-     *
-     * @return static
      */
-    public function withStringSampleSize(UnsignedInteger $stringSampleSize): self;
+    public function withStringSampleSize(UnsignedInteger $stringSampleSize): static;
 
     /**
      * Must change the character used for quoting on a clone of the current instance.
@@ -266,10 +239,9 @@ interface CasterInterface extends ImmutableObjectInterface
      *
      * @param CharacterInterface $stringQuotingCharacter
      *                                          Must not be backlash. Otherwise, must throw a CasterException.
-     * @return static
      * @throws CasterException
      */
-    public function withStringQuotingCharacter(CharacterInterface $stringQuotingCharacter): self;
+    public function withStringQuotingCharacter(CharacterInterface $stringQuotingCharacter): static;
 
     /**
      * Must return the number of elements in an array is being showed, before the array is truncated and a sample of it
