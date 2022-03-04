@@ -2313,16 +2313,13 @@ class CasterTest extends TestCase
             assert(is_object($currentException)); // Make phpstan happy
             $this->assertSame(CasterException::class, get_class($currentException));
             $this->assertMatchesRegularExpression(
-                sprintf(
-                    implode('', [
-                        '/',
-                        '^',
-                        'Argument \$sampleEllipsis is an empty string, which is not allowed',
-                        '$',
-                        '/',
-                    ]),
-                    preg_quote(Character::class, '/'),
-                ),
+                implode('', [
+                    '/',
+                    '^',
+                    'Argument \$sampleEllipsis is an empty string, which is not allowed',
+                    '$',
+                    '/',
+                ]),
                 $currentException->getMessage(),
             );
 

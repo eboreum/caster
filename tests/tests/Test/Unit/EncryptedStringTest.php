@@ -123,19 +123,16 @@ class EncryptedStringTest extends TestCase
             assert(is_object($currentException)); // Make phpstan happy
             $this->assertSame(RuntimeException::class, get_class($currentException));
             $this->assertMatchesRegularExpression(
-                sprintf(
-                    implode('', [
-                        '/',
-                        '^',
-                        'Expects argument \$encryptionMethod to be null or when a string, to be one of \[',
-                            '"[^"]+"(, "[^"]+")*',
-                        '\], but it is not\.',
-                        ' Found: \(string\(36\)\) "fc1a05ff-c80c-45bd-a1a4-e1d8105881bc"',
-                        '$',
-                        '/',
-                    ]),
-                    EncryptedString::class,
-                ),
+                implode('', [
+                    '/',
+                    '^',
+                    'Expects argument \$encryptionMethod to be null or when a string, to be one of \[',
+                        '"[^"]+"(, "[^"]+")*',
+                    '\], but it is not\.',
+                    ' Found: \(string\(36\)\) "fc1a05ff-c80c-45bd-a1a4-e1d8105881bc"',
+                    '$',
+                    '/',
+                ]),
                 $currentException->getMessage(),
             );
 
@@ -188,19 +185,16 @@ class EncryptedStringTest extends TestCase
             assert(is_object($currentException)); // Make phpstan happy
             $this->assertSame(RuntimeException::class, get_class($currentException));
             $this->assertMatchesRegularExpression(
-                sprintf(
-                    implode('', [
-                        '/',
-                        '^',
-                        'Expects argument \$encryptionMethod to be one of \[',
-                            '"[^"]+"(, "[^"]+")*',
-                        '\], but it is not\.',
-                        ' Found: \(string\(36\)\) "fc75493b-e598-4417-a255-c054268c4449"',
-                        '$',
-                        '/',
-                    ]),
-                    EncryptedString::class,
-                ),
+                implode('', [
+                    '/',
+                    '^',
+                    'Expects argument \$encryptionMethod to be one of \[',
+                        '"[^"]+"(, "[^"]+")*',
+                    '\], but it is not\.',
+                    ' Found: \(string\(36\)\) "fc75493b-e598-4417-a255-c054268c4449"',
+                    '$',
+                    '/',
+                ]),
                 $currentException->getMessage(),
             );
 
