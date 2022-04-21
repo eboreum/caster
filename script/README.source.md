@@ -1,8 +1,6 @@
 Eboreum/Caster: A PHP type formatter
 ===============================
 
-> **CAUTION:** This library has not yet reached major version 1.
-
 ![License](https://img.shields.io/packagist/l/eboreum/caster.svg)
 ![Build Status](https://app.travis-ci.com/eboreum/caster.svg?branch=main)
 ![codecov](https://codecov.io/gh/eboreum/caster/branch/main/graph/badge.svg)
