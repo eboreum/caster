@@ -1,8 +1,8 @@
 Eboreum/Caster: A PHP type formatter
 ===============================
 
-![License](https://img.shields.io/packagist/l/eboreum/caster.svg)
-![Build Status](https://app.travis-ci.com/eboreum/caster.svg?branch=main)
+![license](https://img.shields.io/github/license/eboreum/caster?label=license)
+![build](https://github.com/eboreum/caster/workflows/build/badge.svg?branch=main)
 ![codecov](https://codecov.io/gh/eboreum/caster/branch/main/graph/badge.svg)
 %run "script/make-readme/make-phpstan-badge.php"%
 
