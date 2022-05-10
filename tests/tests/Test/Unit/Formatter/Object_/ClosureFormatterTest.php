@@ -167,8 +167,36 @@ class ClosureFormatterTest extends TestCase
                 },
             ],
             [
+                'Parameter union type.',
+                '\\Closure(int|float $a)',
+                static function (int|float $a) {},
+            ],
+            [
+                'Return union type.',
+                '\\Closure(): int|float',
+                static function (): int|float {
+                    return rand(0, 1) === 1 ? 42 : 3.14; // phpstan love
+                },
+            ],
+            [
+                'Parameter intersection type.',
+                '\\Closure(Iterator&Traversable $a)',
+                static function (Iterator&Traversable $a) {},
+            ],
+            [
+                'Return intersection type.',
+                '\\Closure(): Iterator&Traversable',
+                function (): Iterator&Traversable {
+                     // phpstan love
+                    return $this
+                        ->getMockBuilder(Iterator::class)
+                        ->disableOriginalConstructor()
+                        ->getMock();
+                },
+            ],
+            [
                 'The big one.',
-                '\\Closure($a, &$b, int $c, bool $d, \\stdClass $e, array $f = [0 => "lala"], ?string ...$z): int',
+                '\\Closure($a, &$b, int $c, bool $d, stdClass $e, array $f = [0 => "lala"], ?string ...$z): int',
                 static function ($a, &$b, int $c, bool $d, \stdClass $e, array $f = ['lala'], ?string ...$z): int {
                     return 1; // phpstan love
                 },

@@ -42,23 +42,10 @@ class ClosureFormatter extends AbstractObjectFormatter
                 $argument = '...' . $argument;
             }
 
-            if ($reflectionParameter->hasType()) {
-                $reflectionType = $reflectionParameter->getType();
+            $reflectionType = $reflectionParameter->getType();
 
-                assert($reflectionType instanceof \ReflectionNamedType); // Make phpstan happy
-
-                $typeText = $reflectionType->getName();
-
-                if (class_exists($typeText)) {
-                    $typeText = sprintf(
-                        '\\%s',
-                        $typeText,
-                    );
-                }
-
-                if ($reflectionParameter->allowsNull()) {
-                    $typeText = '?' . $typeText;
-                }
+            if ($reflectionType) {
+                $typeText = (string)$reflectionType;
 
                 if ($reflectionParameter->isDefaultValueAvailable()) {
                     if ($reflectionParameter->isDefaultValueConstant()) {
