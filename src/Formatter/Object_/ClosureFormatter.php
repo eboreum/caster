@@ -87,11 +87,22 @@ class ClosureFormatter extends AbstractObjectFormatter
             $arguments[] = $argument;
         }
 
-        return sprintf(
+        $reflectionReturnType = $reflectionFunction->getReturnType();
+
+        $return = sprintf(
             '%s(%s)',
             Caster::makeNormalizedClassName(new \ReflectionObject($object)),
             implode(', ', $arguments)
         );
+
+        if ($reflectionReturnType) {
+            $return .= sprintf(
+                ': %s',
+                (string)$reflectionReturnType,
+            );
+        }
+
+        return $return;
     }
 
     /**
