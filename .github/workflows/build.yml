@@ -1,3 +1,6 @@
+# https://dev.to/thejaredwilcurt/coverage-badge-with-github-actions-finally-59fa
+# https://github.com/marketplace/actions/dynamic-badges
+
 name: build
 
 on: [push]
@@ -34,11 +37,60 @@ jobs:
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: ${{ runner.os }}-composer-
 
-      - name: Install dependencies
+      - name: Install Composer dependencies
         run: composer install --no-progress --prefer-dist --optimize-autoloader
 
-      - name: Test with phpunit
-        run: cd tests && ../vendor/bin/phpunit --coverage-clover=coverage.xml
+      - name: Make N/A code coverage badge in case pipeline below fails
+        uses: schneegans/dynamic-badges-action@v1.4.0
+        with:
+          auth: ${{ secrets.GIST_SECRET_README_BADGES }}
+          gistID: 359b4a5b48d20766dad458350fd11269
+          filename: test-coverage__${{ github.head_ref || github.ref_name }}.json
+          label: Test Coverage
+          message: "N/A"
+          color: red
 
-      - name: Upload Code Coverate Report to Codecov
-        uses: codecov/codecov-action@v2
+      - name: Make N/A phpstan badge in case pipeline below fails
+        uses: schneegans/dynamic-badges-action@v1.4.0
+        with:
+          auth: ${{ secrets.GIST_SECRET_README_BADGES }}
+          gistID: 359b4a5b48d20766dad458350fd11269
+          filename: phpstan-level__${{ github.head_ref || github.ref_name }}.json
+          label: PHPStan Level
+          message: "N/A"
+          color: red
+
+      - name: Run PHPUnit tests and make coverage report
+        run: |
+          cd tests && ../vendor/bin/phpunit --coverage-clover=coverage.xml --coverage-text=coverage.txt
+          echo "COVERAGE=$(grep -E '^ +Lines: +[0-9]+(\.[0-9]+)?% ' coverage.txt | sed -E 's/^ +Lines: +([0-9]+(\.([0-9]+)?))%.+$/\1/')" >> $GITHUB_ENV
+
+      - name: Generate code coverage percentage badge
+        uses: schneegans/dynamic-badges-action@v1.4.0
+        with:
+          auth: ${{ secrets.GIST_SECRET_README_BADGES }}
+          gistID: 359b4a5b48d20766dad458350fd11269
+          filename: test-coverage__${{ github.head_ref || github.ref_name }}.json
+          label: Test Coverage
+          message: ${{ env.COVERAGE }}%
+          valColorRange: ${{ env.COVERAGE }}
+          maxColorRange: 100
+          minColorRange: 0
+
+      - name: Run PHPStan
+        run: vendor/bin/phpstan
+
+      - name: Register PHPStan Level value in $GITHUB_ENV
+        run: echo "PHPSTAN_LEVEL=$(.github/make-phpstan-level-badge-value.php)" >> $GITHUB_ENV
+
+      - name: Generate PHPStan Level badge
+        uses: schneegans/dynamic-badges-action@v1.4.0
+        with:
+          auth: ${{ secrets.GIST_SECRET_README_BADGES }}
+          gistID: 359b4a5b48d20766dad458350fd11269
+          filename: phpstan-level__${{ github.head_ref || github.ref_name }}.json
+          label: PHPStan Level
+          message: ${{ env.PHPSTAN_LEVEL }}
+          valColorRange: ${{ env.PHPSTAN_LEVEL }}
+          maxColorRange: 9
+          minColorRange: 0

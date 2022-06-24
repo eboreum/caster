@@ -3,8 +3,8 @@ Eboreum/Caster: A PHP type formatter
 
 ![license](https://img.shields.io/github/license/eboreum/caster?label=license)
 ![build](https://github.com/eboreum/caster/workflows/build/badge.svg?branch=main)
-![codecov](https://codecov.io/gh/eboreum/caster/branch/main/graph/badge.svg)
-%run "script/make-readme/make-phpstan-badge.php"%
+[![Code Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/kafoso/359b4a5b48d20766dad458350fd11269/raw/test-coverage__main.json)](https://github.com/eboreum/caster/actions)
+[![PHPStan Level](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/kafoso/359b4a5b48d20766dad458350fd11269/raw/phpstan-level__main.json)](https://github.com/eboreum/caster/actions)
 
 %composer.json.description%
 
