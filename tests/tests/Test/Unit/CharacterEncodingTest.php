@@ -23,7 +23,7 @@ class CharacterEncodingTest extends TestCase
             new CharacterEncoding('5ffaf0ea-7520-4a09-b188-2a542e04d0f3');
         } catch (\Exception $e) {
             $currentException = $e;
-            $this->assertSame(RuntimeException::class, get_class($currentException));
+            $this->assertSame(RuntimeException::class, $currentException::class);
             $this->assertSame(
                 implode('', [
                     'Failed to construct \\Eboreum\\Caster\\CharacterEncoding with arguments {',
@@ -36,7 +36,7 @@ class CharacterEncodingTest extends TestCase
             $currentException = $currentException->getPrevious();
             $this->assertIsObject($currentException);
             assert(is_object($currentException)); // Make phpstan happy
-            $this->assertSame(RuntimeException::class, get_class($currentException));
+            $this->assertSame(RuntimeException::class, $currentException::class);
             $this->assertMatchesRegularExpression(
                 implode('', [
                     '/',

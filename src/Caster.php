@@ -24,7 +24,6 @@ use Eboreum\Caster\Contract\Formatter\EnumFormatterInterface;
 use Eboreum\Caster\Contract\Formatter\ObjectFormatterInterface;
 use Eboreum\Caster\Contract\Formatter\ResourceFormatterInterface;
 use Eboreum\Caster\Contract\Formatter\StringFormatterInterface;
-use Eboreum\Caster\EncryptedString;
 use Eboreum\Caster\Exception\CasterException;
 use Eboreum\Caster\Formatter\DefaultArrayFormatter;
 use Eboreum\Caster\Formatter\DefaultEnumFormatter;
@@ -41,6 +40,16 @@ use function Eboreum\Caster\functions\is_enum;
  */
 class Caster implements CasterInterface
 {
+    private static ?Caster $instance = null;
+
+    /**
+     * The instance used internally by this instance of Caster.
+     */
+    private static ?Caster $internalInstance = null;
+
+    /**
+     * The character encoding to be used within the caster.
+     */
     protected CharacterEncodingInterface $characterEncoding;
 
     /**
@@ -108,47 +117,28 @@ class Caster implements CasterInterface
      */
     protected PositiveInteger $maskingStringLength;
 
-    /**
-     * @var EncryptedStringCollection<EncryptedString>
-     */
+    /** @var EncryptedStringCollection<EncryptedString> */
     protected EncryptedStringCollection $maskedEncryptedStringCollection;
 
-    /**
-     * @var ArrayFormatterCollection<ArrayFormatterInterface>
-     */
+    /** @var ArrayFormatterCollection<ArrayFormatterInterface> */
     protected ArrayFormatterCollection $customArrayFormatterCollection;
 
-    /**
-     *  @var EnumFormatterCollection<EnumFormatterInterface>
-     */
+    /** @var EnumFormatterCollection<EnumFormatterInterface> */
     protected EnumFormatterCollection $customEnumFormatterCollection;
 
-    /**
-     * @var ObjectFormatterCollection<ObjectFormatterInterface>
-     */
+    /** @var ObjectFormatterCollection<ObjectFormatterInterface> */
     protected ObjectFormatterCollection $customObjectFormatterCollection;
 
-    /**
-     * @var ResourceFormatterCollection<ResourceFormatterInterface>
-     */
+    /** @var ResourceFormatterCollection<ResourceFormatterInterface> */
     protected ResourceFormatterCollection $customResourceFormatterCollection;
 
-    /**
-     * @var StringFormatterCollection<StringFormatterInterface>
-     */
+    /** @var StringFormatterCollection<StringFormatterInterface> */
     protected StringFormatterCollection $customStringFormatterCollection;
 
     /**
      * Used to determine the object context and to prevent cyclic object referencing.
      */
     protected ContextInterface $context;
-
-    private static ?Caster $instance = null;
-
-    /**
-     * The instance used internally by this instance of Caster.
-     */
-    private static ?Caster $internalInstance = null;
 
     public function __construct(CharacterEncodingInterface $characterEncoding)
     {
@@ -204,6 +194,21 @@ class Caster implements CasterInterface
         }
 
         return self::$internalInstance;
+    }
+
+    public function __clone()
+    {
+        $this->defaultArrayFormatter = clone $this->defaultArrayFormatter;
+        $this->defaultEnumFormatter = clone $this->defaultEnumFormatter;
+        $this->defaultObjectFormatter = clone $this->defaultObjectFormatter;
+        $this->defaultResourceFormatter = clone $this->defaultResourceFormatter;
+        $this->defaultStringFormatter = clone $this->defaultStringFormatter;
+        $this->maskedEncryptedStringCollection = clone $this->maskedEncryptedStringCollection;
+        $this->customArrayFormatterCollection = clone $this->customArrayFormatterCollection;
+        $this->customEnumFormatterCollection = clone $this->customEnumFormatterCollection;
+        $this->customObjectFormatterCollection = clone $this->customObjectFormatterCollection;
+        $this->customResourceFormatterCollection = clone $this->customResourceFormatterCollection;
+        $this->customStringFormatterCollection = clone $this->customStringFormatterCollection;
     }
 
     /**
@@ -672,9 +677,8 @@ class Caster implements CasterInterface
     /**
      * {@inheritDoc}
      */
-    public function withCustomEnumFormatterCollection(
-        EnumFormatterCollection $customEnumFormatterCollection
-    ): static {
+    public function withCustomEnumFormatterCollection(EnumFormatterCollection $customEnumFormatterCollection): static
+    {
         $clone = clone $this;
         $clone->customEnumFormatterCollection = $customEnumFormatterCollection;
 
@@ -685,7 +689,7 @@ class Caster implements CasterInterface
      * {@inheritDoc}
      */
     public function withCustomObjectFormatterCollection(
-        ObjectFormatterCollection $customObjectFormatterCollection
+        ObjectFormatterCollection $customObjectFormatterCollection,
     ): static {
         $clone = clone $this;
         $clone->customObjectFormatterCollection = $customObjectFormatterCollection;
@@ -697,7 +701,7 @@ class Caster implements CasterInterface
      * {@inheritDoc}
      */
     public function withCustomResourceFormatterCollection(
-        ResourceFormatterCollection $customResourceFormatterCollection
+        ResourceFormatterCollection $customResourceFormatterCollection,
     ): static {
         $clone = clone $this;
         $clone->customResourceFormatterCollection = $customResourceFormatterCollection;
@@ -709,7 +713,7 @@ class Caster implements CasterInterface
      * {@inheritDoc}
      */
     public function withCustomStringFormatterCollection(
-        StringFormatterCollection $customStringFormatterCollection
+        StringFormatterCollection $customStringFormatterCollection,
     ): static {
         $clone = clone $this;
         $clone->customStringFormatterCollection = $customStringFormatterCollection;
@@ -765,7 +769,7 @@ class Caster implements CasterInterface
      * {@inheritDoc}
      */
     public function withMaskedEncryptedStringCollection(
-        EncryptedStringCollection $maskedEncryptedStringCollection
+        EncryptedStringCollection $maskedEncryptedStringCollection,
     ): static {
         $clone = clone $this;
         $clone->maskedEncryptedStringCollection = $maskedEncryptedStringCollection;
@@ -1110,20 +1114,5 @@ class Caster implements CasterInterface
     public function isPrependingType(): bool
     {
         return $this->isPrependingType;
-    }
-
-    public function __clone()
-    {
-        $this->defaultArrayFormatter = clone $this->defaultArrayFormatter;
-        $this->defaultEnumFormatter = clone $this->defaultEnumFormatter;
-        $this->defaultObjectFormatter = clone $this->defaultObjectFormatter;
-        $this->defaultResourceFormatter = clone $this->defaultResourceFormatter;
-        $this->defaultStringFormatter = clone $this->defaultStringFormatter;
-        $this->maskedEncryptedStringCollection = clone $this->maskedEncryptedStringCollection;
-        $this->customArrayFormatterCollection = clone $this->customArrayFormatterCollection;
-        $this->customEnumFormatterCollection = clone $this->customEnumFormatterCollection;
-        $this->customObjectFormatterCollection = clone $this->customObjectFormatterCollection;
-        $this->customResourceFormatterCollection = clone $this->customResourceFormatterCollection;
-        $this->customStringFormatterCollection = clone $this->customStringFormatterCollection;
     }
 }

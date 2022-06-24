@@ -45,7 +45,7 @@ class Resource_Test extends TestCase
             new Resource_(42); /** @phpstan-ignore-line Suppression code 03dec37a; see README.me */
         } catch (\Exception $e) {
             $exceptionCurrent = $e;
-            $this->assertSame('InvalidArgumentException', get_class($exceptionCurrent));
+            $this->assertSame('InvalidArgumentException', $exceptionCurrent::class);
             $this->assertMatchesRegularExpression(
                 implode('', [
                     '/',

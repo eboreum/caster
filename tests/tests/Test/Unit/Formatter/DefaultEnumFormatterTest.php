@@ -22,7 +22,7 @@ class DefaultEnumFormatterTest extends TestCase
         string $expectedWithType,
         string $expectedWithAppendedSplObjectHash,
         Caster $caster,
-        object $enum
+        object $enum,
     ): void {
         $defaultEnumFormatter = new DefaultEnumFormatter();
 
@@ -188,13 +188,13 @@ class DefaultEnumFormatterTest extends TestCase
     public function testFormatReturnsNullWhenANonEnumObjectIsPassed(): void
     {
         $defaultEnumFormatter = new DefaultEnumFormatter();
-        $this->assertNull($defaultEnumFormatter->format(Caster::getInstance(), new \stdClass));
+        $this->assertNull($defaultEnumFormatter->format(Caster::getInstance(), new \stdClass()));
     }
 
     public function testIsHandlingReturnsFalseWhenANonEnumObjectIsPassed(): void
     {
         $defaultEnumFormatter = new DefaultEnumFormatter();
-        $this->assertFalse($defaultEnumFormatter->isHandling(new \stdClass));
+        $this->assertFalse($defaultEnumFormatter->isHandling(new \stdClass()));
     }
 
     public function testWithIsAppendingSplObjectHashWorks(): void

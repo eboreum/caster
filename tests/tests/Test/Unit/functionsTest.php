@@ -10,9 +10,9 @@ use TestResource\Unit\Eboreum\Caster\functionsTest\test_is_enum_works\FooEnum;
 use function Eboreum\Caster\functions\is_enum;
 use function Eboreum\Caster\functions\rglob;
 
-class functionsTest extends TestCase
+class functionsTest extends TestCase // phpcs:ignore
 {
-    public function test_rglob_works(): void
+    public function test_rglob_works(): void // phpcs:ignore
     {
         $filePaths = rglob(dirname(TEST_ROOT_PATH) . '/src/*.php');
 
@@ -31,7 +31,7 @@ class functionsTest extends TestCase
         ));
     }
 
-    public function test_is_enum_works(): void
+    public function test_is_enum_works(): void // phpcs:ignore
     {
         $this->assertFalse(is_enum(null));
         $this->assertFalse(is_enum(true));
@@ -39,7 +39,7 @@ class functionsTest extends TestCase
         $this->assertFalse(is_enum(3.14));
         $this->assertFalse(is_enum('foo'));
         $this->assertFalse(is_enum([]));
-        $this->assertFalse(is_enum(new \stdClass));
+        $this->assertFalse(is_enum(new \stdClass()));
         $this->assertTrue(is_enum(FooEnum::Lorem));
         $this->assertTrue(is_enum(FooEnum::Ipsum));
         $this->assertTrue(is_enum(FooEnum::from('Lorem')));

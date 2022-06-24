@@ -9,13 +9,12 @@ namespace Eboreum\Caster\Abstraction\Formatter;
  */
 abstract class AbstractObjectTypeFormatter extends AbstractDimensionalFormatter
 {
-        /**
+    /**
      * Determines whether or not the `spl_object_hash` is appended to the string in a parenthesis.
      *
      * @see https://www.php.net/manual/en/function.spl-object-hash.php
      */
     protected bool $isAppendingSplObjectHash = false;
-
 
     /**
      * Must return a clone.

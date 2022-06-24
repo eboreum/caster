@@ -19,7 +19,7 @@ class DefaultResourceFormatterTest extends TestCase
         string $expected,
         string $expectedWithType,
         Caster $caster,
-        Resource_ $resource
+        Resource_ $resource,
     ): void {
         $defaultResourceFormatter = new DefaultResourceFormatter();
 

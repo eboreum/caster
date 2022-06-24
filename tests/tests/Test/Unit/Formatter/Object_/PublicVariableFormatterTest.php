@@ -7,7 +7,7 @@ namespace Test\Unit\Eboreum\Caster\Formatter\Object_;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Formatter\Object_\PublicVariableFormatter;
 use PHPUnit\Framework\TestCase;
-use TestResource\Unit\Eboreum\Caster\Formatter\Object_\PublicVariableFormatterTest\testFormatWorksWhenObjectHasMultipleSameNamePublicVariables;
+use TestResource\Unit\Eboreum\Caster\Formatter\Object_\PublicVariableFormatterTest\testFormatWorksWhenObjectHasMultipleSameNamePublicVariables; // phpcs:ignore
 
 class PublicVariableFormatterTest extends TestCase
 {
@@ -93,8 +93,8 @@ class PublicVariableFormatterTest extends TestCase
             public int $foo = 1;
             public ?string $bar = null;
             public string $baz = 'hmm';
-            private ?string $private = null; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
             protected ?string $protected = null;
+            private ?string $private = null; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
         };
 
         $this->assertTrue($publicVariableFormatter->isHandling($object));

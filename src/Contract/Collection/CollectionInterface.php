@@ -13,12 +13,11 @@ use Eboreum\Caster\Contract\TextuallyIdentifiableInterface;
  * @template T of mixed
  * @extends \IteratorAggregate<int|string, T>
  */
-interface CollectionInterface
-    extends
-        ImmutableObjectInterface,
-        TextuallyIdentifiableInterface,
-        \Countable,
-        \IteratorAggregate
+interface CollectionInterface extends
+    ImmutableObjectInterface,
+    TextuallyIdentifiableInterface,
+    \Countable,
+    \IteratorAggregate
 {
     /**
      * Must return true when the $element argument is accepted by the implementing class.

@@ -21,7 +21,7 @@ class DefaultArrayFormatterTest extends TestCase
         string $expected,
         string $expectedWithType,
         Caster $caster,
-        array $array
+        array $array,
     ): void {
         $defaultArrayFormatter = new DefaultArrayFormatter();
 

@@ -71,13 +71,13 @@ class CharacterTest extends TestCase
         string $expectedFailureCastString1,
         string $expectedFailureCastString2,
         string $string,
-        ?CharacterEncoding $characterEncoding
+        ?CharacterEncoding $characterEncoding,
     ): void {
         try {
             new Character($string, $characterEncoding);
         } catch (\Exception $e) {
             $currentException = $e;
-            $this->assertSame(RuntimeException::class, get_class($currentException), $message);
+            $this->assertSame(RuntimeException::class, $currentException::class, $message);
             $this->assertMatchesRegularExpression(
                 sprintf(
                     implode('', [
@@ -101,7 +101,7 @@ class CharacterTest extends TestCase
             $currentException = $currentException->getPrevious();
             $this->assertIsObject($currentException);
             assert(is_object($currentException)); // Make phpstan happy
-            $this->assertSame(RuntimeException::class, get_class($currentException), $message);
+            $this->assertSame(RuntimeException::class, $currentException::class, $message);
             $this->assertMatchesRegularExpression(
                 sprintf(
                     implode('', [

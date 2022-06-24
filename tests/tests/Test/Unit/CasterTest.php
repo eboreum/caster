@@ -128,9 +128,8 @@ class CasterTest extends TestCase
 
     /**
      * @dataProvider dataProvider_testCastWorks
-     * @param mixed $value
      */
-    public function testCastWorks(string $message, string $expected, $value, Caster $caster): void
+    public function testCastWorks(string $message, string $expected, mixed $value, Caster $caster): void
     {
         $this->assertMatchesRegularExpression(
             $expected,
@@ -337,7 +336,7 @@ class CasterTest extends TestCase
                     protected ?float $baz = null;
 
                     /** @var array<mixed> */
-                    protected array $bim = [];
+                    protected array $bim = []; // phpcs:ignore
                 },
                 (static function () {
                     $caster = Caster::create();
@@ -451,9 +450,11 @@ class CasterTest extends TestCase
                 \fopen(__FILE__, 'r+'),
                 Caster::create(),
             ],
-            (function(){
-                $class = new class extends \DateTime {};
-                class_alias(get_class($class), 'FooBar_9f8a3c814a1d42dda2672abede7ce454');
+            (static function(){
+                $class = new class extends \DateTime
+                {
+                };
+                class_alias($class::class, 'FooBar_9f8a3c814a1d42dda2672abede7ce454');
 
                 $caster = Caster::create();
                 $caster = $caster->withCustomObjectFormatterCollection(
@@ -474,7 +475,9 @@ class CasterTest extends TestCase
                         ]),
                         preg_quote(basename(__FILE__), '/'),
                     ),
-                    new \FooBar_9f8a3c814a1d42dda2672abede7ce454('2022-01-01T00:00:00.000000+00:00'), // @phpstan-ignore-line
+                    new \FooBar_9f8a3c814a1d42dda2672abede7ce454( // @phpstan-ignore-line It is being aliased above
+                        '2022-01-01T00:00:00.000000+00:00'
+                    ),
                     $caster,
                 ];
             })(),
@@ -559,7 +562,7 @@ class CasterTest extends TestCase
         $caster = $caster->withStringSampleSize(new UnsignedInteger(5));
         $array = [
             'foobar',
-            'loremipsum' => 'dolorsit',
+            'loremipsum' => 'dolorsit', // phpcs:ignore
             1,
             2,
             3,
@@ -585,7 +588,7 @@ class CasterTest extends TestCase
         $caster = $caster->withStringSampleSize(new UnsignedInteger(200));
         $array = [
             'foobar',
-            'loremipsum' => 'dolorsit',
+            'loremipsum' => 'dolorsit', // phpcs:ignore
             1,
             2,
             3,
@@ -789,9 +792,8 @@ class CasterTest extends TestCase
 
     /**
      * @dataProvider dataProvider_testCastWorksWithTypePrepended
-     * @param mixed $value
      */
-    public function testCastWorksWithTypePrepended(string $message, string $expected, $value, Caster $caster): void
+    public function testCastWorksWithTypePrepended(string $message, string $expected, mixed $value, Caster $caster): void
     {
         $caster = $caster->withIsPrependingType(true);
 
@@ -1008,7 +1010,7 @@ class CasterTest extends TestCase
                     protected ?float $baz = null;
 
                     /** @var array<mixed> */
-                    protected array $bim = [];
+                    protected array $bim = []; // phpcs:ignore
                 },
                 (static function () {
                     $caster = Caster::create();
@@ -1179,7 +1181,7 @@ class CasterTest extends TestCase
 
                     return sprintf(
                         '\\%s {$name = %s, $value = %s}',
-                        get_class($enum),
+                        $enum::class,
                         $caster->cast($enum->name), // @phpstan-ignore-line
                         $caster->cast($enum->value), // @phpstan-ignore-line
                     );
@@ -1200,6 +1202,7 @@ class CasterTest extends TestCase
                              * https://www.php.net/manual/en/class.reflectiontype.php – but the method `getName` does in
                              * fact exist.
                              */
+
                             // @phpstan-ignore-next-line
                             return 'string' === $reflectionType->getName();
                         }
@@ -1225,7 +1228,7 @@ class CasterTest extends TestCase
 
                     return sprintf(
                         '\\%s (%s)',
-                        get_class($object),
+                        $object::class,
                         $object->format('c')
                     );
                 }
@@ -1253,7 +1256,7 @@ class CasterTest extends TestCase
 
                     return sprintf(
                         '\\%s {$code = %s, $file = %s, $line = %s, $message = %s}',
-                        get_class($object),
+                        $object::class,
                         $caster->cast($object->getCode()),
                         $caster->cast($object->getFile()),
                         $caster->cast($object->getLine()),
@@ -1406,7 +1409,7 @@ class CasterTest extends TestCase
         $caster = $caster->withStringSampleSize(new UnsignedInteger(5));
         $array = [
             'foobar',
-            'loremipsum' => 'dolorsit',
+            'loremipsum' => 'dolorsit', // phpcs:ignore
             1,
             2,
             3,
@@ -1433,7 +1436,7 @@ class CasterTest extends TestCase
         $caster = $caster->withStringSampleSize(new UnsignedInteger(200));
         $array = [
             'foobar',
-            'loremipsum' => 'dolorsit',
+            'loremipsum' => 'dolorsit', // phpcs:ignore
             1,
             2,
             3,
@@ -2290,7 +2293,7 @@ class CasterTest extends TestCase
             $caster->withSampleEllipsis('');
         } catch (\Exception $e) {
             $currentException = $e;
-            $this->assertSame(CasterException::class, get_class($currentException));
+            $this->assertSame(CasterException::class, $currentException::class);
             $this->assertMatchesRegularExpression(
                 sprintf(
                     implode('', [
@@ -2311,7 +2314,7 @@ class CasterTest extends TestCase
             $currentException = $currentException->getPrevious();
             $this->assertIsObject($currentException);
             assert(is_object($currentException)); // Make phpstan happy
-            $this->assertSame(CasterException::class, get_class($currentException));
+            $this->assertSame(CasterException::class, $currentException::class);
             $this->assertMatchesRegularExpression(
                 implode('', [
                     '/',
@@ -2340,7 +2343,7 @@ class CasterTest extends TestCase
             $caster->withSampleEllipsis('   ');
         } catch (\Exception $e) {
             $currentException = $e;
-            $this->assertSame(CasterException::class, get_class($currentException));
+            $this->assertSame(CasterException::class, $currentException::class);
             $this->assertMatchesRegularExpression(
                 sprintf(
                     implode('', [
@@ -2361,7 +2364,7 @@ class CasterTest extends TestCase
             $currentException = $currentException->getPrevious();
             $this->assertIsObject($currentException);
             assert(is_object($currentException)); // Make phpstan happy
-            $this->assertSame(CasterException::class, get_class($currentException));
+            $this->assertSame(CasterException::class, $currentException::class);
             $this->assertMatchesRegularExpression(
                 implode('', [
                     '/',
@@ -2391,7 +2394,7 @@ class CasterTest extends TestCase
             $caster->withSampleEllipsis("foo \x0d bar");
         } catch (\Exception $e) {
             $currentException = $e;
-            $this->assertSame(CasterException::class, get_class($currentException));
+            $this->assertSame(CasterException::class, $currentException::class);
             $this->assertMatchesRegularExpression(
                 sprintf(
                     implode('', [
@@ -2412,7 +2415,7 @@ class CasterTest extends TestCase
             $currentException = $currentException->getPrevious();
             $this->assertIsObject($currentException);
             assert(is_object($currentException)); // Make phpstan happy
-            $this->assertSame(CasterException::class, get_class($currentException));
+            $this->assertSame(CasterException::class, $currentException::class);
             $this->assertMatchesRegularExpression(
                 implode('', [
                     '/',
@@ -2482,14 +2485,14 @@ class CasterTest extends TestCase
             $caster->withStringQuotingCharacter(new Character('\\'));
         } catch (\Exception $e) {
             $currentException = $e;
-            $this->assertSame(CasterException::class, get_class($currentException));
+            $this->assertSame(CasterException::class, $currentException::class);
             $this->assertMatchesRegularExpression(
                 sprintf(
                     implode('', [
                         '/',
                         '^',
                         'Failure in \\\\%s-\>withStringQuotingCharacter\(',
-                            '\$stringQuotingCharacter = \(object\) \\\\%s \{.+\}',
+                            '\$stringQuotingCharacter = \(object\) \\\\%s \{.+\}', // phpcs:ignore
                         '\): \(object\) \\\\%s',
                         '$',
                         '/',
@@ -2504,7 +2507,7 @@ class CasterTest extends TestCase
             $currentException = $currentException->getPrevious();
             $this->assertIsObject($currentException);
             assert(is_object($currentException)); // Make phpstan happy
-            $this->assertSame(CasterException::class, get_class($currentException));
+            $this->assertSame(CasterException::class, $currentException::class);
             $this->assertMatchesRegularExpression(
                 sprintf(
                     implode('', [
@@ -2574,7 +2577,9 @@ class CasterTest extends TestCase
                     ]),
                     preg_quote(basename(__FILE__), '/'),
                 ),
-                new class {},
+                new class
+                {
+                },
             ],
             [
                 sprintf(
@@ -2587,7 +2592,9 @@ class CasterTest extends TestCase
                     ]),
                     preg_quote(basename(__FILE__), '/'),
                 ),
-                new class ('2022-01-01T00:00:00+00:00') extends \DateTime {},
+                new class ('2022-01-01T00:00:00+00:00') extends \DateTime
+                {
+                },
             ],
             [
                 sprintf(
@@ -2601,7 +2608,9 @@ class CasterTest extends TestCase
                     preg_quote(Character::class, '/'),
                     preg_quote(basename(__FILE__), '/'),
                 ),
-                new class ('-') extends Character {},
+                new class ('-') extends Character
+                {
+                },
             ],
         ];
     }

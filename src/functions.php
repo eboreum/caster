@@ -1,4 +1,7 @@
 <?php
+/**
+ * Contains globally available functions.
+ */
 
 declare(strict_types=1);
 
@@ -9,6 +12,10 @@ namespace Eboreum\Caster\functions;
  *
  * Courtesy of (credits): @see https://stackoverflow.com/a/17161106
  *
+ * @see https://www.php.net/manual/en/function.glob.php
+ *
+ * @param string $pattern A glob pattern, as it is used in the core PHP function `glob`.
+ * @param int $flags The flags parameter as it is used in the core PHP function `glob`.
  * @return array<string>
  */
 function rglob(string $pattern, int $flags = 0): array
@@ -36,5 +43,5 @@ function rglob(string $pattern, int $flags = 0): array
  */
 function is_enum(mixed $value): bool
 {
-    return is_object($value) && enum_exists(get_class($value));
+    return is_object($value) && enum_exists($value::class);
 }

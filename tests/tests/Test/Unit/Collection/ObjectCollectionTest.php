@@ -114,7 +114,7 @@ class ObjectCollectionTest extends TestCase
             };
         } catch (\Exception $e) { // @phpstan-ignore-line Suppression code 136348fe; see README.md
             $currentException = $e;
-            $this->assertSame(RuntimeException::class, get_class($currentException));
+            $this->assertSame(RuntimeException::class, $currentException::class);
             $this->assertMatchesRegularExpression(
                 sprintf(
                     implode('', [
@@ -140,7 +140,7 @@ class ObjectCollectionTest extends TestCase
             );
 
             $currentException = $currentException->getPrevious();
-            $this->assertSame(RuntimeException::class, get_class($currentException));
+            $this->assertSame(RuntimeException::class, $currentException::class);
             $this->assertMatchesRegularExpression(
                 sprintf(
                     implode('', [
@@ -149,7 +149,7 @@ class ObjectCollectionTest extends TestCase
                         'In argument \$elements, 1\/3 values are invalid\.',
                         ' Must contain objects, instance of \\\\stdClass, exclusively, but it does not\.',
                         ' Invalid values include: \(array\(1\)\) \[',
-                            '\(int\) 1 => \(object\) \\\\DateTimeImmutable@anonymous\/in\/.+\/%s:\d+',
+                            '\(int\) 1 => \(object\) \\\\DateTimeImmutable@anonymous\/in\/.+\/%s:\d+', // phpcs:ignore
                         '\]',
                         '$',
                         '/',
@@ -181,17 +181,17 @@ class ObjectCollectionTest extends TestCase
             /**
              * {@inheritDoc}
              */
-            public function getIterator(): \ArrayIterator
+            public static function getHandledClassName(): string
             {
-                return new \ArrayIterator($this->elements);
+                return 'stdClass';
             }
 
             /**
              * {@inheritDoc}
              */
-            public static function getHandledClassName(): string
+            public function getIterator(): \ArrayIterator
             {
-                return 'stdClass';
+                return new \ArrayIterator($this->elements);
             }
         };
 
@@ -251,7 +251,7 @@ class ObjectCollectionTest extends TestCase
             }
 
             if (is_subclass_of($className, ObjectCollectionInterface::class, true)) {
-                /** @var \ReflectionClass<ObjectCollectionInterface<ElementInterface>> */
+                /** @var \ReflectionClass<ObjectCollectionInterface<ElementInterface>> $reflectionClass */
                 $reflectionClass = new \ReflectionClass($className);
 
                 $cases[] = [

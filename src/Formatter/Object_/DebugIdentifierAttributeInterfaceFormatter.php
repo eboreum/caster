@@ -17,7 +17,7 @@ class DebugIdentifierAttributeInterfaceFormatter extends AbstractObjectFormatter
 {
     public static function doReflectionPropertiesHaveSameVisibilityWhenInsideA(
         \ReflectionProperty $a,
-        \ReflectionProperty $b
+        \ReflectionProperty $b,
     ): bool {
         return (
             $a->isPublic() && $b->isPublic()
@@ -127,19 +127,20 @@ class DebugIdentifierAttributeInterfaceFormatter extends AbstractObjectFormatter
                 $debugIdentifiers = $reflectionProperty->getAttributes(DebugIdentifier::class);
 
                 if ($debugIdentifiers) {
-                    if (array_key_exists($reflectionProperty->getName(), $propertyNameToReflectionProperties)) {
-                        $indexPrevious = count($propertyNameToReflectionProperties[$reflectionProperty->getName()]) - 1;
+                    $name = $reflectionProperty->getName();
+
+                    if (array_key_exists($name, $propertyNameToReflectionProperties)) {
+                        $indexPrevious = count($propertyNameToReflectionProperties[$name]) - 1;
 
                         if ($indexPrevious >= 0) {
                             $exists = array_key_exists(
                                 $indexPrevious,
-                                $propertyNameToReflectionProperties[$reflectionProperty->getName()],
+                                $propertyNameToReflectionProperties[$name],
                             );
 
                             if ($exists) {
-                                $reflectionPropertyPrevious = $propertyNameToReflectionProperties
-                                    [$reflectionProperty->getName()]
-                                    [$indexPrevious];
+                                $reflectionProperties = $propertyNameToReflectionProperties[$name];
+                                $reflectionPropertyPrevious = $reflectionProperties[$indexPrevious];
 
                                 if (
                                     static::doReflectionPropertiesHaveSameVisibilityWhenInsideA(

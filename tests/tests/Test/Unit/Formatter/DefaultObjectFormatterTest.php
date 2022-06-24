@@ -18,7 +18,7 @@ class DefaultObjectFormatterTest extends TestCase
         string $expected,
         string $expectedWithAppendedSplObjectHash,
         Caster $caster,
-        object $object
+        object $object,
     ): void {
         $defaultObjectFormatter = new DefaultObjectFormatter();
 

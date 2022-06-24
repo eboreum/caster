@@ -9,9 +9,10 @@ use Eboreum\Caster\Exception\RuntimeException;
 
 class CharacterEncoding implements CharacterEncodingInterface
 {
-    protected string $name;
-
     private static ?CharacterEncoding $instance = null;
+
+    /** The name of the character encoding, e.g. "UTF-8". */
+    protected string $name;
 
     /**
      * @throws RuntimeException
@@ -71,6 +72,11 @@ class CharacterEncoding implements CharacterEncodingInterface
         return self::$instance;
     }
 
+    public function __toString(): string
+    {
+        return $this->name;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -94,10 +100,5 @@ class CharacterEncoding implements CharacterEncodingInterface
     public function isSame(CharacterEncodingInterface $characterEncoding): bool
     {
         return $this->getName() === $characterEncoding->getName();
-    }
-
-    public function __toString(): string
-    {
-        return $this->name;
     }
 }

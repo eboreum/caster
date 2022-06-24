@@ -9,8 +9,8 @@ use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\DebugIdentifierAttributeInterface;
 use Eboreum\Caster\Formatter\Object_\DebugIdentifierAttributeInterfaceFormatter;
 use PHPUnit\Framework\TestCase;
-use TestResource\Unit\Eboreum\Caster\Formatter\Object_\DebugIdentifierAttributeInterfaceFormatterTest\testFormatWorksWithAOjectWithAParentButWithNoConflictingProperties;
-use TestResource\Unit\Eboreum\Caster\Formatter\Object_\DebugIdentifierAttributeInterfaceFormatterTest\testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities;
+use TestResource\Unit\Eboreum\Caster\Formatter\Object_\DebugIdentifierAttributeInterfaceFormatterTest\testFormatWorksWithAOjectWithAParentButWithNoConflictingProperties; // phpcs:ignore
+use TestResource\Unit\Eboreum\Caster\Formatter\Object_\DebugIdentifierAttributeInterfaceFormatterTest\testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities; // phpcs:ignore
 
 class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
 {
@@ -119,9 +119,11 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
 
     public function testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities(): void
     {
+        // @phpstan-ignore-next-line We only actually need this to resolve the namespace
+        $prefix = testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities::class;
         $caster = Caster::create();
         $debugIdentifierAttributeInterfaceFormatter = new DebugIdentifierAttributeInterfaceFormatter();
-        $className = testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassA::class;
+        $className = $prefix . '\\ClassA';
 
         $object = new $className();
 
@@ -135,7 +137,7 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
         $this->assertSame('publicPublicPublic', $propertyNames[0]);
         $this->assertCount(1, $propertyNameToReflectionProperties['publicPublicPublic']);
         $this->assertSame(
-            testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassA::class,
+            $prefix . '\\ClassA',
             $propertyNameToReflectionProperties['publicPublicPublic'][0]->getDeclaringClass()->getName(),
         );
         $this->assertTrue($propertyNameToReflectionProperties['publicPublicPublic'][0]->isPublic());
@@ -143,7 +145,7 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
         $this->assertSame('publicPublicProtected', $propertyNames[1]);
         $this->assertCount(1, $propertyNameToReflectionProperties['publicPublicProtected']);
         $this->assertSame(
-            testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassA::class,
+            $prefix . '\\ClassA',
             $propertyNameToReflectionProperties['publicPublicProtected'][0]->getDeclaringClass()->getName(),
         );
         $this->assertTrue($propertyNameToReflectionProperties['publicPublicProtected'][0]->isPublic());
@@ -151,12 +153,12 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
         $this->assertSame('publicPublicPrivate', $propertyNames[2]);
         $this->assertCount(2, $propertyNameToReflectionProperties['publicPublicPrivate']);
         $this->assertSame(
-            testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassA::class,
+            $prefix . '\\ClassA',
             $propertyNameToReflectionProperties['publicPublicPrivate'][0]->getDeclaringClass()->getName(),
         );
         $this->assertTrue($propertyNameToReflectionProperties['publicPublicPrivate'][0]->isPublic());
         $this->assertSame(
-            testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassC::class,
+            $prefix . '\\ClassC',
             $propertyNameToReflectionProperties['publicPublicPrivate'][1]->getDeclaringClass()->getName(),
         );
         $this->assertTrue($propertyNameToReflectionProperties['publicPublicPrivate'][1]->isPrivate());
@@ -164,7 +166,7 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
         $this->assertSame('publicProtectedProtected', $propertyNames[3]);
         $this->assertCount(1, $propertyNameToReflectionProperties['publicProtectedProtected']);
         $this->assertSame(
-            testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassA::class,
+            $prefix . '\\ClassA',
             $propertyNameToReflectionProperties['publicProtectedProtected'][0]->getDeclaringClass()->getName(),
         );
         $this->assertTrue($propertyNameToReflectionProperties['publicProtectedProtected'][0]->isPublic());
@@ -173,11 +175,11 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
         $this->assertCount(2, $propertyNameToReflectionProperties['publicProtectedPrivate']);
         $this->assertTrue($propertyNameToReflectionProperties['publicProtectedPrivate'][0]->isPublic());
         $this->assertSame(
-            testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassA::class,
+            $prefix . '\\ClassA',
             $propertyNameToReflectionProperties['publicProtectedPrivate'][0]->getDeclaringClass()->getName(),
         );
         $this->assertSame(
-            testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassC::class,
+            $prefix . '\\ClassC',
             $propertyNameToReflectionProperties['publicProtectedPrivate'][1]->getDeclaringClass()->getName(),
         );
         $this->assertTrue($propertyNameToReflectionProperties['publicProtectedPrivate'][1]->isPrivate());
@@ -185,17 +187,17 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
         $this->assertSame('publicPrivatePrivate', $propertyNames[5]);
         $this->assertCount(3, $propertyNameToReflectionProperties['publicPrivatePrivate']);
         $this->assertSame(
-            testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassA::class,
+            $prefix . '\\ClassA',
             $propertyNameToReflectionProperties['publicPrivatePrivate'][0]->getDeclaringClass()->getName(),
         );
         $this->assertTrue($propertyNameToReflectionProperties['publicPrivatePrivate'][0]->isPublic());
         $this->assertSame(
-            testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassB::class,
+            $prefix . '\\ClassB',
             $propertyNameToReflectionProperties['publicPrivatePrivate'][1]->getDeclaringClass()->getName(),
         );
         $this->assertTrue($propertyNameToReflectionProperties['publicPrivatePrivate'][1]->isPrivate());
         $this->assertSame(
-            testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassC::class,
+            $prefix . '\\ClassC',
             $propertyNameToReflectionProperties['publicPrivatePrivate'][2]->getDeclaringClass()->getName(),
         );
         $this->assertTrue($propertyNameToReflectionProperties['publicPrivatePrivate'][2]->isPrivate());
@@ -203,7 +205,7 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
         $this->assertSame('protectedProtectedProtected', $propertyNames[6]);
         $this->assertCount(1, $propertyNameToReflectionProperties['protectedProtectedProtected']);
         $this->assertSame(
-            testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassA::class,
+            $prefix . '\\ClassA',
             $propertyNameToReflectionProperties['protectedProtectedProtected'][0]->getDeclaringClass()->getName(),
         );
         $this->assertTrue($propertyNameToReflectionProperties['protectedProtectedProtected'][0]->isProtected());
@@ -211,12 +213,12 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
         $this->assertSame('protectedProtectedPrivate', $propertyNames[7]);
         $this->assertCount(2, $propertyNameToReflectionProperties['protectedProtectedPrivate']);
         $this->assertSame(
-            testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassA::class,
+            $prefix . '\\ClassA',
             $propertyNameToReflectionProperties['protectedProtectedPrivate'][0]->getDeclaringClass()->getName(),
         );
         $this->assertTrue($propertyNameToReflectionProperties['protectedProtectedPrivate'][0]->isProtected());
         $this->assertSame(
-            testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassC::class,
+            $prefix . '\\ClassC',
             $propertyNameToReflectionProperties['protectedProtectedPrivate'][1]->getDeclaringClass()->getName(),
         );
         $this->assertTrue($propertyNameToReflectionProperties['protectedProtectedPrivate'][1]->isPrivate());
@@ -224,17 +226,17 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
         $this->assertSame('protectedPrivatePrivate', $propertyNames[8]);
         $this->assertCount(3, $propertyNameToReflectionProperties['protectedPrivatePrivate']);
         $this->assertSame(
-            testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassA::class,
+            $prefix . '\\ClassA',
             $propertyNameToReflectionProperties['protectedPrivatePrivate'][0]->getDeclaringClass()->getName(),
         );
         $this->assertTrue($propertyNameToReflectionProperties['protectedPrivatePrivate'][0]->isProtected());
         $this->assertSame(
-            testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassB::class,
+            $prefix . '\\ClassB',
             $propertyNameToReflectionProperties['protectedPrivatePrivate'][1]->getDeclaringClass()->getName(),
         );
         $this->assertTrue($propertyNameToReflectionProperties['protectedPrivatePrivate'][1]->isPrivate());
         $this->assertSame(
-            testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassC::class,
+            $prefix . '\\ClassC',
             $propertyNameToReflectionProperties['protectedPrivatePrivate'][2]->getDeclaringClass()->getName(),
         );
         $this->assertTrue($propertyNameToReflectionProperties['protectedPrivatePrivate'][2]->isPrivate());
@@ -242,17 +244,17 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
         $this->assertSame('privatePrivatePrivate', $propertyNames[9]);
         $this->assertCount(3, $propertyNameToReflectionProperties['privatePrivatePrivate']);
         $this->assertSame(
-            testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassA::class,
+            $prefix . '\\ClassA',
             $propertyNameToReflectionProperties['privatePrivatePrivate'][0]->getDeclaringClass()->getName(),
         );
         $this->assertTrue($propertyNameToReflectionProperties['privatePrivatePrivate'][0]->isPrivate());
         $this->assertSame(
-            testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassB::class,
+            $prefix . '\\ClassB',
             $propertyNameToReflectionProperties['privatePrivatePrivate'][1]->getDeclaringClass()->getName(),
         );
         $this->assertTrue($propertyNameToReflectionProperties['privatePrivatePrivate'][1]->isPrivate());
         $this->assertSame(
-            testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassC::class,
+            $prefix . '\\ClassC',
             $propertyNameToReflectionProperties['privatePrivatePrivate'][2]->getDeclaringClass()->getName(),
         );
         $this->assertTrue($propertyNameToReflectionProperties['privatePrivatePrivate'][2]->isPrivate());
@@ -260,19 +262,19 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
         $this->assertSame('staticPrivatePrivatePrivate', $propertyNames[10]);
         $this->assertCount(3, $propertyNameToReflectionProperties['staticPrivatePrivatePrivate']);
         $this->assertSame(
-            testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassA::class,
+            $prefix . '\\ClassA',
             $propertyNameToReflectionProperties['staticPrivatePrivatePrivate'][0]->getDeclaringClass()->getName(),
         );
         $this->assertTrue($propertyNameToReflectionProperties['staticPrivatePrivatePrivate'][0]->isPrivate());
         $this->assertTrue($propertyNameToReflectionProperties['staticPrivatePrivatePrivate'][0]->isStatic());
         $this->assertSame(
-            testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassB::class,
+            $prefix . '\\ClassB',
             $propertyNameToReflectionProperties['staticPrivatePrivatePrivate'][1]->getDeclaringClass()->getName(),
         );
         $this->assertTrue($propertyNameToReflectionProperties['staticPrivatePrivatePrivate'][1]->isPrivate());
         $this->assertTrue($propertyNameToReflectionProperties['staticPrivatePrivatePrivate'][1]->isStatic());
         $this->assertSame(
-            testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassC::class,
+            $prefix . '\\ClassC',
             $propertyNameToReflectionProperties['staticPrivatePrivatePrivate'][2]->getDeclaringClass()->getName(),
         );
         $this->assertTrue($propertyNameToReflectionProperties['staticPrivatePrivatePrivate'][2]->isPrivate());
@@ -281,7 +283,7 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
         $this->assertSame('onlyInA', $propertyNames[11]);
         $this->assertCount(1, $propertyNameToReflectionProperties['onlyInA']);
         $this->assertSame(
-            testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassA::class,
+            $prefix . '\\ClassA',
             $propertyNameToReflectionProperties['onlyInA'][0]->getDeclaringClass()->getName(),
         );
         $this->assertTrue($propertyNameToReflectionProperties['onlyInA'][0]->isPrivate());
@@ -289,7 +291,7 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
         $this->assertSame('onlyInBAndCPublicPublic', $propertyNames[12]);
         $this->assertCount(1, $propertyNameToReflectionProperties['onlyInBAndCPublicPublic']);
         $this->assertSame(
-            testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassB::class,
+            $prefix . '\\ClassB',
             $propertyNameToReflectionProperties['onlyInBAndCPublicPublic'][0]->getDeclaringClass()->getName(),
         );
         $this->assertTrue($propertyNameToReflectionProperties['onlyInBAndCPublicPublic'][0]->isPublic());
@@ -297,7 +299,7 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
         $this->assertSame('onlyInBAndCPublicProtected', $propertyNames[13]);
         $this->assertCount(1, $propertyNameToReflectionProperties['onlyInBAndCPublicProtected']);
         $this->assertSame(
-            testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassB::class,
+            $prefix . '\\ClassB',
             $propertyNameToReflectionProperties['onlyInBAndCPublicProtected'][0]->getDeclaringClass()->getName(),
         );
         $this->assertTrue($propertyNameToReflectionProperties['onlyInBAndCPublicProtected'][0]->isPublic());
@@ -305,12 +307,12 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
         $this->assertSame('onlyInBAndCPublicPrivate', $propertyNames[14]);
         $this->assertCount(2, $propertyNameToReflectionProperties['onlyInBAndCPublicPrivate']);
         $this->assertSame(
-            testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassB::class,
+            $prefix . '\\ClassB',
             $propertyNameToReflectionProperties['onlyInBAndCPublicPrivate'][0]->getDeclaringClass()->getName(),
         );
         $this->assertTrue($propertyNameToReflectionProperties['onlyInBAndCPublicPrivate'][0]->isPublic());
         $this->assertSame(
-            testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassC::class,
+            $prefix . '\\ClassC',
             $propertyNameToReflectionProperties['onlyInBAndCPublicPrivate'][1]->getDeclaringClass()->getName(),
         );
         $this->assertTrue($propertyNameToReflectionProperties['onlyInBAndCPublicPrivate'][1]->isPrivate());
@@ -318,7 +320,7 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
         $this->assertSame('onlyInBAndCProtectedProtected', $propertyNames[15]);
         $this->assertCount(1, $propertyNameToReflectionProperties['onlyInBAndCProtectedProtected']);
         $this->assertSame(
-            testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassB::class,
+            $prefix . '\\ClassB',
             $propertyNameToReflectionProperties['onlyInBAndCProtectedProtected'][0]->getDeclaringClass()->getName(),
         );
         $this->assertTrue($propertyNameToReflectionProperties['onlyInBAndCProtectedProtected'][0]->isProtected());
@@ -326,12 +328,12 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
         $this->assertSame('onlyInBAndCProtectedPrivate', $propertyNames[16]);
         $this->assertCount(2, $propertyNameToReflectionProperties['onlyInBAndCProtectedPrivate']);
         $this->assertSame(
-            testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassB::class,
+            $prefix . '\\ClassB',
             $propertyNameToReflectionProperties['onlyInBAndCProtectedPrivate'][0]->getDeclaringClass()->getName(),
         );
         $this->assertTrue($propertyNameToReflectionProperties['onlyInBAndCProtectedPrivate'][0]->isProtected());
         $this->assertSame(
-            testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassC::class,
+            $prefix . '\\ClassC',
             $propertyNameToReflectionProperties['onlyInBAndCProtectedPrivate'][1]->getDeclaringClass()->getName(),
         );
         $this->assertTrue($propertyNameToReflectionProperties['onlyInBAndCProtectedPrivate'][1]->isPrivate());
@@ -339,12 +341,12 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
         $this->assertSame('onlyInBAndCPrivatePrivate', $propertyNames[17]);
         $this->assertCount(2, $propertyNameToReflectionProperties['onlyInBAndCPrivatePrivate']);
         $this->assertSame(
-            testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassB::class,
+            $prefix . '\\ClassB',
             $propertyNameToReflectionProperties['onlyInBAndCPrivatePrivate'][0]->getDeclaringClass()->getName(),
         );
         $this->assertTrue($propertyNameToReflectionProperties['onlyInBAndCPrivatePrivate'][0]->isProtected());
         $this->assertSame(
-            testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassC::class,
+            $prefix . '\\ClassC',
             $propertyNameToReflectionProperties['onlyInBAndCPrivatePrivate'][1]->getDeclaringClass()->getName(),
         );
         $this->assertTrue($propertyNameToReflectionProperties['onlyInBAndCPrivatePrivate'][1]->isPrivate());
@@ -352,7 +354,7 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
         $this->assertSame('onlyInB', $propertyNames[18]);
         $this->assertCount(1, $propertyNameToReflectionProperties['onlyInB']);
         $this->assertSame(
-            testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassB::class,
+            $prefix . '\\ClassB',
             $propertyNameToReflectionProperties['onlyInB'][0]->getDeclaringClass()->getName(),
         );
         $this->assertTrue($propertyNameToReflectionProperties['onlyInB'][0]->isPrivate());
@@ -360,7 +362,7 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
         $this->assertSame('onlyInC', $propertyNames[19]);
         $this->assertCount(1, $propertyNameToReflectionProperties['onlyInC']);
         $this->assertSame(
-            testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassC::class,
+            $prefix . '\\ClassC',
             $propertyNameToReflectionProperties['onlyInC'][0]->getDeclaringClass()->getName(),
         );
         $this->assertTrue($propertyNameToReflectionProperties['onlyInC'][0]->isPrivate());
@@ -414,28 +416,28 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
                     '/',
                 ]),
                 preg_quote($className, '/'),
-                preg_quote(testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassC::class, '/'),
-                preg_quote(testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassC::class, '/'),
-                preg_quote(testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassB::class, '/'),
-                preg_quote(testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassC::class, '/'),
-                preg_quote(testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassC::class, '/'),
-                preg_quote(testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassB::class, '/'),
-                preg_quote(testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassC::class, '/'),
-                preg_quote(testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassB::class, '/'),
-                preg_quote(testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassC::class, '/'),
-                preg_quote(testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassB::class, '/'),
-                preg_quote(testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassC::class, '/'),
-                preg_quote(testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassB::class, '/'),
-                preg_quote(testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassB::class, '/'),
-                preg_quote(testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassB::class, '/'),
-                preg_quote(testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassC::class, '/'),
-                preg_quote(testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassB::class, '/'),
-                preg_quote(testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassB::class, '/'),
-                preg_quote(testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassC::class, '/'),
-                preg_quote(testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassB::class, '/'),
-                preg_quote(testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassC::class, '/'),
-                preg_quote(testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassB::class, '/'),
-                preg_quote(testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities\ClassC::class, '/'),
+                preg_quote($prefix . '\\ClassC', '/'),
+                preg_quote($prefix . '\\ClassC', '/'),
+                preg_quote($prefix . '\\ClassB', '/'),
+                preg_quote($prefix . '\\ClassC', '/'),
+                preg_quote($prefix . '\\ClassC', '/'),
+                preg_quote($prefix . '\\ClassB', '/'),
+                preg_quote($prefix . '\\ClassC', '/'),
+                preg_quote($prefix . '\\ClassB', '/'),
+                preg_quote($prefix . '\\ClassC', '/'),
+                preg_quote($prefix . '\\ClassB', '/'),
+                preg_quote($prefix . '\\ClassC', '/'),
+                preg_quote($prefix . '\\ClassB', '/'),
+                preg_quote($prefix . '\\ClassB', '/'),
+                preg_quote($prefix . '\\ClassB', '/'),
+                preg_quote($prefix . '\\ClassC', '/'),
+                preg_quote($prefix . '\\ClassB', '/'),
+                preg_quote($prefix . '\\ClassB', '/'),
+                preg_quote($prefix . '\\ClassC', '/'),
+                preg_quote($prefix . '\\ClassB', '/'),
+                preg_quote($prefix . '\\ClassC', '/'),
+                preg_quote($prefix . '\\ClassB', '/'),
+                preg_quote($prefix . '\\ClassC', '/'),
             ),
             $formatted,
         );

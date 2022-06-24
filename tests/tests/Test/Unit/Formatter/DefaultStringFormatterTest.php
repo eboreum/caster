@@ -19,7 +19,7 @@ class DefaultStringFormatterTest extends TestCase
         string $expected,
         string $expectedWithType,
         Caster $caster,
-        string $string
+        string $string,
     ): void {
         $defaultStringFormatter = new DefaultStringFormatter();
 
@@ -61,7 +61,7 @@ class DefaultStringFormatterTest extends TestCase
     public function testFormatWorksCorrectlyWhenApplyingEllipsis(
         string $expected,
         UnsignedInteger $stringSampleSize,
-        string $string
+        string $string,
     ): void {
         $caster = Caster::create();
         $caster = $caster->withIsMakingSamples(true);

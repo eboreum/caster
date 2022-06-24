@@ -49,22 +49,22 @@ class ClosureFormatterTest extends TestCase
             [
                 '\Closure with no arguments and no return type.',
                 '\\Closure()',
-                static function () {},
+                static function () {}, // phpcs:ignore
             ],
             [
                 '\Closure with 1 argument. No default value. No return type.',
                 '\\Closure(int $a)',
-                static function (int $a) {},
+                static function (int $a) {}, // phpcs:ignore
             ],
             [
                 '\Closure with 1 argument. With default value. No return type.',
                 '\\Closure(int $a = 42)',
-                static function (int $a = 42) {},
+                static function (int $a = 42) {}, // phpcs:ignore
             ],
             [
                 '\Closure with 1 argument. With default value being a global constant. No return type.',
                 '\\Closure(int $a = PHP_INT_MAX)',
-                static function (int $a = \PHP_INT_MAX) {},
+                static function (int $a = \PHP_INT_MAX) {}, // phpcs:ignore
             ],
             [
                 implode('', [
@@ -72,7 +72,7 @@ class ClosureFormatterTest extends TestCase
                     ' type.',
                 ]),
                 '\\Closure(int $a = self::A_CONSTANT)',
-                static function (int $a = self::A_CONSTANT) {},
+                static function (int $a = self::A_CONSTANT) {}, // phpcs:ignore
             ],
             [
                 implode('', [
@@ -81,39 +81,39 @@ class ClosureFormatterTest extends TestCase
                 ]),
                 sprintf(
                     '\\Closure(int $a = \\%s::A_CONSTANT)',
-                    ClosureFormatterTest::class,
+                    self::class,
                 ),
-                static function (int $a = ClosureFormatterTest::A_CONSTANT) {},
+                static function (int $a = ClosureFormatterTest::A_CONSTANT) {}, // phpcs:ignore
             ],
             [
                 '\Closure with 3 arguments. No default values. No return type.',
                 '\\Closure(int $a, string $b, bool $c)',
-                static function (int $a, string $b, bool $c) {},
+                static function (int $a, string $b, bool $c) {}, // phpcs:ignore
             ],
             [
                 '\Closure with 3 arguments. With 3 default values. No return type.',
                 '\\Closure(int $a = 42, string $b = "foo", bool $c = true)',
-                static function (int $a = 42, string $b = 'foo', bool $c = true) {},
+                static function (int $a = 42, string $b = 'foo', bool $c = true) {}, // phpcs:ignore
             ],
             [
                 '\Closure with 1 typed variadic argument. No return type.',
                 '\\Closure(int ...$a)',
-                static function (int ...$a) {},
+                static function (int ...$a) {}, // phpcs:ignore
             ],
             [
                 '\Closure with 1 typed variadic argument being nullable. No return type.',
                 '\\Closure(?int ...$a)',
-                static function (?int ...$a) {},
+                static function (?int ...$a) {}, // phpcs:ignore
             ],
             [
                 '\Closure with 1 typed argument passed by reference. No return type.',
                 '\\Closure(int &$a)',
-                static function (int &$a) {},
+                static function (int &$a) {}, // phpcs:ignore
             ],
             [
                 '\Closure with 1 typed argument passed by reference being nullable. No return type.',
                 '\\Closure(?int &$a)',
-                static function (?int &$a) {},
+                static function (?int &$a) {}, // phpcs:ignore
             ],
             [
                 '\Closure with no arguments Return type "int".',
@@ -152,6 +152,7 @@ class ClosureFormatterTest extends TestCase
                     switch (rand(0, 2)) {
                         case 0:
                             return 3.14;
+
                         case 1:
                             return 42;
                     }
@@ -169,7 +170,7 @@ class ClosureFormatterTest extends TestCase
             [
                 'Parameter union type.',
                 '\\Closure(int|float $a)',
-                static function (int|float $a) {},
+                static function (int|float $a) {}, // phpcs:ignore
             ],
             [
                 'Return union type.',
@@ -181,7 +182,7 @@ class ClosureFormatterTest extends TestCase
             [
                 'Parameter intersection type.',
                 '\\Closure(Iterator&Traversable $a)',
-                static function (Iterator&Traversable $a) {},
+                static function (Iterator&Traversable $a) {}, // phpcs:ignore
             ],
             [
                 'Return intersection type.',

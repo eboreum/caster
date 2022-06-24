@@ -17,7 +17,7 @@ class EncryptedStringTest extends TestCase
         string $expectedEncryptionMethod,
         string $value,
         ?string $salt,
-        ?string $encryptionMethod
+        ?string $encryptionMethod,
     ): void {
         $encryptedString = new EncryptedString($value, $salt, $encryptionMethod);
         $this->assertInstanceOf(EncryptedString::class, $encryptedString);
@@ -64,7 +64,7 @@ class EncryptedStringTest extends TestCase
             new EncryptedString('foo', '');
         } catch (\Exception $e) {
             $currentException = $e;
-            $this->assertSame(RuntimeException::class, get_class($currentException));
+            $this->assertSame(RuntimeException::class, $currentException::class);
             $this->assertSame(
                 sprintf(
                     implode('', [
@@ -82,7 +82,7 @@ class EncryptedStringTest extends TestCase
             $currentException = $currentException->getPrevious();
             $this->assertIsObject($currentException);
             assert(is_object($currentException)); // Make phpstan happy
-            $this->assertSame(RuntimeException::class, get_class($currentException));
+            $this->assertSame(RuntimeException::class, $currentException::class);
             $this->assertSame(
                 'Argument $salt must not be an empty string, but it is. Found: (string(0)) ""',
                 $currentException->getMessage(),
@@ -103,7 +103,7 @@ class EncryptedStringTest extends TestCase
             new EncryptedString('foo', 'bar', 'fc1a05ff-c80c-45bd-a1a4-e1d8105881bc');
         } catch (\Exception $e) {
             $currentException = $e;
-            $this->assertSame(RuntimeException::class, get_class($currentException));
+            $this->assertSame(RuntimeException::class, $currentException::class);
             $this->assertSame(
                 sprintf(
                     implode('', [
@@ -121,7 +121,7 @@ class EncryptedStringTest extends TestCase
             $currentException = $currentException->getPrevious();
             $this->assertIsObject($currentException);
             assert(is_object($currentException)); // Make phpstan happy
-            $this->assertSame(RuntimeException::class, get_class($currentException));
+            $this->assertSame(RuntimeException::class, $currentException::class);
             $this->assertMatchesRegularExpression(
                 implode('', [
                     '/',
@@ -166,7 +166,7 @@ class EncryptedStringTest extends TestCase
             $encryptedString->withEncryptionMethod('fc75493b-e598-4417-a255-c054268c4449');
         } catch (\Exception $e) {
             $currentException = $e;
-            $this->assertSame(RuntimeException::class, get_class($currentException));
+            $this->assertSame(RuntimeException::class, $currentException::class);
             $this->assertSame(
                 sprintf(
                     implode('', [
@@ -183,7 +183,7 @@ class EncryptedStringTest extends TestCase
             $currentException = $currentException->getPrevious();
             $this->assertIsObject($currentException);
             assert(is_object($currentException)); // Make phpstan happy
-            $this->assertSame(RuntimeException::class, get_class($currentException));
+            $this->assertSame(RuntimeException::class, $currentException::class);
             $this->assertMatchesRegularExpression(
                 implode('', [
                     '/',

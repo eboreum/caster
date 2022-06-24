@@ -40,14 +40,14 @@ interface CasterInterface extends ImmutableObjectInterface
     public function __construct(CharacterEncodingInterface $characterEncoding);
 
     /**
-     * Must return a new instance every time.
-     */
-    public static function create(?CharacterEncodingInterface $characterEncoding = null): static;
-
-    /**
      * Must always return the same instance.
      */
     public static function getInstance(): self;
+
+    /**
+     * Must return a new instance every time.
+     */
+    public static function create(?CharacterEncodingInterface $characterEncoding = null): static;
 
     /**
      * Returns the spelled-out value. E.g. `true` will be output as "true", strings will be wrapped in quotes (like
@@ -112,7 +112,7 @@ interface CasterInterface extends ImmutableObjectInterface
      * @param ArrayFormatterCollection<ArrayFormatterInterface> $customArrayFormatterCollection
      */
     public function withCustomArrayFormatterCollection(
-        ArrayFormatterCollection $customArrayFormatterCollection
+        ArrayFormatterCollection $customArrayFormatterCollection,
     ): static;
 
     /**
@@ -123,9 +123,7 @@ interface CasterInterface extends ImmutableObjectInterface
      *
      * @param EnumFormatterCollection<EnumFormatterInterface> $customEnumFormatterCollection
      */
-    public function withCustomEnumFormatterCollection(
-        EnumFormatterCollection $customEnumFormatterCollection
-    ): static;
+    public function withCustomEnumFormatterCollection(EnumFormatterCollection $customEnumFormatterCollection): static;
 
     /**
      * Must change the utilized custom ObjectFormatterCollection on a clone of the current instance.
@@ -136,7 +134,7 @@ interface CasterInterface extends ImmutableObjectInterface
      * @param ObjectFormatterCollection<ObjectFormatterInterface> $customObjectFormatterCollection
      */
     public function withCustomObjectFormatterCollection(
-        ObjectFormatterCollection $customObjectFormatterCollection
+        ObjectFormatterCollection $customObjectFormatterCollection,
     ): static;
 
     /**
@@ -148,7 +146,7 @@ interface CasterInterface extends ImmutableObjectInterface
      * @param ResourceFormatterCollection<ResourceFormatterInterface> $customResourceFormatterCollection
      */
     public function withCustomResourceFormatterCollection(
-        ResourceFormatterCollection $customResourceFormatterCollection
+        ResourceFormatterCollection $customResourceFormatterCollection,
     ): static;
 
     /**
@@ -160,7 +158,7 @@ interface CasterInterface extends ImmutableObjectInterface
      * @param StringFormatterCollection<StringFormatterInterface> $customStringFormatterCollection
      */
     public function withCustomStringFormatterCollection(
-        StringFormatterCollection $customStringFormatterCollection
+        StringFormatterCollection $customStringFormatterCollection,
     ): static;
 
     /**
@@ -198,7 +196,7 @@ interface CasterInterface extends ImmutableObjectInterface
      * @param EncryptedStringCollection<EncryptedString> $maskedEncryptedStringCollection
      */
     public function withMaskedEncryptedStringCollection(
-        EncryptedStringCollection $maskedEncryptedStringCollection
+        EncryptedStringCollection $maskedEncryptedStringCollection,
     ): static;
 
     /**

@@ -68,6 +68,11 @@ class Character implements CharacterInterface, DebugIdentifierAttributeInterface
         }
     }
 
+    public function __toString(): string
+    {
+        return $this->character;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -97,10 +102,5 @@ class Character implements CharacterInterface, DebugIdentifierAttributeInterface
             (string)$this === (string)$character
             && $this->getCharacterEncoding()->isSame($character->getCharacterEncoding())
         );
-    }
-
-    public function __toString(): string
-    {
-        return $this->character;
     }
 }

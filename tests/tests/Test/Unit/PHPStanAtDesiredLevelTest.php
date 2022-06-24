@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Test\Unit\Eboreum\Caster;
 
-use Eboreum\Caster\Caster;
 use PHPUnit\Framework\TestCase;
 
 class PHPStanAtDesiredLevelTest extends TestCase

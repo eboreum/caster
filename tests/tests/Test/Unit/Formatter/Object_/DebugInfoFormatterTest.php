@@ -15,7 +15,9 @@ class DebugInfoFormatterTest extends TestCase
         $caster = Caster::create();
         $debugInfoFormatter = new DebugInfoFormatter();
 
-        $object = new class {};
+        $object = new class
+        {
+        };
 
         $this->assertFalse($debugInfoFormatter->isHandling($object));
         $this->assertNull($debugInfoFormatter->format($caster, $object));

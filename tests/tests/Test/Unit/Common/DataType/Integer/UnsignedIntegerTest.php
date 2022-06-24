@@ -54,7 +54,7 @@ class UnsignedIntegerTest extends TestCase
             new UnsignedInteger(-1);
         } catch (\Exception $e) {
             $exceptionCurrent = $e;
-            $this->assertSame(RuntimeException::class, get_class($exceptionCurrent));
+            $this->assertSame(RuntimeException::class, $exceptionCurrent::class);
             $this->assertMatchesRegularExpression(
                 sprintf(
                     implode('', [
@@ -74,7 +74,7 @@ class UnsignedIntegerTest extends TestCase
             $exceptionCurrent = $exceptionCurrent->getPrevious();
             $this->assertIsObject($exceptionCurrent);
             assert(is_object($exceptionCurrent)); // Make phpstan happy
-            $this->assertSame(RuntimeException::class, get_class($exceptionCurrent));
+            $this->assertSame(RuntimeException::class, $exceptionCurrent::class);
             $this->assertMatchesRegularExpression(
                 sprintf(
                     implode('', [
