@@ -15,7 +15,7 @@ use Eboreum\Caster\Caster;
  *
  * To be able to utilize type hints for resources, this wrapper class was implemented.
  */
-class Resource_ // @codingStandardsIgnoreLine
+class Resource_
 {
     /** @var resource $resource */
     protected $resource;
