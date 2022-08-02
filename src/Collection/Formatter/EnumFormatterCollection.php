@@ -9,6 +9,8 @@ use Eboreum\Caster\Contract\Collection\Formatter\FormatterCollectionInterface;
 use Eboreum\Caster\Contract\Formatter\EnumFormatterInterface;
 
 /**
+ * @inheritDoc
+ *
  * @template T of EnumFormatterInterface
  * @extends AbstractObjectCollection<T>
  * @implements FormatterCollectionInterface<T>

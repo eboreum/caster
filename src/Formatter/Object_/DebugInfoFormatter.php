@@ -9,6 +9,8 @@ use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\CasterInterface;
 
 /**
+ * @inheritDoc
+ *
  * Handles classes, which implement the magic method `__debugInfo`.
  *
  * @see https://www.php.net/manual/en/language.oop5.magic.php#object.debuginfo

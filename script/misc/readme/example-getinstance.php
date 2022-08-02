@@ -12,6 +12,9 @@ use Eboreum\Caster\Contract\CasterInterface;
 
 require_once dirname(__DIR__, 2) . "/bootstrap.php"; // README.md.remove
 
+/**
+ * @inheritDoc
+ */
 class Caster extends EboreumCaster
 {
     private static ?Caster $instance = null;

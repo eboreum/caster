@@ -7,6 +7,9 @@ namespace Eboreum\Caster\Formatter;
 use Eboreum\Caster\Abstraction\Formatter\AbstractStringFormatter;
 use Eboreum\Caster\Contract\CasterInterface;
 
+/**
+ * @inheritDoc
+ */
 class DefaultStringFormatter extends AbstractStringFormatter
 {
     /**

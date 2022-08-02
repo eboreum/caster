@@ -7,6 +7,9 @@ namespace Eboreum\Caster\Formatter;
 use Eboreum\Caster\Abstraction\Formatter\AbstractArrayFormatter;
 use Eboreum\Caster\Contract\CasterInterface;
 
+/**
+ * @inheritDoc
+ */
 class DefaultArrayFormatter extends AbstractArrayFormatter
 {
     /**

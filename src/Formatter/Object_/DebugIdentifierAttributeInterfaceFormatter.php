@@ -11,6 +11,8 @@ use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\Contract\DebugIdentifierAttributeInterface;
 
 /**
+ * @inheritDoc
+ *
  * Handles classes, which implement `DebugIdentifierAttributeInterface`.
  */
 class DebugIdentifierAttributeInterfaceFormatter extends AbstractObjectFormatter

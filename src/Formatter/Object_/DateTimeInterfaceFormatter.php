@@ -9,6 +9,8 @@ use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\CasterInterface;
 
 /**
+ * @inheritDoc
+ *
  * Prints class name and ISO 8601 datetime in parenthesis. Example: \DateTimeImmutable ("2019-01-01T00:00:00+00:00")
  */
 class DateTimeInterfaceFormatter extends AbstractObjectFormatter

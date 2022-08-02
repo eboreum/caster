@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Eboreum\Caster\Formatter\Object_;
 
 /**
+ * @inheritDoc
+ *
  * Formatter for \DateInterval.
  */
 class DateIntervalFormatter extends PublicVariableFormatter

@@ -9,6 +9,8 @@ use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\CasterInterface;
 
 /**
+ * @inheritDoc
+ *
  * Formatter for \DatePeriod.
  */
 class DatePeriodFormatter extends AbstractObjectFormatter

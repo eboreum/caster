@@ -7,6 +7,9 @@ namespace Eboreum\Caster;
 use Eboreum\Caster\Contract\CharacterEncodingInterface;
 use Eboreum\Caster\Exception\RuntimeException;
 
+/**
+ * @inheritDoc
+ */
 class CharacterEncoding implements CharacterEncodingInterface
 {
     private static ?CharacterEncoding $instance = null;

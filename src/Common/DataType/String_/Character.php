@@ -14,6 +14,8 @@ use Eboreum\Caster\Contract\DebugIdentifierAttributeInterface;
 use Eboreum\Caster\Exception\RuntimeException;
 
 /**
+ * @inheritDoc
+ *
  * Contains a single character. No more. No less.
  */
 class Character implements CharacterInterface, DebugIdentifierAttributeInterface

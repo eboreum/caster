@@ -8,6 +8,8 @@ use Eboreum\Caster\Contract\DebugIdentifierAttributeInterface;
 use Eboreum\Caster\Contract\ImmutableObjectInterface;
 
 /**
+ * @inheritDoc
+ *
  * Denotes that the implementing class contains an integer of some special sort.
  */
 interface IntegerInterface extends ImmutableObjectInterface, DebugIdentifierAttributeInterface, \JsonSerializable

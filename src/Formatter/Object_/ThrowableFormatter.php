@@ -11,6 +11,8 @@ use Eboreum\Caster\Common\DataType\Integer\UnsignedInteger;
 use Eboreum\Caster\Contract\CasterInterface;
 
 /**
+ * @inheritDoc
+ *
  * Formats instances of \Throwable.
  */
 class ThrowableFormatter extends AbstractObjectFormatter

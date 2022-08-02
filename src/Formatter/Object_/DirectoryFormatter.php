@@ -9,6 +9,8 @@ use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\CasterInterface;
 
 /**
+ * @inheritDoc
+ *
  * Handles instances of `\Directory`.
  */
 class DirectoryFormatter extends AbstractObjectFormatter

@@ -8,6 +8,9 @@ use Eboreum\Caster\Abstraction\Formatter\AbstractObjectFormatter;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\CasterInterface;
 
+/**
+ * @inheritDoc
+ */
 class DefaultObjectFormatter extends AbstractObjectFormatter
 {
     /**

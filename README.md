@@ -166,6 +166,9 @@ use Eboreum\Caster\CharacterEncoding;
 use Eboreum\Caster\Collection\Formatter\ArrayFormatterCollection;
 use Eboreum\Caster\Contract\CasterInterface;
 
+/**
+ * @inheritDoc
+ */
 class Caster extends EboreumCaster
 {
     private static ?Caster $instance = null;
@@ -345,6 +348,9 @@ use Eboreum\Caster\Contract\CasterInterface;
 
 $caster = Caster::create();
 $caster = $caster->withCustomArrayFormatterCollection(new ArrayFormatterCollection([
+    /**
+     * @inheritDoc
+     */
     new class extends AbstractArrayFormatter
     {
         /**
@@ -438,6 +444,9 @@ use PHPUnit\Framework\TestCase;
 $caster = Caster::create();
 
 $caster = $caster->withCustomObjectFormatterCollection(new ObjectFormatterCollection([
+    /**
+     * @inheritDoc
+     */
     new class extends AbstractObjectFormatter
     {
         /**
@@ -512,7 +521,7 @@ echo $caster->cast(new \RuntimeException("test", 1)) . "\n";
 ```php
 \stdClass
 \DateTimeImmutable (2019-01-01T00:00:00+00:00)
-\RuntimeException {$code = 1, $file = ".../example-custom-object-formatter.php", $line = 85, $message = "test"}
+\RuntimeException {$code = 1, $file = ".../example-custom-object-formatter.php", $line = 88, $message = "test"}
 
 ```
 
@@ -535,6 +544,9 @@ use Eboreum\Caster\Contract\CasterInterface;
 $caster = Caster::create();
 
 $caster = $caster->withCustomResourceFormatterCollection(new ResourceFormatterCollection([
+    /**
+     * @inheritDoc
+     */
     new class extends AbstractResourceFormatter
     {
         /**
@@ -560,6 +572,9 @@ $caster = $caster->withCustomResourceFormatterCollection(new ResourceFormatterCo
             return null; // Pass on to next formatter or lastly DefaultResourceFormatter
         }
     },
+    /**
+     * @inheritDoc
+     */
     new class extends AbstractResourceFormatter
     {
         /**
@@ -617,6 +632,9 @@ use Eboreum\Caster\Contract\CasterInterface;
 
 $caster = Caster::create();
 $caster = $caster->withCustomStringFormatterCollection(new StringFormatterCollection([
+    /**
+     * @inheritDoc
+     */
     new class extends AbstractStringFormatter
     {
         /**
@@ -713,7 +731,7 @@ echo $caster->castTyped("0123456789") . "\n"; // Notice: 3456 are masked because
 
 ```json
 "nikic/php-parser": "^4.12",
-"phpstan/phpstan": "^1.4",
+"phpstan/phpstan": "^1.8",
 "phpunit/phpunit": "^9.5"
 ```
 

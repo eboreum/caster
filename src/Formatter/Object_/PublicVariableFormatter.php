@@ -9,6 +9,8 @@ use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\CasterInterface;
 
 /**
+ * @inheritDoc
+ *
  * Prints class properties with public access.
  *
  * As this class utilizes the Reflection API (https://www.php.net/manual/en/book.reflection.php), which is slow,

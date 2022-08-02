@@ -7,6 +7,8 @@ namespace Eboreum\Caster\Contract\Caster;
 use Eboreum\Caster\Contract\ImmutableObjectInterface;
 
 /**
+ * @inheritDoc
+ *
  * A context used to determine, if an object has already been visited. This check is vital in order to avoid endless
  * recursion.
  */

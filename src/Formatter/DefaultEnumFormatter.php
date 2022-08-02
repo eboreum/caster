@@ -10,6 +10,9 @@ use Eboreum\Caster\Contract\CasterInterface;
 
 use function Eboreum\Caster\functions\is_enum;
 
+/**
+ * @inheritDoc
+ */
 class DefaultEnumFormatter extends AbstractObjectFormatter
 {
     /**

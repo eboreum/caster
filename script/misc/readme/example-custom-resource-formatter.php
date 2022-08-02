@@ -15,6 +15,9 @@ require_once dirname(__DIR__, 2) . "/bootstrap.php"; // README.md.remove
 $caster = Caster::create();
 
 $caster = $caster->withCustomResourceFormatterCollection(new ResourceFormatterCollection([
+    /**
+     * @inheritDoc
+     */
     new class extends AbstractResourceFormatter
     {
         /**
@@ -40,6 +43,9 @@ $caster = $caster->withCustomResourceFormatterCollection(new ResourceFormatterCo
             return null; // Pass on to next formatter or lastly DefaultResourceFormatter
         }
     },
+    /**
+     * @inheritDoc
+     */
     new class extends AbstractResourceFormatter
     {
         /**

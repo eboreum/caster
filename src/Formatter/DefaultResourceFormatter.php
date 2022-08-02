@@ -8,6 +8,9 @@ use Eboreum\Caster\Abstraction\Formatter\AbstractResourceFormatter;
 use Eboreum\Caster\Common\DataType\Resource_;
 use Eboreum\Caster\Contract\CasterInterface;
 
+/**
+ * @inheritDoc
+ */
 class DefaultResourceFormatter extends AbstractResourceFormatter
 {
     /**

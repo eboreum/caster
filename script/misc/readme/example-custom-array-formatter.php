@@ -12,6 +12,9 @@ require_once dirname(__DIR__, 2) . "/bootstrap.php"; // README.md.remove
 
 $caster = Caster::create();
 $caster = $caster->withCustomArrayFormatterCollection(new ArrayFormatterCollection([
+    /**
+     * @inheritDoc
+     */
     new class extends AbstractArrayFormatter
     {
         /**

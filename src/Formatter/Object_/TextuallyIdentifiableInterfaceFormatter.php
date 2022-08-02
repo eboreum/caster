@@ -10,6 +10,8 @@ use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\Contract\TextuallyIdentifiableInterface;
 
 /**
+ * @inheritDoc
+ *
  * Handles classes, which implement `TextuallyIdentifiableInterface`.
  */
 class TextuallyIdentifiableInterfaceFormatter extends AbstractObjectFormatter

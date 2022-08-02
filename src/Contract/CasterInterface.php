@@ -26,6 +26,8 @@ use Eboreum\Caster\Formatter\DefaultResourceFormatter;
 use Eboreum\Caster\Formatter\DefaultStringFormatter;
 
 /**
+ * @inheritDoc
+ *
  * Implementing class must be handling casting of any PHP value/data type to a human readable string.
  * Immutable. Use `with*` methods to generate copies.
  */
