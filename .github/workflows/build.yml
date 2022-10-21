@@ -96,3 +96,6 @@ jobs:
           valColorRange: ${{ env.PHPSTAN_LEVEL }}
           maxColorRange: 9
           minColorRange: 0
+
+      - name: Run phpcs
+        run: vendor/bin/phpcs -n -q
