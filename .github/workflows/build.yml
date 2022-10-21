@@ -38,7 +38,9 @@ jobs:
           restore-keys: ${{ runner.os }}-composer-
 
       - name: Install Composer dependencies
-        run: composer install --no-progress --prefer-dist --optimize-autoloader
+        run: |
+          composer config --no-interaction allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
+          composer install --no-progress --prefer-dist --optimize-autoloader
 
       - name: Make N/A code coverage badge in case pipeline below fails
         uses: schneegans/dynamic-badges-action@v1.4.0
