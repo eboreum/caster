@@ -17,9 +17,6 @@ use Eboreum\Caster\Contract\Formatter\ArrayFormatterInterface;
  */
 class ArrayFormatterCollection extends AbstractObjectCollection implements FormatterCollectionInterface
 {
-    /**
-     * {@inheritDoc}
-     */
     public static function getHandledClassName(): string
     {
         return ArrayFormatterInterface::class;

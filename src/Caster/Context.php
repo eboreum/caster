@@ -6,25 +6,20 @@ namespace Eboreum\Caster\Caster;
 
 use Eboreum\Caster\Contract\Caster\ContextInterface;
 
-/**
- * {@inheritDoc}
- */
+use function array_key_exists;
+use function count;
+use function spl_object_hash;
+
 class Context implements ContextInterface
 {
     /** @var array<string, object> */
     protected array $visitedObjectStack = [];
 
-    /**
-     * {@inheritDoc}
-     */
     public function count(): int
     {
         return count($this->visitedObjectStack);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function withAddedVisitedObject(object $object): ContextInterface
     {
         $hash = spl_object_hash($object);
@@ -37,9 +32,6 @@ class Context implements ContextInterface
         return $clone;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function hasVisitedObject(object $object): bool
     {
         $hash = spl_object_hash($object);
@@ -47,9 +39,6 @@ class Context implements ContextInterface
         return array_key_exists($hash, $this->visitedObjectStack);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isEmpty(): bool
     {
         return !$this->visitedObjectStack;

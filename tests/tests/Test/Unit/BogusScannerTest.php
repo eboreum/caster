@@ -4,10 +4,30 @@ declare(strict_types=1);
 
 namespace Test\Unit\Eboreum\Caster;
 
+use PhpParser\Comment;
+use PhpParser\Node;
 use PhpParser\ParserFactory;
 use PHPUnit\Framework\TestCase;
 
+use function array_merge;
+use function assert;
+use function count;
+use function dirname;
 use function Eboreum\Caster\functions\rglob;
+use function escapeshellarg;
+use function file_get_contents;
+use function get_object_vars;
+use function implode;
+use function is_array;
+use function is_file;
+use function is_string;
+use function json_decode;
+use function ltrim;
+use function mb_strtolower;
+use function preg_match;
+use function preg_match_all;
+use function preg_quote;
+use function sprintf;
 
 /**
  * Did we leave bogus comments, names, file paths, etc. lying around in the project?
@@ -153,8 +173,9 @@ class BogusScannerTest extends TestCase
     }
 
     /**
-     * @param array<\PhpParser\Node> $ast
-     * @return array<\PhpParser\Comment>
+     * @param array<Node> $ast
+     *
+     * @return array<Comment>
      */
     private function recursivelyFindAllCommentsInPHPFileAST(array $ast): array
     {
@@ -171,9 +192,9 @@ class BogusScannerTest extends TestCase
     }
 
     /**
-     * @return array<\PhpParser\Comment>
+     * @return array<Comment>
      */
-    private function handleNode(\PhpParser\Node $node): array
+    private function handleNode(Node $node): array
     {
         $comments = $node->getComments();
 
@@ -187,7 +208,7 @@ class BogusScannerTest extends TestCase
             assert(is_array($vars)); // Make phpstan happy
 
             foreach ($vars as $var) {
-                if ($var instanceof \PhpParser\Node) {
+                if ($var instanceof Node) {
                     $comments = array_merge(
                         $comments,
                         $this->handleNode($var),

@@ -5,6 +5,20 @@ declare(strict_types=1);
 namespace Test\Unit\Eboreum\Caster;
 
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
+use Throwable;
+
+use function assert;
+use function count;
+use function glob;
+use function is_array;
+use function is_file;
+use function is_string;
+use function mb_strlen;
+use function ob_end_clean;
+use function ob_get_contents;
+use function ob_start;
+use function sprintf;
 
 class AllExampleScriptsWorkTest extends TestCase
 {
@@ -35,8 +49,8 @@ class AllExampleScriptsWorkTest extends TestCase
                 include $filePath;
                 $output = ob_get_contents();
                 ob_end_clean();
-            } catch (\Throwable $t) {
-                throw new \RuntimeException(sprintf(
+            } catch (Throwable $t) {
+                throw new RuntimeException(sprintf(
                     'Failure when processing file: %s',
                     $filePath,
                 ), 0, $t);

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Eboreum\Caster\Contract\Caster;
 
+use Countable;
 use Eboreum\Caster\Contract\ImmutableObjectInterface;
 
 /**
@@ -12,7 +13,7 @@ use Eboreum\Caster\Contract\ImmutableObjectInterface;
  * A context used to determine, if an object has already been visited. This check is vital in order to avoid endless
  * recursion.
  */
-interface ContextInterface extends ImmutableObjectInterface, \Countable
+interface ContextInterface extends ImmutableObjectInterface, Countable
 {
     /**
      * Add a visited object to the stack.

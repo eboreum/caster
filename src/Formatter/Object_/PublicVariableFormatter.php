@@ -7,6 +7,13 @@ namespace Eboreum\Caster\Formatter\Object_;
 use Eboreum\Caster\Abstraction\Formatter\AbstractObjectFormatter;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\CasterInterface;
+use ReflectionObject;
+use ReflectionProperty;
+
+use function array_key_exists;
+use function boolval;
+use function implode;
+use function sprintf;
 
 /**
  * @inheritDoc
@@ -18,9 +25,6 @@ use Eboreum\Caster\Contract\CasterInterface;
  */
 class PublicVariableFormatter extends AbstractObjectFormatter
 {
-    /**
-     * {@inheritDoc}
-     */
     public function format(CasterInterface $caster, object $object): ?string
     {
         if (false === $this->isHandling($object)) {
@@ -31,23 +35,20 @@ class PublicVariableFormatter extends AbstractObjectFormatter
 
         return sprintf(
             '%s {%s}',
-            Caster::makeNormalizedClassName(new \ReflectionObject($object)),
+            Caster::makeNormalizedClassName(new ReflectionObject($object)),
             $propertySequenceAsString,
         );
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isHandling(object $object): bool
     {
-        return boolval($this->getPropertyNameToReflectionProperty(new \ReflectionObject($object)));
+        return boolval($this->getPropertyNameToReflectionProperty(new ReflectionObject($object)));
     }
 
     /**
-     * @return array<string, \ReflectionProperty>
+     * @return array<string, ReflectionProperty>
      */
-    protected function getPropertyNameToReflectionProperty(\ReflectionObject $reflectionObject): array
+    protected function getPropertyNameToReflectionProperty(ReflectionObject $reflectionObject): array
     {
         $reflectionClassCurrent = $reflectionObject;
         $propertyNameToReflectionProperty = [];
@@ -71,7 +72,7 @@ class PublicVariableFormatter extends AbstractObjectFormatter
 
     protected function getPropertySequenceAsString(CasterInterface $caster, object $object): string
     {
-        $reflectionObject = new \ReflectionObject($object);
+        $reflectionObject = new ReflectionObject($object);
         $propertyNameToReflectionProperty = $this->getPropertyNameToReflectionProperty($reflectionObject);
         $segments = [];
 

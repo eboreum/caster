@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace Test\Unit\Eboreum\Caster;
 
+use DateInterval;
+use DatePeriod;
+use DateTime;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Eboreum\Caster\Abstraction\Formatter\AbstractArrayFormatter;
 use Eboreum\Caster\Abstraction\Formatter\AbstractEnumFormatter;
 use Eboreum\Caster\Abstraction\Formatter\AbstractObjectFormatter;
@@ -43,11 +48,33 @@ use Eboreum\Caster\Formatter\Object_\PublicVariableFormatter;
 use Eboreum\Caster\Formatter\Object_\SplFileInfoFormatter;
 use Eboreum\Caster\Formatter\Object_\TextuallyIdentifiableInterfaceFormatter;
 use Eboreum\Caster\Formatter\Object_\ThrowableFormatter;
+use Exception;
+use FooBar_9f8a3c814a1d42dda2672abede7ce454;
+use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use ReflectionEnum;
+use ReflectionObject;
+use RuntimeException;
+use SplFileObject;
+use stdClass;
 use TestResource\Unit\Eboreum\Caster\CasterTest\testCastWorks\StringEnum;
+use Throwable;
 
+use function array_fill;
+use function array_key_exists;
+use function assert;
+use function basename;
+use function class_alias;
+use function dir;
 use function Eboreum\Caster\functions\is_enum;
+use function fopen;
+use function get_resource_type;
+use function implode;
+use function is_object;
+use function preg_quote;
+use function sprintf;
+use function str_repeat;
 
 class CasterTest extends TestCase
 {
@@ -100,7 +127,7 @@ class CasterTest extends TestCase
                 '$',
                 '/',
             ]),
-            $caster->getRecursionMessage(new \stdClass()),
+            $caster->getRecursionMessage(new stdClass()),
         );
         $this->assertSame(
             CasterInterface::STRING_SAMPLE_SIZE_DEFAULT,
@@ -127,7 +154,7 @@ class CasterTest extends TestCase
     }
 
     /**
-     * @dataProvider dataProvider_testCastWorks
+     * @dataProvider dataProviderTestCastWorks
      */
     public function testCastWorks(string $message, string $expected, mixed $value, Caster $caster): void
     {
@@ -141,7 +168,7 @@ class CasterTest extends TestCase
     /**
      * @return array<int, array{0: string, 1: string, 2: mixed, 3: Caster}>
      */
-    public function dataProvider_testCastWorks(): array
+    public function dataProviderTestCastWorks(): array
     {
         return [
             [
@@ -183,7 +210,7 @@ class CasterTest extends TestCase
             [
                 'object: \stdClass',
                 '/^\\\\stdClass$/',
-                new \stdClass(),
+                new stdClass(),
                 Caster::create(),
             ],
             [
@@ -212,7 +239,7 @@ class CasterTest extends TestCase
                     '$',
                     '/',
                 ]),
-                (new \DateTimeImmutable('2020-01-01 00:00:00'))->diff(new \DateTimeImmutable('2021-02-03 12:34:56')),
+                (new DateTimeImmutable('2020-01-01 00:00:00'))->diff(new DateTimeImmutable('2021-02-03 12:34:56')),
                 (static function () {
                     $caster = Caster::create();
                     $caster = $caster->withCustomObjectFormatterCollection(
@@ -238,10 +265,10 @@ class CasterTest extends TestCase
                     '$',
                     '/',
                 ]),
-                new \DatePeriod(
-                    new \DateTimeImmutable('2020-01-01 00:00:00'),
-                    new \DateInterval('P1D'),
-                    new \DateTimeImmutable('2021-02-03 12:34:56'),
+                new DatePeriod(
+                    new DateTimeImmutable('2020-01-01 00:00:00'),
+                    new DateInterval('P1D'),
+                    new DateTimeImmutable('2021-02-03 12:34:56'),
                 ),
                 (static function () {
                     $caster = Caster::create();
@@ -263,7 +290,7 @@ class CasterTest extends TestCase
                     '$',
                     '/',
                 ]),
-                new \DateTimeImmutable('2021-02-03 12:34:56+00:00'),
+                new DateTimeImmutable('2021-02-03 12:34:56+00:00'),
                 (static function () {
                     $caster = Caster::create();
                     $caster = $caster->withCustomObjectFormatterCollection(
@@ -358,7 +385,7 @@ class CasterTest extends TestCase
                     '$',
                     '/',
                 ]),
-                new \SplFileObject(__FILE__),
+                new SplFileObject(__FILE__),
                 (static function () {
                     $caster = Caster::create();
                     $caster = $caster->withCustomObjectFormatterCollection(
@@ -422,10 +449,10 @@ class CasterTest extends TestCase
                     '/',
                 ]),
                 (static function () {
-                    $c = new \LogicException('c', 2);
-                    $b = new \RuntimeException('b', 1, $c);
+                    $c = new LogicException('c', 2);
+                    $b = new RuntimeException('b', 1, $c);
 
-                    return new \Exception('a', 0, $b);
+                    return new Exception('a', 0, $b);
                 })(),
                 (static function () {
                     $caster = Caster::create();
@@ -447,11 +474,11 @@ class CasterTest extends TestCase
             [
                 'A resource',
                 '/^`stream` Resource id #\d+$/',
-                \fopen(__FILE__, 'r+'),
+                fopen(__FILE__, 'r+'),
                 Caster::create(),
             ],
-            (static function(){
-                $class = new class extends \DateTime
+            (static function () {
+                $class = new class extends DateTime
                 {
                 };
                 class_alias($class::class, 'FooBar_9f8a3c814a1d42dda2672abede7ce454');
@@ -475,7 +502,7 @@ class CasterTest extends TestCase
                         ]),
                         preg_quote(basename(__FILE__), '/'),
                     ),
-                    new \FooBar_9f8a3c814a1d42dda2672abede7ce454( // @phpstan-ignore-line It is being aliased above
+                    new FooBar_9f8a3c814a1d42dda2672abede7ce454( // @phpstan-ignore-line It is being aliased above
                         '2022-01-01T00:00:00.000000+00:00'
                     ),
                     $caster,
@@ -490,7 +517,7 @@ class CasterTest extends TestCase
             [
                 'A resource',
                 '/^`stream` Resource id #\d+$/',
-                \fopen(__FILE__, 'r+'),
+                fopen(__FILE__, 'r+'),
                 Caster::create(),
             ],
             [
@@ -601,8 +628,9 @@ class CasterTest extends TestCase
     }
 
     /**
-     * @dataProvider dataProvider_testCastWorksWithArrayLargerThanSampleSize
      * @param array<mixed> $array
+     *
+     * @dataProvider dataProviderTestCastWorksWithArrayLargerThanSampleSize
      */
     public function testCastWorksWithArrayLargerThanSampleSize(string $message, string $expected, array $array): void
     {
@@ -616,13 +644,13 @@ class CasterTest extends TestCase
     /**
      * @return array<int, array{0: string, 1: string, array<mixed>}>
      */
-    public function dataProvider_testCastWorksWithArrayLargerThanSampleSize(): array
+    public function dataProviderTestCastWorksWithArrayLargerThanSampleSize(): array
     {
         return [
             [
                 'Singular "element"',
                 '[0 => "foo", 1 => 42, 2 => null, ... and 1 more element] (sample)',
-                ['foo', 42, null, false]
+                ['foo', 42, null, false],
             ],
             [
                 'Plural "elements"',
@@ -708,8 +736,9 @@ class CasterTest extends TestCase
     }
 
     /**
-     * @dataProvider dataProvider_testCastOnMaskedStringsWillNotCauseMaskingToBePartOfOtherMaskings
      * @param EncryptedStringCollection<EncryptedString> $encryptedStringCollection
+     *
+     * @dataProvider dataProviderTestCastOnMaskedStringsWillNotCauseMaskingToBePartOfOtherMaskings
      */
     public function testCastOnMaskedStringsWillNotCauseMaskingToBePartOfOtherMaskings(
         string $expected,
@@ -725,7 +754,7 @@ class CasterTest extends TestCase
     /**
      * @return array<int, array{string, string, EncryptedStringCollection<EncryptedString>}>
      */
-    public function dataProvider_testCastOnMaskedStringsWillNotCauseMaskingToBePartOfOtherMaskings(): array
+    public function dataProviderTestCastOnMaskedStringsWillNotCauseMaskingToBePartOfOtherMaskings(): array
     {
         return [
             [
@@ -791,10 +820,14 @@ class CasterTest extends TestCase
     }
 
     /**
-     * @dataProvider dataProvider_testCastWorksWithTypePrepended
+     * @dataProvider dataProviderTestCastWorksWithTypePrepended
      */
-    public function testCastWorksWithTypePrepended(string $message, string $expected, mixed $value, Caster $caster): void
-    {
+    public function testCastWorksWithTypePrepended(
+        string $message,
+        string $expected,
+        mixed $value,
+        Caster $caster,
+    ): void {
         $caster = $caster->withIsPrependingType(true);
 
         $this->assertMatchesRegularExpression(
@@ -815,7 +848,7 @@ class CasterTest extends TestCase
     /**
      * @return array<int, array{0: string, 1: string, 2: mixed, 3: Caster}>
      */
-    public function dataProvider_testCastWorksWithTypePrepended(): array
+    public function dataProviderTestCastWorksWithTypePrepended(): array
     {
         return [
             [
@@ -857,7 +890,7 @@ class CasterTest extends TestCase
             [
                 'object: \stdClass',
                 '/^\(object\) \\\\stdClass$/',
-                new \stdClass(),
+                new stdClass(),
                 Caster::create(),
             ],
             [
@@ -886,7 +919,7 @@ class CasterTest extends TestCase
                     '$',
                     '/',
                 ]),
-                (new \DateTimeImmutable('2020-01-01 00:00:00'))->diff(new \DateTimeImmutable('2021-02-03 12:34:56')),
+                (new DateTimeImmutable('2020-01-01 00:00:00'))->diff(new DateTimeImmutable('2021-02-03 12:34:56')),
                 (static function () {
                     $caster = Caster::create();
                     $caster = $caster->withCustomObjectFormatterCollection(
@@ -912,10 +945,10 @@ class CasterTest extends TestCase
                     '$',
                     '/',
                 ]),
-                new \DatePeriod(
-                    new \DateTimeImmutable('2020-01-01 00:00:00'),
-                    new \DateInterval('P1D'),
-                    new \DateTimeImmutable('2021-02-03 12:34:56'),
+                new DatePeriod(
+                    new DateTimeImmutable('2020-01-01 00:00:00'),
+                    new DateInterval('P1D'),
+                    new DateTimeImmutable('2021-02-03 12:34:56'),
                 ),
                 (static function () {
                     $caster = Caster::create();
@@ -937,7 +970,7 @@ class CasterTest extends TestCase
                     '$',
                     '/',
                 ]),
-                new \DateTimeImmutable('2021-02-03 12:34:56+00:00'),
+                new DateTimeImmutable('2021-02-03 12:34:56+00:00'),
                 (static function () {
                     $caster = Caster::create();
                     $caster = $caster->withCustomObjectFormatterCollection(
@@ -1032,7 +1065,7 @@ class CasterTest extends TestCase
                     '$',
                     '/',
                 ]),
-                new \SplFileObject(__FILE__),
+                new SplFileObject(__FILE__),
                 (static function () {
                     $caster = Caster::create();
                     $caster = $caster->withCustomObjectFormatterCollection(
@@ -1096,10 +1129,10 @@ class CasterTest extends TestCase
                     '/',
                 ]),
                 (static function () {
-                    $c = new \LogicException('c', 2);
-                    $b = new \RuntimeException('b', 1, $c);
+                    $c = new LogicException('c', 2);
+                    $b = new RuntimeException('b', 1, $c);
 
-                    return new \Exception('a', 0, $b);
+                    return new Exception('a', 0, $b);
                 })(),
                 (static function () {
                     $caster = Caster::create();
@@ -1130,7 +1163,7 @@ class CasterTest extends TestCase
             [
                 'A resource',
                 '/^\(resource\) `stream` Resource id #\d+$/',
-                \fopen(__FILE__, 'r+'),
+                fopen(__FILE__, 'r+'),
                 Caster::create(),
             ],
         ];
@@ -1168,16 +1201,13 @@ class CasterTest extends TestCase
         $caster = $caster->withCustomEnumFormatterCollection(new EnumFormatterCollection([
             new class extends AbstractObjectFormatter implements EnumFormatterInterface
             {
-                /**
-                 * {@inheritDoc}
-                 */
                 public function format(CasterInterface $caster, object $enum): ?string
                 {
                     if (false === $this->isHandling($enum)) {
                         return null;
                     }
 
-                    assert($enum instanceof \DateTimeInterface); // Make phpstan happy
+                    assert($enum instanceof DateTimeInterface); // Make phpstan happy
 
                     return sprintf(
                         '\\%s {$name = %s, $value = %s}',
@@ -1187,13 +1217,10 @@ class CasterTest extends TestCase
                     );
                 }
 
-                /**
-                 * {@inheritDoc}
-                 */
                 public function isHandling(object $enum): bool
                 {
                     if (is_enum($enum)) {
-                        $reflectionEnum = new \ReflectionEnum($enum);
+                        $reflectionEnum = new ReflectionEnum($enum);
                         $reflectionType = $reflectionEnum->getBackingType();
 
                         if ($reflectionType) {
@@ -1215,16 +1242,13 @@ class CasterTest extends TestCase
         $caster = $caster->withCustomObjectFormatterCollection(new ObjectFormatterCollection([
             new class extends AbstractObjectFormatter
             {
-                /**
-                 * {@inheritDoc}
-                 */
                 public function format(CasterInterface $caster, object $object): ?string
                 {
                     if (false === $this->isHandling($object)) {
                         return null;
                     }
 
-                    assert($object instanceof \DateTimeInterface); // Make phpstan happy
+                    assert($object instanceof DateTimeInterface); // Make phpstan happy
 
                     return sprintf(
                         '\\%s (%s)',
@@ -1233,26 +1257,20 @@ class CasterTest extends TestCase
                     );
                 }
 
-                /**
-                 * {@inheritDoc}
-                 */
                 public function isHandling(object $object): bool
                 {
-                    return ($object instanceof \DateTimeInterface);
+                    return ($object instanceof DateTimeInterface);
                 }
             },
             new class extends AbstractObjectFormatter
             {
-                /**
-                 * {@inheritDoc}
-                 */
                 public function format(CasterInterface $caster, object $object): ?string
                 {
                     if (false === $this->isHandling($object)) {
                         return null;
                     }
 
-                    assert($object instanceof \Throwable); // Make phpstan happy
+                    assert($object instanceof Throwable); // Make phpstan happy
 
                     return sprintf(
                         '\\%s {$code = %s, $file = %s, $line = %s, $message = %s}',
@@ -1264,21 +1282,15 @@ class CasterTest extends TestCase
                     );
                 }
 
-                /**
-                 * {@inheritDoc}
-                 */
                 public function isHandling(object $object): bool
                 {
-                    return ($object instanceof \Throwable);
+                    return ($object instanceof Throwable);
                 }
             },
         ]));
         $caster = $caster->withCustomResourceFormatterCollection(new ResourceFormatterCollection([
             new class extends AbstractResourceFormatter
             {
-                /**
-                 * {@inheritDoc}
-                 */
                 public function format(CasterInterface $caster, Resource_ $resource): ?string
                 {
                     if (false === $this->isHandling($resource)) {
@@ -1288,9 +1300,6 @@ class CasterTest extends TestCase
                     return 'YOLO';
                 }
 
-                /**
-                 * {@inheritDoc}
-                 */
                 public function isHandling(Resource_ $resource): bool
                 {
                     return ('stream' === get_resource_type($resource->getResource()));
@@ -1300,9 +1309,6 @@ class CasterTest extends TestCase
         $caster = $caster->withCustomStringFormatterCollection(new StringFormatterCollection([
             new class extends AbstractStringFormatter
             {
-                /**
-                 * {@inheritDoc}
-                 */
                 public function format(CasterInterface $caster, string $string): ?string
                 {
                     if (false === $this->isHandling($string)) {
@@ -1312,9 +1318,6 @@ class CasterTest extends TestCase
                     return $caster->getDefaultStringFormatter()->format($caster, 'bar');
                 }
 
-                /**
-                 * {@inheritDoc}
-                 */
                 public function isHandling(string $string): bool
                 {
                     return ('foo' === $string);
@@ -1330,16 +1333,16 @@ class CasterTest extends TestCase
             ),
             $caster->cast(StringEnum::Lorem),
         );
-        $this->assertSame('\\stdClass', $caster->cast(new \stdClass()));
+        $this->assertSame('\\stdClass', $caster->cast(new stdClass()));
         $this->assertSame(
             '\\DateTimeImmutable (2019-01-01T00:00:00+00:00)',
-            $caster->cast(new \DateTimeImmutable('2019-01-01T00:00:00+00:00')),
+            $caster->cast(new DateTimeImmutable('2019-01-01T00:00:00+00:00')),
         );
         $this->assertMatchesRegularExpression(
             '/^\\\\RuntimeException \{\$code = 1, \$file = "(.+)", \$line = \d+, \$message = "test"\}$/',
-            $caster->cast(new \RuntimeException('test', 1))
+            $caster->cast(new RuntimeException('test', 1))
         );
-        $this->assertSame('YOLO', $caster->cast(\fopen(__FILE__, 'r+')));
+        $this->assertSame('YOLO', $caster->cast(fopen(__FILE__, 'r+')));
         $this->assertSame('"baz"', $caster->cast('baz'));
         $this->assertSame('"bar"', $caster->cast('foo'));
     }
@@ -1457,8 +1460,9 @@ class CasterTest extends TestCase
     }
 
     /**
-     * @dataProvider dataProvider_testCastWorksWithPrependedTypeAndWithArrayLargerThanSampleSize
      * @param array<mixed> $array
+     *
+     * @dataProvider dataProviderTestCastWorksWithPrependedTypeAndWithArrayLargerThanSampleSize
      */
     public function testCastWorksWithPrependedTypeAndWithArrayLargerThanSampleSize(
         string $message,
@@ -1475,7 +1479,7 @@ class CasterTest extends TestCase
     /**
      * @return array<int, array{0: string, 1: string, 2: array<mixed>}>
      */
-    public function dataProvider_testCastWorksWithPrependedTypeAndWithArrayLargerThanSampleSize(): array
+    public function dataProviderTestCastWorksWithPrependedTypeAndWithArrayLargerThanSampleSize(): array
     {
         return [
             [
@@ -1627,7 +1631,7 @@ class CasterTest extends TestCase
     public function testCastWillHandleObjectRecursionCorrectly(): void
     {
         $caster = Caster::create();
-        $object = new \stdClass();
+        $object = new stdClass();
 
         $context = $this->mockContextInterface();
 
@@ -1658,7 +1662,7 @@ class CasterTest extends TestCase
         $caster = Caster::create();
         $caster = $caster->withDepthMaximum(new PositiveInteger(1));
         $caster = $caster->withDepthCurrent(new PositiveInteger(2));
-        $object = new \stdClass();
+        $object = new stdClass();
 
         $this->assertSame(
             sprintf(
@@ -1678,7 +1682,7 @@ class CasterTest extends TestCase
     }
 
     /**
-     * @dataProvider dataProvider_testEscapeWorks
+     * @dataProvider dataProviderTestEscapeWorks
      */
     public function testEscapeWorks(string $expected, string $str): void
     {
@@ -1688,7 +1692,7 @@ class CasterTest extends TestCase
     /**
      * @return array<int, array{0: string, 1: string}>
      */
-    public function dataProvider_testEscapeWorks(): array
+    public function dataProviderTestEscapeWorks(): array
     {
         return [
             ['\\\\', '\\'],
@@ -1699,7 +1703,7 @@ class CasterTest extends TestCase
     }
 
     /**
-     * @dataProvider dataProvider_testMaskStringWorks
+     * @dataProvider dataProviderTestMaskStringWorks
      */
     public function testMaskStringWorks(string $message, string $expected, Caster $caster, string $str): void
     {
@@ -1709,7 +1713,7 @@ class CasterTest extends TestCase
     /**
      * @return array<int, array{0: string, 1: string, 2: Caster, 3: string}>
      */
-    public function dataProvider_testMaskStringWorks(): array
+    public function dataProviderTestMaskStringWorks(): array
     {
         return [
             [
@@ -1857,24 +1861,24 @@ class CasterTest extends TestCase
         $arrayFormatterCollectionA = $casterA->getCustomArrayFormatterCollection();
 
         $arrayFormatterCollectionB = new ArrayFormatterCollection([
-            new class extends AbstractArrayFormatter
+        new class extends AbstractArrayFormatter
             {
                 /**
                  * {@inheritDoc}
                  */
-                public function format(CasterInterface $caster, array $array): ?string
-                {
-                    return null;
-                }
+            public function format(CasterInterface $caster, array $array): ?string
+            {
+                return null;
+            }
 
                 /**
                  * {@inheritDoc}
                  */
-                public function isHandling(array $array): bool
-                {
-                    return true;
-                }
+            public function isHandling(array $array): bool
+            {
+                return true;
             }
+        },
         ]);
         $casterB = $casterA->withCustomArrayFormatterCollection($arrayFormatterCollectionB);
 
@@ -1907,24 +1911,18 @@ class CasterTest extends TestCase
         $enumFormatterCollectionA = $casterA->getCustomEnumFormatterCollection();
 
         $enumFormatterCollectionB = new EnumFormatterCollection([
-            new class extends AbstractEnumFormatter
+        new class extends AbstractEnumFormatter
             {
-                /**
-                 * {@inheritDoc}
-                 */
-                public function format(CasterInterface $caster, object $enum): ?string
-                {
-                    return null;
-                }
-
-                /**
-                 * {@inheritDoc}
-                 */
-                public function isHandling(object $enum): bool
-                {
-                    return is_enum($enum);
-                }
+            public function format(CasterInterface $caster, object $enum): ?string
+            {
+                return null;
             }
+
+            public function isHandling(object $enum): bool
+            {
+                return is_enum($enum);
+            }
+        },
         ]);
         $casterB = $casterA->withCustomEnumFormatterCollection($enumFormatterCollectionB);
 
@@ -1957,24 +1955,18 @@ class CasterTest extends TestCase
         $objectFormatterCollectionA = $casterA->getCustomObjectFormatterCollection();
 
         $objectFormatterCollectionB = new ObjectFormatterCollection([
-            new class extends AbstractObjectFormatter
+        new class extends AbstractObjectFormatter
             {
-                /**
-                 * {@inheritDoc}
-                 */
-                public function format(CasterInterface $caster, object $object): ?string
-                {
-                    return null;
-                }
-
-                /**
-                 * {@inheritDoc}
-                 */
-                public function isHandling(object $object): bool
-                {
-                    return true;
-                }
+            public function format(CasterInterface $caster, object $object): ?string
+            {
+                return null;
             }
+
+            public function isHandling(object $object): bool
+            {
+                return true;
+            }
+        },
         ]);
         $casterB = $casterA->withCustomObjectFormatterCollection($objectFormatterCollectionB);
 
@@ -2007,24 +1999,18 @@ class CasterTest extends TestCase
         $resourceFormatterCollectionA = $casterA->getCustomResourceFormatterCollection();
 
         $resourceFormatterCollectionB = new ResourceFormatterCollection([
-            new class extends AbstractResourceFormatter
+        new class extends AbstractResourceFormatter
             {
-                /**
-                 * {@inheritDoc}
-                 */
-                public function format(CasterInterface $caster, Resource_ $resource): ?string
-                {
-                    return null;
-                }
-
-                /**
-                 * {@inheritDoc}
-                 */
-                public function isHandling(Resource_ $resource): bool
-                {
-                    return true;
-                }
+            public function format(CasterInterface $caster, Resource_ $resource): ?string
+            {
+                return null;
             }
+
+            public function isHandling(Resource_ $resource): bool
+            {
+                return true;
+            }
+        },
         ]);
         $casterB = $casterA->withCustomResourceFormatterCollection($resourceFormatterCollectionB);
 
@@ -2057,24 +2043,18 @@ class CasterTest extends TestCase
         $stringFormatterCollectionA = $casterA->getCustomStringFormatterCollection();
 
         $stringFormatterCollectionB = new StringFormatterCollection([
-            new class extends AbstractStringFormatter
+        new class extends AbstractStringFormatter
             {
-                /**
-                 * {@inheritDoc}
-                 */
-                public function format(CasterInterface $caster, string $string): ?string
-                {
-                    return null;
-                }
-
-                /**
-                 * {@inheritDoc}
-                 */
-                public function isHandling(string $string): bool
-                {
-                    return true;
-                }
+            public function format(CasterInterface $caster, string $string): ?string
+            {
+                return null;
             }
+
+            public function isHandling(string $string): bool
+            {
+                return true;
+            }
+        },
         ]);
         $casterB = $casterA->withCustomStringFormatterCollection($stringFormatterCollectionB);
 
@@ -2291,7 +2271,7 @@ class CasterTest extends TestCase
 
         try {
             $caster->withSampleEllipsis('');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $currentException = $e;
             $this->assertSame(CasterException::class, $currentException::class);
             $this->assertMatchesRegularExpression(
@@ -2341,7 +2321,7 @@ class CasterTest extends TestCase
 
         try {
             $caster->withSampleEllipsis('   ');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $currentException = $e;
             $this->assertSame(CasterException::class, $currentException::class);
             $this->assertMatchesRegularExpression(
@@ -2392,7 +2372,7 @@ class CasterTest extends TestCase
 
         try {
             $caster->withSampleEllipsis("foo \x0d bar");
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $currentException = $e;
             $this->assertSame(CasterException::class, $currentException::class);
             $this->assertMatchesRegularExpression(
@@ -2483,7 +2463,7 @@ class CasterTest extends TestCase
 
         try {
             $caster->withStringQuotingCharacter(new Character('\\'));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $currentException = $e;
             $this->assertSame(CasterException::class, $currentException::class);
             $this->assertMatchesRegularExpression(
@@ -2550,20 +2530,20 @@ class CasterTest extends TestCase
     }
 
     /**
-     * @dataProvider dataProvider_testMakeNormalizedClassNameWorks
+     * @dataProvider dataProviderTestMakeNormalizedClassNameWorks
      */
     public function testMakeNormalizedClassNameWorks(string $expectedRegex, object $object): void
     {
         $this->assertMatchesRegularExpression(
             $expectedRegex,
-            Caster::makeNormalizedClassName(new \ReflectionObject($object)),
+            Caster::makeNormalizedClassName(new ReflectionObject($object)),
         );
     }
 
     /**
      * @return array<array{string, object}>
      */
-    public function dataProvider_testMakeNormalizedClassNameWorks(): array
+    public function dataProviderTestMakeNormalizedClassNameWorks(): array
     {
         return [
             [
@@ -2592,7 +2572,7 @@ class CasterTest extends TestCase
                     ]),
                     preg_quote(basename(__FILE__), '/'),
                 ),
-                new class ('2022-01-01T00:00:00+00:00') extends \DateTime
+                new class ('2022-01-01T00:00:00+00:00') extends DateTime
                 {
                 },
             ],

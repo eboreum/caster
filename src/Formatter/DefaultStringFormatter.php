@@ -7,14 +7,12 @@ namespace Eboreum\Caster\Formatter;
 use Eboreum\Caster\Abstraction\Formatter\AbstractStringFormatter;
 use Eboreum\Caster\Contract\CasterInterface;
 
-/**
- * @inheritDoc
- */
+use function max;
+use function mb_strlen;
+use function mb_substr;
+
 class DefaultStringFormatter extends AbstractStringFormatter
 {
-    /**
-     * {@inheritDoc}
-     */
     public function format(CasterInterface $caster, string $string): ?string
     {
         $length = mb_strlen(
@@ -71,9 +69,6 @@ class DefaultStringFormatter extends AbstractStringFormatter
         return $return;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isHandling(string $string): bool
     {
         return true;

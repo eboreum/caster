@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Test\Unit\Eboreum\Caster\Formatter\Object_;
 
+use DateTimeImmutable;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Formatter\Object_\DateTimeInterfaceFormatter;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 class DateTimeInterfaceFormatterTest extends TestCase
 {
@@ -14,7 +16,7 @@ class DateTimeInterfaceFormatterTest extends TestCase
     {
         $caster = Caster::create();
         $dateTimeInterfaceFormatter = new DateTimeInterfaceFormatter();
-        $object = new \stdClass();
+        $object = new stdClass();
 
         $this->assertFalse($dateTimeInterfaceFormatter->isHandling($object));
         $this->assertNull($dateTimeInterfaceFormatter->format($caster, $object));
@@ -25,7 +27,7 @@ class DateTimeInterfaceFormatterTest extends TestCase
         $caster = Caster::create();
         $dateTimeInterfaceFormatter = new DateTimeInterfaceFormatter();
 
-        $object = new \DateTimeImmutable('2019-01-01T00:00:00+00:00');
+        $object = new DateTimeImmutable('2019-01-01T00:00:00+00:00');
 
         $this->assertTrue($dateTimeInterfaceFormatter->isHandling($object));
         $this->assertSame(

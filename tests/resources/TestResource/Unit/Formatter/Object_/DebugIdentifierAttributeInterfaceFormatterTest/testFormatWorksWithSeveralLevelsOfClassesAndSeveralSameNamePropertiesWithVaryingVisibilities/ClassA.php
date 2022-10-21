@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TestResource\Unit\Eboreum\Caster\Formatter\Object_\DebugIdentifierAttributeInterfaceFormatterTest\testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities;
+namespace TestResource\Unit\Eboreum\Caster\Formatter\Object_\DebugIdentifierAttributeInterfaceFormatterTest\testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities; // phpcs:ignore
 
 use Eboreum\Caster\Attribute\DebugIdentifier;
 
@@ -36,17 +36,20 @@ class ClassA extends ClassB
     protected string $protectedPrivatePrivate = 'a';
 
     #[DebugIdentifier]
-    private string $privatePrivatePrivate = 'a'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
+    // @phpstan-ignore-next-line Suppression code babdc1d2; see README.md
+    private string $privatePrivatePrivate = 'a';
 
     #[DebugIdentifier]
-    private static string $staticPrivatePrivatePrivate = 'a'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
+    // @phpstan-ignore-next-line Suppression code babdc1d2; see README.md
+    private static string $staticPrivatePrivatePrivate = 'a';
 
     #[DebugIdentifier]
-    private string $onlyInA = 'a'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
+    // @phpstan-ignore-next-line Suppression code babdc1d2; see README.md
+    private string $onlyInA = 'a';
 
-    public $publicDoNotIncludeMe;
+    public $publicDoNotIncludeMe; // phpcs:ignore
 
-    protected $protectedDoNotIncludeMe;
+    protected $protectedDoNotIncludeMe; // phpcs:ignore
 
-    protected $privateDoNotIncludeMe;
+    protected $privateDoNotIncludeMe; // phpcs:ignore
 }

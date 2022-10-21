@@ -8,10 +8,14 @@ use Eboreum\Caster\Attribute\DebugIdentifier;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\DataType\Integer\IntegerInterface;
 use Eboreum\Caster\Exception\RuntimeException;
+use ReflectionObject;
+use Throwable;
 
-/**
- * {@inheritDoc}
- */
+use function implode;
+use function is_int;
+use function sprintf;
+use function strval;
+
 abstract class AbstractInteger implements IntegerInterface
 {
     #[DebugIdentifier]
@@ -50,7 +54,7 @@ abstract class AbstractInteger implements IntegerInterface
             }
 
             $this->integer = $integer;
-        } catch (\Throwable $t) {
+        } catch (Throwable $t) {
             $argumentsAsStrings = [];
             $argumentsAsStrings[] = sprintf(
                 '$integer = %s',
@@ -59,47 +63,32 @@ abstract class AbstractInteger implements IntegerInterface
 
             throw new RuntimeException(sprintf(
                 'Failed to construct %s with arguments {%s}',
-                Caster::makeNormalizedClassName(new \ReflectionObject($this)),
+                Caster::makeNormalizedClassName(new ReflectionObject($this)),
                 implode(', ', $argumentsAsStrings),
             ), 0, $t);
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public static function getMaximumLimit(): ?int
     {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public static function getMinimumLimit(): ?int
     {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function jsonSerialize(): string
     {
         return strval($this->integer);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function toInteger(): int
     {
         return $this->integer;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isSame(IntegerInterface $integer): bool
     {
         return $this->toInteger() === $integer->toInteger();

@@ -8,7 +8,15 @@ use Eboreum\Caster\Caster;
 use Eboreum\Caster\CharacterEncoding;
 use Eboreum\Caster\Common\DataType\String_\Character;
 use Eboreum\Caster\Exception\RuntimeException;
+use Exception;
 use PHPUnit\Framework\TestCase;
+
+use function assert;
+use function implode;
+use function is_object;
+use function mb_internal_encoding;
+use function preg_quote;
+use function sprintf;
 
 class CharacterTest extends TestCase
 {
@@ -64,7 +72,7 @@ class CharacterTest extends TestCase
     }
 
     /**
-     * @dataProvider dataProvider_testConstructorThrowsExceptionWhenArgumentCharacterIsInvalid
+     * @dataProvider dataProviderTestConstructorThrowsExceptionWhenArgumentCharacterIsInvalid
      */
     public function testConstructorThrowsExceptionWhenArgumentCharacterIsInvalid(
         string $message,
@@ -75,7 +83,7 @@ class CharacterTest extends TestCase
     ): void {
         try {
             new Character($string, $characterEncoding);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $currentException = $e;
             $this->assertSame(RuntimeException::class, $currentException::class, $message);
             $this->assertMatchesRegularExpression(
@@ -132,7 +140,7 @@ class CharacterTest extends TestCase
     /**
      * @return array<int, array{0: string, 1: string, 2: string, 3: string, 4: CharacterEncoding|null}>
      */
-    public function dataProvider_testConstructorThrowsExceptionWhenArgumentCharacterIsInvalid(): array
+    public function dataProviderTestConstructorThrowsExceptionWhenArgumentCharacterIsInvalid(): array
     {
         return [
             [

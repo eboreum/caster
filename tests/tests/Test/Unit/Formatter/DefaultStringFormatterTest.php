@@ -9,10 +9,13 @@ use Eboreum\Caster\Common\DataType\Integer\UnsignedInteger;
 use Eboreum\Caster\Formatter\DefaultStringFormatter;
 use PHPUnit\Framework\TestCase;
 
+use function assert;
+use function is_string;
+
 class DefaultStringFormatterTest extends TestCase
 {
     /**
-     * @dataProvider dataProvier_testBasics
+     * @dataProvider dataProviderTestBasics
      */
     public function testBasics(
         string $message,
@@ -42,7 +45,7 @@ class DefaultStringFormatterTest extends TestCase
     /**
      * @return array<int, array{0: string, 1: string, 2: string, 3: Caster, 4: string}>
      */
-    public function dataProvier_testBasics(): array
+    public function dataProviderTestBasics(): array
     {
         return [
             [
@@ -56,7 +59,7 @@ class DefaultStringFormatterTest extends TestCase
     }
 
     /**
-     * @dataProvider dataProvider_testFormatWorksWithEllipsis
+     * @dataProvider dataProviderTestFormatWorksWithEllipsis
      */
     public function testFormatWorksCorrectlyWhenApplyingEllipsis(
         string $expected,
@@ -77,7 +80,7 @@ class DefaultStringFormatterTest extends TestCase
     /**
      * @return array<int, array{0: string, 1: UnsignedInteger, 2: string}>
      */
-    public function dataProvider_testFormatWorksWithEllipsis(): array
+    public function dataProviderTestFormatWorksWithEllipsis(): array
     {
         return [
             [

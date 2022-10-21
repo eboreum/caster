@@ -8,6 +8,23 @@ use Eboreum\Caster\Contract\Collection\ElementInterface;
 use Eboreum\Caster\Contract\ImmutableObjectInterface;
 use Eboreum\Caster\Exception\RuntimeException;
 use Exception;
+use ReflectionObject;
+use Throwable;
+
+use function array_map;
+use function assert;
+use function bin2hex;
+use function hash;
+use function implode;
+use function in_array;
+use function is_string;
+use function openssl_decrypt;
+use function openssl_encrypt;
+use function openssl_get_cipher_methods;
+use function random_bytes;
+use function spl_object_hash;
+use function sprintf;
+use function substr;
 
 /**
  * {@inheritDoc}
@@ -66,7 +83,7 @@ class EncryptedString implements ImmutableObjectInterface, ElementInterface
                             static function ($v) {
                                 return Caster::getInternalInstance()->cast($v);
                             },
-                            \openssl_get_cipher_methods(),
+                            openssl_get_cipher_methods(),
                         ),
                     ),
                     Caster::getInternalInstance()->castTyped($encryptionMethod),
@@ -79,8 +96,8 @@ class EncryptedString implements ImmutableObjectInterface, ElementInterface
 
             $this->salt = $saltVariation;
             $this->encryptionMethod = $encryptionMethodVariant;
-            $this->initializationVectorBase = self::generateRandomSalt() . \spl_object_hash($this);
-            $encryptedString = \openssl_encrypt(
+            $this->initializationVectorBase = self::generateRandomSalt() . spl_object_hash($this);
+            $encryptedString = openssl_encrypt(
                 $string,
                 $this->encryptionMethod,
                 $this->salt,
@@ -91,7 +108,7 @@ class EncryptedString implements ImmutableObjectInterface, ElementInterface
             assert(is_string($encryptedString)); // Make phpstan happy
 
             $this->encryptedString = $encryptedString;
-        } catch (\Throwable $t) {
+        } catch (Throwable $t) {
             $argumentSegments = [];
             $argumentSegments[] = '$string = ** HIDDEN **';
             $argumentSegments[] = '$salt = ** HIDDEN **';
@@ -113,12 +130,12 @@ class EncryptedString implements ImmutableObjectInterface, ElementInterface
      */
     public static function generateRandomSalt(): string
     {
-        return \bin2hex(\random_bytes(64));
+        return bin2hex(random_bytes(64));
     }
 
     public static function isEncryptionMethodValid(string $encryptionMethod): bool
     {
-        return in_array($encryptionMethod, \openssl_get_cipher_methods(), true);
+        return in_array($encryptionMethod, openssl_get_cipher_methods(), true);
     }
 
     /**
@@ -126,7 +143,7 @@ class EncryptedString implements ImmutableObjectInterface, ElementInterface
      */
     public function decrypt(): string
     {
-        $decrypted = \openssl_decrypt(
+        $decrypted = openssl_decrypt(
             $this->encryptedString,
             $this->encryptionMethod,
             $this->salt,
@@ -156,7 +173,7 @@ class EncryptedString implements ImmutableObjectInterface, ElementInterface
                             static function ($encryptionMethod) {
                                 return Caster::getInternalInstance()->cast($encryptionMethod);
                             },
-                            \openssl_get_cipher_methods()
+                            openssl_get_cipher_methods()
                         ),
                     ),
                     Caster::getInternalInstance()->castTyped($encryptionMethod),
@@ -169,8 +186,8 @@ class EncryptedString implements ImmutableObjectInterface, ElementInterface
 
             $clone = clone $this;
             $clone->encryptionMethod = $encryptionMethod;
-            $clone->initializationVectorBase = self::generateRandomSalt() . \spl_object_hash($clone);
-            $encryptedString = \openssl_encrypt(
+            $clone->initializationVectorBase = self::generateRandomSalt() . spl_object_hash($clone);
+            $encryptedString = openssl_encrypt(
                 $this->decrypt(),
                 $clone->encryptionMethod,
                 $clone->salt,
@@ -181,7 +198,7 @@ class EncryptedString implements ImmutableObjectInterface, ElementInterface
             assert(is_string($encryptedString)); // Make phpstan happy
 
             $clone->encryptedString = $encryptedString;
-        } catch (\Throwable $t) {
+        } catch (Throwable $t) {
             $argumentsAsStrings = [];
             $argumentsAsStrings[] = sprintf(
                 '$encryptionMethod = %s',
@@ -190,7 +207,7 @@ class EncryptedString implements ImmutableObjectInterface, ElementInterface
 
             throw new RuntimeException(sprintf(
                 'Failure in %s->%s(%s): %s',
-                Caster::makeNormalizedClassName(new \ReflectionObject($this)),
+                Caster::makeNormalizedClassName(new ReflectionObject($this)),
                 __FUNCTION__,
                 implode(', ', $argumentsAsStrings),
                 Caster::getInternalInstance()->castTyped($this),
@@ -207,6 +224,6 @@ class EncryptedString implements ImmutableObjectInterface, ElementInterface
 
     protected function getInitializationVector(): string
     {
-        return substr(\hash('sha256', $this->initializationVectorBase), 0, 16);
+        return substr(hash('sha256', $this->initializationVectorBase), 0, 16);
     }
 }

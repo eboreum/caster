@@ -9,10 +9,15 @@ use Eboreum\Caster\Common\DataType\Resource_;
 use Eboreum\Caster\Formatter\DefaultResourceFormatter;
 use PHPUnit\Framework\TestCase;
 
+use function assert;
+use function fopen;
+use function is_resource;
+use function is_string;
+
 class DefaultResourceFormatterTest extends TestCase
 {
     /**
-     * @dataProvider dataProvier_testBasics
+     * @dataProvider dataProviderTestBasics
      */
     public function testBasics(
         string $message,
@@ -42,7 +47,7 @@ class DefaultResourceFormatterTest extends TestCase
     /**
      * @return array<int, array{0: string, 1: string, 2: string, 3: Caster, 4: Resource_}>
      */
-    public function dataProvier_testBasics(): array
+    public function dataProviderTestBasics(): array
     {
         return [
             [
@@ -51,7 +56,7 @@ class DefaultResourceFormatterTest extends TestCase
                 '/^`stream` Resource id #\d+$/',
                 Caster::getInstance(),
                 (static function () {
-                    $resource = \fopen(__FILE__, 'r+');
+                    $resource = fopen(__FILE__, 'r+');
 
                     assert(is_resource($resource)); // Make phpstan happy
 

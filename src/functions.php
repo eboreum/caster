@@ -1,11 +1,24 @@
 <?php
-/**
- * Contains globally available functions.
- */
 
 declare(strict_types=1);
 
 namespace Eboreum\Caster\functions;
+
+use function array_merge;
+use function assert;
+use function basename;
+use function dirname;
+use function enum_exists;
+use function glob;
+use function is_array;
+use function is_object;
+
+use const GLOB_NOSORT;
+use const GLOB_ONLYDIR;
+
+/**
+ * Contains globally available functions.
+ */
 
 /**
  * Returns an array of file paths.
@@ -16,6 +29,7 @@ namespace Eboreum\Caster\functions;
  *
  * @param string $pattern A glob pattern, as it is used in the core PHP function `glob`.
  * @param int $flags The flags parameter as it is used in the core PHP function `glob`.
+ *
  * @return array<string>
  */
 function rglob(string $pattern, int $flags = 0): array

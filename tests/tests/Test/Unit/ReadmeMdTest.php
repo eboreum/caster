@@ -6,6 +6,23 @@ namespace Test\Unit\Eboreum\Caster;
 
 use PHPUnit\Framework\TestCase;
 
+use function array_map;
+use function array_shift;
+use function assert;
+use function dirname;
+use function file_get_contents;
+use function implode;
+use function is_array;
+use function is_file;
+use function is_string;
+use function ob_end_clean;
+use function ob_get_contents;
+use function ob_start;
+use function preg_match;
+use function preg_quote;
+use function preg_split;
+use function sprintf;
+
 class ReadmeMdTest extends TestCase
 {
     private string $contents;

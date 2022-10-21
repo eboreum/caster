@@ -7,7 +7,15 @@ namespace Test\Unit\Eboreum\Caster\Formatter\Object_;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Formatter\Object_\PublicVariableFormatter;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 use TestResource\Unit\Eboreum\Caster\Formatter\Object_\PublicVariableFormatterTest\testFormatWorksWhenObjectHasMultipleSameNamePublicVariables; // phpcs:ignore
+
+use function assert;
+use function basename;
+use function implode;
+use function is_string;
+use function preg_quote;
+use function sprintf;
 
 class PublicVariableFormatterTest extends TestCase
 {
@@ -15,7 +23,7 @@ class PublicVariableFormatterTest extends TestCase
     {
         $caster = Caster::create();
         $publicVariableFormatter = new PublicVariableFormatter();
-        $object = new \stdClass();
+        $object = new stdClass();
 
         $this->assertFalse($publicVariableFormatter->isHandling($object));
         $this->assertNull($publicVariableFormatter->format($caster, $object));
@@ -25,7 +33,7 @@ class PublicVariableFormatterTest extends TestCase
     {
         $caster = Caster::create();
         $publicVariableFormatter = new PublicVariableFormatter();
-        $object = new \stdClass();
+        $object = new stdClass();
         $object->foo = 'bar';
 
         $this->assertTrue($publicVariableFormatter->isHandling($object));
@@ -40,7 +48,7 @@ class PublicVariableFormatterTest extends TestCase
         $caster = Caster::create();
         $publicVariableFormatter = new PublicVariableFormatter();
 
-        $object = new \stdClass();
+        $object = new stdClass();
         $object->foo = 1;
         $object->bar = null;
         $object->baz = 'hmm';

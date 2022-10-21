@@ -11,9 +11,6 @@ namespace Eboreum\Caster\Common\DataType\Integer;
  */
 class NegativeInteger extends AbstractInteger
 {
-    /**
-     * {@inheritDoc}
-     */
     public static function getMaximumLimit(): int
     {
         return -1;

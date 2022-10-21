@@ -4,9 +4,17 @@ declare(strict_types=1);
 
 namespace Eboreum\Caster\Formatter\Object_;
 
+use Closure;
 use Eboreum\Caster\Abstraction\Formatter\AbstractObjectFormatter;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\CasterInterface;
+use ReflectionFunction;
+use ReflectionObject;
+
+use function assert;
+use function implode;
+use function preg_match;
+use function sprintf;
 
 /**
  * @inheritDoc
@@ -15,20 +23,17 @@ use Eboreum\Caster\Contract\CasterInterface;
  */
 class ClosureFormatter extends AbstractObjectFormatter
 {
-    /**
-     * {@inheritDoc}
-     */
     public function format(CasterInterface $caster, object $object): ?string
     {
         if (false === $this->isHandling($object)) {
             return null; // Pass on
         }
 
-        assert($object instanceof \Closure); // Make phpstan happy
+        assert($object instanceof Closure); // Make phpstan happy
 
         $arguments = [];
 
-        $reflectionFunction = new \ReflectionFunction($object);
+        $reflectionFunction = new ReflectionFunction($object);
 
         foreach ($reflectionFunction->getParameters() as $reflectionParameter) {
             $argument = sprintf(
@@ -80,7 +85,7 @@ class ClosureFormatter extends AbstractObjectFormatter
 
         $return = sprintf(
             '%s(%s)',
-            Caster::makeNormalizedClassName(new \ReflectionObject($object)),
+            Caster::makeNormalizedClassName(new ReflectionObject($object)),
             implode(', ', $arguments)
         );
 
@@ -94,11 +99,8 @@ class ClosureFormatter extends AbstractObjectFormatter
         return $return;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isHandling(object $object): bool
     {
-        return $object instanceof \Closure;
+        return $object instanceof Closure;
     }
 }

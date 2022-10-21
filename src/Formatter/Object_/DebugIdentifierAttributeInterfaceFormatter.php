@@ -9,6 +9,13 @@ use Eboreum\Caster\Attribute\DebugIdentifier;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\Contract\DebugIdentifierAttributeInterface;
+use ReflectionObject;
+use ReflectionProperty;
+
+use function array_key_exists;
+use function count;
+use function implode;
+use function sprintf;
 
 /**
  * @inheritDoc
@@ -18,8 +25,8 @@ use Eboreum\Caster\Contract\DebugIdentifierAttributeInterface;
 class DebugIdentifierAttributeInterfaceFormatter extends AbstractObjectFormatter
 {
     public static function doReflectionPropertiesHaveSameVisibilityWhenInsideA(
-        \ReflectionProperty $a,
-        \ReflectionProperty $b,
+        ReflectionProperty $a,
+        ReflectionProperty $b,
     ): bool {
         return (
             $a->isPublic() && $b->isPublic()
@@ -28,9 +35,6 @@ class DebugIdentifierAttributeInterfaceFormatter extends AbstractObjectFormatter
         );
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function format(CasterInterface $caster, object $object): ?string
     {
         if (false === $this->isHandling($object)) {
@@ -38,7 +42,7 @@ class DebugIdentifierAttributeInterfaceFormatter extends AbstractObjectFormatter
         }
 
         $caster = $caster->withIsPrependingType(true);
-        $reflectionObject = new \ReflectionObject($object);
+        $reflectionObject = new ReflectionObject($object);
 
         $map = $this->getPropertyNameToReflectionProperties($reflectionObject);
         $segments = [];
@@ -93,9 +97,9 @@ class DebugIdentifierAttributeInterfaceFormatter extends AbstractObjectFormatter
     }
 
     /**
-     * @return array<string, array<int, \ReflectionProperty>>
+     * @return array<string, array<int, ReflectionProperty>>
      */
-    public function getPropertyNameToReflectionProperties(\ReflectionObject $reflectionObject): array
+    public function getPropertyNameToReflectionProperties(ReflectionObject $reflectionObject): array
     {
         /*
          * Visibility hierachy goes: private > protected > public. Left to right, with the left side having more
@@ -178,9 +182,6 @@ class DebugIdentifierAttributeInterfaceFormatter extends AbstractObjectFormatter
         return $propertyNameToReflectionProperties;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isHandling(object $object): bool
     {
         return $object instanceof DebugIdentifierAttributeInterface;

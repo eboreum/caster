@@ -8,6 +8,13 @@ use Eboreum\Caster\Caster;
 use Eboreum\Caster\Formatter\Object_\DebugInfoFormatter;
 use PHPUnit\Framework\TestCase;
 
+use function assert;
+use function basename;
+use function implode;
+use function is_string;
+use function preg_quote;
+use function sprintf;
+
 class DebugInfoFormatterTest extends TestCase
 {
     public function testFormatReturnsNullWhenObjectIsNotQualified(): void

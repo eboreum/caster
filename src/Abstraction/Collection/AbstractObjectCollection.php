@@ -4,11 +4,19 @@ declare(strict_types=1);
 
 namespace Eboreum\Caster\Abstraction\Collection;
 
+use ArrayIterator;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\Contract\Collection\ElementInterface;
 use Eboreum\Caster\Contract\Collection\ObjectCollectionInterface;
 use Eboreum\Caster\Exception\RuntimeException;
+use ReflectionObject;
+use Throwable;
+
+use function count;
+use function implode;
+use function is_object;
+use function sprintf;
 
 /**
  * {@inheritDoc}
@@ -28,6 +36,7 @@ abstract class AbstractObjectCollection implements ObjectCollectionInterface
      * {@inheritDoc}
      *
      * @param array<T> $elements
+     *
      * @throws RuntimeException
      */
     public function __construct(array $elements = [])
@@ -56,7 +65,7 @@ abstract class AbstractObjectCollection implements ObjectCollectionInterface
             }
 
             $this->elements = $elements;
-        } catch (\Throwable $t) {
+        } catch (Throwable $t) {
             $argumentsAsStrings = [];
             $argumentsAsStrings[] = sprintf(
                 '$elements = ...%s',
@@ -65,16 +74,13 @@ abstract class AbstractObjectCollection implements ObjectCollectionInterface
 
             throw new RuntimeException(sprintf(
                 'Failed to construct %s with arguments {%s}',
-                Caster::makeNormalizedClassName(new \ReflectionObject($this)),
+                Caster::makeNormalizedClassName(new ReflectionObject($this)),
                 implode(', ', $argumentsAsStrings),
             ), 0, $t);
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public static function isElementAccepted($element): bool
+    public static function isElementAccepted(mixed $element): bool
     {
         if (is_object($element)) {
             $className = static::getHandledClassName();
@@ -85,9 +91,6 @@ abstract class AbstractObjectCollection implements ObjectCollectionInterface
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function count(): int
     {
         return count($this->elements);
@@ -103,14 +106,11 @@ abstract class AbstractObjectCollection implements ObjectCollectionInterface
         return $this->elements;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function toTextualIdentifier(CasterInterface $caster): string
     {
         return sprintf(
             '%s {$elements = %s}',
-            Caster::makeNormalizedClassName(new \ReflectionObject($this)),
+            Caster::makeNormalizedClassName(new ReflectionObject($this)),
             Caster::getInternalInstance()->castTyped($this->toArray()),
         );
     }
@@ -118,16 +118,13 @@ abstract class AbstractObjectCollection implements ObjectCollectionInterface
     /**
      * {@inheritDoc}
      *
-     * @return \ArrayIterator<int|string, T>
+     * @return ArrayIterator<(int|string), T>
      */
-    public function getIterator(): \ArrayIterator
+    public function getIterator(): ArrayIterator
     {
-        return new \ArrayIterator($this->elements);
+        return new ArrayIterator($this->elements);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isEmpty(): bool
     {
         return !$this->elements;

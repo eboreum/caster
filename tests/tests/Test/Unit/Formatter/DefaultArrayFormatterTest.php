@@ -10,11 +10,16 @@ use Eboreum\Caster\Common\DataType\Integer\UnsignedInteger;
 use Eboreum\Caster\Formatter\DefaultArrayFormatter;
 use PHPUnit\Framework\TestCase;
 
+use function assert;
+use function implode;
+use function is_string;
+
 class DefaultArrayFormatterTest extends TestCase
 {
     /**
-     * @dataProvider dataProvier_testBasics
      * @param array<string|array<mixed>> $array
+     *
+     * @dataProvider dataProviderTestBasics
      */
     public function testBasics(
         string $message,
@@ -44,7 +49,7 @@ class DefaultArrayFormatterTest extends TestCase
     /**
      * @return array<int, array{string, string, string, Caster, array<mixed>}>
      */
-    public function dataProvier_testBasics(): array
+    public function dataProviderTestBasics(): array
     {
         return [
             [

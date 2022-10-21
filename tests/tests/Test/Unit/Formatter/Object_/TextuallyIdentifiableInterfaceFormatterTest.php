@@ -9,6 +9,14 @@ use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\Contract\TextuallyIdentifiableInterface;
 use Eboreum\Caster\Formatter\Object_\TextuallyIdentifiableInterfaceFormatter;
 use PHPUnit\Framework\TestCase;
+use stdClass;
+
+use function assert;
+use function basename;
+use function implode;
+use function is_string;
+use function preg_quote;
+use function sprintf;
 
 class TextuallyIdentifiableInterfaceFormatterTest extends TestCase
 {
@@ -16,7 +24,7 @@ class TextuallyIdentifiableInterfaceFormatterTest extends TestCase
     {
         $caster = Caster::create();
         $textuallyIdentifiableInterfaceFormatter = new TextuallyIdentifiableInterfaceFormatter();
-        $object = new \stdClass();
+        $object = new stdClass();
 
         $this->assertFalse($textuallyIdentifiableInterfaceFormatter->isHandling($object));
         $this->assertNull($textuallyIdentifiableInterfaceFormatter->format($caster, $object));

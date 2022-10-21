@@ -6,12 +6,19 @@ namespace Test\Unit\Eboreum\Caster;
 
 use Eboreum\Caster\EncryptedString;
 use Eboreum\Caster\Exception\RuntimeException;
+use Exception;
 use PHPUnit\Framework\TestCase;
+use ReflectionObject;
+
+use function assert;
+use function implode;
+use function is_object;
+use function sprintf;
 
 class EncryptedStringTest extends TestCase
 {
     /**
-     * @dataProvider dataProvider_testBasics
+     * @dataProvider dataProviderTestBasics
      */
     public function testBasics(
         string $expectedEncryptionMethod,
@@ -24,7 +31,7 @@ class EncryptedStringTest extends TestCase
         $this->assertSame($value, $encryptedString->decrypt());
         $this->assertSame($expectedEncryptionMethod, $encryptedString->getEncryptionMethod());
 
-        $reflectionObject = new \ReflectionObject($encryptedString);
+        $reflectionObject = new ReflectionObject($encryptedString);
         $reflectionProperty = $reflectionObject->getProperty('encryptedString');
         $reflectionProperty->setAccessible(true);
         $encryptedString = $reflectionProperty->getValue($encryptedString);
@@ -34,7 +41,7 @@ class EncryptedStringTest extends TestCase
     /**
      * @return array<int, array{0: string, 1: string, 2: string|null, 3: string|null}>
      */
-    public function dataProvider_testBasics(): array
+    public function dataProviderTestBasics(): array
     {
         return [
             [
@@ -62,7 +69,7 @@ class EncryptedStringTest extends TestCase
     {
         try {
             new EncryptedString('foo', '');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $currentException = $e;
             $this->assertSame(RuntimeException::class, $currentException::class);
             $this->assertSame(
@@ -101,7 +108,7 @@ class EncryptedStringTest extends TestCase
     {
         try {
             new EncryptedString('foo', 'bar', 'fc1a05ff-c80c-45bd-a1a4-e1d8105881bc');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $currentException = $e;
             $this->assertSame(RuntimeException::class, $currentException::class);
             $this->assertSame(
@@ -164,7 +171,7 @@ class EncryptedStringTest extends TestCase
 
         try {
             $encryptedString->withEncryptionMethod('fc75493b-e598-4417-a255-c054268c4449');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $currentException = $e;
             $this->assertSame(RuntimeException::class, $currentException::class);
             $this->assertSame(

@@ -6,10 +6,19 @@ namespace Eboreum\Caster;
 
 use Eboreum\Caster\Contract\CharacterEncodingInterface;
 use Eboreum\Caster\Exception\RuntimeException;
+use ReflectionObject;
+use Throwable;
 
-/**
- * @inheritDoc
- */
+use function addcslashes;
+use function array_map;
+use function escapeshellarg;
+use function implode;
+use function in_array;
+use function mb_internal_encoding;
+use function mb_list_encodings;
+use function mb_strlen;
+use function sprintf;
+
 class CharacterEncoding implements CharacterEncodingInterface
 {
     private static ?CharacterEncoding $instance = null;
@@ -48,7 +57,7 @@ class CharacterEncoding implements CharacterEncodingInterface
             }
 
             $this->name = $name;
-        } catch (\Throwable $t) {
+        } catch (Throwable $t) {
             $argumentsAsStrings = [];
             $argumentsAsStrings[] = sprintf(
                 '$name = %s',
@@ -57,15 +66,12 @@ class CharacterEncoding implements CharacterEncodingInterface
 
             throw new RuntimeException(sprintf(
                 'Failed to construct %s with arguments {%s}',
-                Caster::makeNormalizedClassName(new \ReflectionObject($this)),
+                Caster::makeNormalizedClassName(new ReflectionObject($this)),
                 implode(', ', $argumentsAsStrings),
             ), 0, $t);
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public static function getInstance(): CharacterEncoding
     {
         if (null === self::$instance) {
@@ -80,9 +86,6 @@ class CharacterEncoding implements CharacterEncodingInterface
         return $this->name;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public static function isCharacterEncodingValid(string $name): bool
     {
         return in_array(
@@ -97,9 +100,6 @@ class CharacterEncoding implements CharacterEncodingInterface
         return $this->name;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isSame(CharacterEncodingInterface $characterEncoding): bool
     {
         return $this->getName() === $characterEncoding->getName();

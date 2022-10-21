@@ -17,9 +17,6 @@ use Eboreum\Caster\Contract\Formatter\StringFormatterInterface;
  */
 class StringFormatterCollection extends AbstractObjectCollection implements FormatterCollectionInterface
 {
-    /**
-     * {@inheritDoc}
-     */
     public static function getHandledClassName(): string
     {
         return StringFormatterInterface::class;

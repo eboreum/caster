@@ -4,9 +4,15 @@ declare(strict_types=1);
 
 namespace Test\Unit\Eboreum\Caster\Formatter\Object_;
 
+use Directory;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Formatter\Object_\DirectoryFormatter;
 use PHPUnit\Framework\TestCase;
+use stdClass;
+
+use function assert;
+use function dir;
+use function is_string;
 
 class DirectoryFormatterTest extends TestCase
 {
@@ -14,7 +20,7 @@ class DirectoryFormatterTest extends TestCase
     {
         $caster = Caster::create();
         $directoryFormatter = new DirectoryFormatter();
-        $object = new \stdClass();
+        $object = new stdClass();
 
         $this->assertFalse($directoryFormatter->isHandling($object));
         $this->assertNull($directoryFormatter->format($caster, $object));
@@ -27,7 +33,7 @@ class DirectoryFormatterTest extends TestCase
 
         $object = dir(__DIR__);
 
-        assert($object instanceof \Directory); // Make phpstan happy
+        assert($object instanceof Directory); // Make phpstan happy
 
         $this->assertTrue($directoryFormatter->isHandling($object));
         $formatted = $directoryFormatter->format($caster, $object);

@@ -12,6 +12,12 @@ use Eboreum\Caster\Contract\CharacterEncodingInterface;
 use Eboreum\Caster\Contract\CharacterInterface;
 use Eboreum\Caster\Contract\DebugIdentifierAttributeInterface;
 use Eboreum\Caster\Exception\RuntimeException;
+use ReflectionObject;
+use Throwable;
+
+use function implode;
+use function mb_strlen;
+use function sprintf;
 
 /**
  * @inheritDoc
@@ -51,7 +57,7 @@ class Character implements CharacterInterface, DebugIdentifierAttributeInterface
 
             $this->character = $character;
             $this->characterEncoding = $characterEncodingVariant;
-        } catch (\Throwable $t) {
+        } catch (Throwable $t) {
             $argumentsAsStrings = [];
             $argumentsAsStrings[] = sprintf(
                 '$character = %s',
@@ -64,7 +70,7 @@ class Character implements CharacterInterface, DebugIdentifierAttributeInterface
 
             throw new RuntimeException(sprintf(
                 'Failed to construct %s with arguments {%s}',
-                Caster::makeNormalizedClassName(new \ReflectionObject($this)),
+                Caster::makeNormalizedClassName(new ReflectionObject($this)),
                 implode(', ', $argumentsAsStrings),
             ), 0, $t);
         }
@@ -75,14 +81,11 @@ class Character implements CharacterInterface, DebugIdentifierAttributeInterface
         return $this->character;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function toTextualIdentifier(CasterInterface $caster): string
     {
         return sprintf(
             '%s {$character = %s, $characterEncoding = %s}',
-            Caster::makeNormalizedClassName(new \ReflectionObject($this)),
+            Caster::makeNormalizedClassName(new ReflectionObject($this)),
             $caster->castTyped($this->character),
             $caster->castTyped($this->characterEncoding),
         );

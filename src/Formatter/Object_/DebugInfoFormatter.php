@@ -7,6 +7,11 @@ namespace Eboreum\Caster\Formatter\Object_;
 use Eboreum\Caster\Abstraction\Formatter\AbstractObjectFormatter;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\CasterInterface;
+use ReflectionObject;
+
+use function assert;
+use function method_exists;
+use function sprintf;
 
 /**
  * @inheritDoc
@@ -17,9 +22,6 @@ use Eboreum\Caster\Contract\CasterInterface;
  */
 class DebugInfoFormatter extends AbstractObjectFormatter
 {
-    /**
-     * {@inheritDoc}
-     */
     public function format(CasterInterface $caster, object $object): ?string
     {
         if (false === $this->isHandling($object)) {
@@ -30,14 +32,11 @@ class DebugInfoFormatter extends AbstractObjectFormatter
 
         return sprintf(
             '%s (%s)',
-            Caster::makeNormalizedClassName(new \ReflectionObject($object)),
+            Caster::makeNormalizedClassName(new ReflectionObject($object)),
             $caster->cast($object->__debugInfo()),
         );
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isHandling(object $object): bool
     {
         return method_exists($object, '__debugInfo');

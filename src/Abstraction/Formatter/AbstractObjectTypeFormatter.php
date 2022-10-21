@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Eboreum\Caster\Abstraction\Formatter;
 
-/**
- * {@inheritDoc}
- */
 abstract class AbstractObjectTypeFormatter extends AbstractDimensionalFormatter
 {
     /**

@@ -7,13 +7,14 @@ namespace Eboreum\Caster\Formatter;
 use Eboreum\Caster\Abstraction\Formatter\AbstractArrayFormatter;
 use Eboreum\Caster\Contract\CasterInterface;
 
-/**
- * @inheritDoc
- */
+use function count;
+use function implode;
+use function sprintf;
+
 class DefaultArrayFormatter extends AbstractArrayFormatter
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function format(CasterInterface $caster, array $array): ?string
     {
@@ -66,7 +67,7 @@ class DefaultArrayFormatter extends AbstractArrayFormatter
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function isHandling(array $array): bool
     {

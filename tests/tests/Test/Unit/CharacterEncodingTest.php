@@ -6,7 +6,13 @@ namespace Test\Unit\Eboreum\Caster;
 
 use Eboreum\Caster\CharacterEncoding;
 use Eboreum\Caster\Exception\RuntimeException;
+use Exception;
 use PHPUnit\Framework\TestCase;
+
+use function assert;
+use function implode;
+use function is_object;
+use function mb_internal_encoding;
 
 class CharacterEncodingTest extends TestCase
 {
@@ -21,7 +27,7 @@ class CharacterEncodingTest extends TestCase
     {
         try {
             new CharacterEncoding('5ffaf0ea-7520-4a09-b188-2a542e04d0f3');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $currentException = $e;
             $this->assertSame(RuntimeException::class, $currentException::class);
             $this->assertSame(

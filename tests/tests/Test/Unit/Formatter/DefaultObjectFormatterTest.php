@@ -4,14 +4,19 @@ declare(strict_types=1);
 
 namespace Test\Unit\Eboreum\Caster\Formatter;
 
+use DateTimeImmutable;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Formatter\DefaultObjectFormatter;
 use PHPUnit\Framework\TestCase;
+use stdClass;
+
+use function assert;
+use function is_string;
 
 class DefaultObjectFormatterTest extends TestCase
 {
     /**
-     * @dataProvider dataProvier_testBasics
+     * @dataProvider dataProviderTestBasics
      */
     public function testBasics(
         string $message,
@@ -41,9 +46,9 @@ class DefaultObjectFormatterTest extends TestCase
     }
 
     /**
-     * @return array<int, array{0: string, 1: string, 2: string, 3: Caster, 4: \stdClass}>
+     * @return array<int, array{0: string, 1: string, 2: string, 3: Caster, 4: stdClass}>
      */
-    public function dataProvier_testBasics(): array
+    public function dataProviderTestBasics(): array
     {
         return [
             [
@@ -51,7 +56,7 @@ class DefaultObjectFormatterTest extends TestCase
                 '/^\\\\stdClass$/',
                 '/^\\\\stdClass \([0-9a-f]+\)$/',
                 Caster::getInstance(),
-                new \stdClass(),
+                new stdClass(),
             ],
         ];
     }
@@ -59,7 +64,7 @@ class DefaultObjectFormatterTest extends TestCase
     public function testWithIsAppendingSplObjectHashWorks(): void
     {
         $caster = Caster::getInstance();
-        $object = new \DateTimeImmutable();
+        $object = new DateTimeImmutable();
 
         $defaultObjectFormatterA = new DefaultObjectFormatter();
         $defaultObjectFormatterB = $defaultObjectFormatterA->withIsAppendingSplObjectHash(false);

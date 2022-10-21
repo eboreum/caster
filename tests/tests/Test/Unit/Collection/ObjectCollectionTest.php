@@ -4,23 +4,46 @@ declare(strict_types=1);
 
 namespace Test\Unit\Eboreum\Caster\Collection;
 
+use ArrayIterator;
+use DateTimeImmutable;
+use Directory;
 use Eboreum\Caster\Abstraction\Collection\AbstractObjectCollection;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\Collection\ElementInterface;
 use Eboreum\Caster\Contract\Collection\ObjectCollectionInterface;
 use Eboreum\Caster\Exception\RuntimeException;
+use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use stdClass;
 
+use function assert;
+use function basename;
+use function class_exists;
+use function count;
+use function dir;
+use function dirname;
 use function Eboreum\Caster\functions\rglob;
+use function implode;
+use function interface_exists;
+use function is_string;
+use function is_subclass_of;
+use function mb_strlen;
+use function mb_substr;
+use function preg_quote;
+use function preg_replace;
+use function sprintf;
+use function str_replace;
 
 class ObjectCollectionTest extends TestCase
 {
     /**
-     * @dataProvider genericDataProvider_getAllObjectCollectionClasses
-     * @param \ReflectionClass<ObjectCollectionInterface<ElementInterface>> $reflectionClassCollection
+     * @param ReflectionClass<ObjectCollectionInterface<ElementInterface>> $reflectionClassCollection
+     *
+     * @dataProvider genericDataProviderGetAllObjectCollectionClasses
      */
-    public function testBasics(string $message, \ReflectionClass $reflectionClassCollection): void
+    public function testBasics(string $message, ReflectionClass $reflectionClassCollection): void
     {
         $handledClassNameCollection = $reflectionClassCollection->getName();
 
@@ -29,7 +52,7 @@ class ObjectCollectionTest extends TestCase
         assert(is_string($handledClassName)); // Make phpstan happy
         assert(class_exists($handledClassName) || interface_exists($handledClassName)); // Make phpstan happy
 
-        $reflectionClassHandledClass = new \ReflectionClass($handledClassName);
+        $reflectionClassHandledClass = new ReflectionClass($handledClassName);
 
         $collectionA = new $handledClassNameCollection();
 
@@ -75,20 +98,20 @@ class ObjectCollectionTest extends TestCase
         $this->assertSame($elements[0], $arrayIterator->current());
 
         $this->assertTrue($handledClassNameCollection::isElementAccepted($elements[0]), $message);
-        $this->assertFalse($handledClassNameCollection::isElementAccepted(new \stdClass()), $message);
+        $this->assertFalse($handledClassNameCollection::isElementAccepted(new stdClass()), $message);
         $this->assertFalse($handledClassNameCollection::isElementAccepted(null), $message);
     }
 
     public function testConstructorThrowsExceptionWhenArgumentElementsContainsInvalidElements(): void
     {
         $elements = [
-            new class extends \stdClass implements ElementInterface
+            new class extends stdClass implements ElementInterface
             {
             },
-            new class extends \DateTimeImmutable implements ElementInterface
+            new class extends DateTimeImmutable implements ElementInterface
             {
             },
-            new class extends \stdClass implements ElementInterface
+            new class extends stdClass implements ElementInterface
             {
             },
         ];
@@ -96,23 +119,17 @@ class ObjectCollectionTest extends TestCase
         try {
             new class ($elements) extends AbstractObjectCollection
             {
-                /**
-                 * {@inheritDoc}
-                 */
-                public function getIterator(): \ArrayIterator
+                public function getIterator(): ArrayIterator
                 {
-                    return new \ArrayIterator($this->elements);
+                    return new ArrayIterator($this->elements);
                 }
 
-                /**
-                 * {@inheritDoc}
-                 */
                 public static function getHandledClassName(): string
                 {
                     return 'stdClass';
                 }
             };
-        } catch (\Exception $e) { // @phpstan-ignore-line Suppression code 136348fe; see README.md
+        } catch (Exception $e) { // @phpstan-ignore-line Suppression code 136348fe; see README.md
             $currentException = $e;
             $this->assertSame(RuntimeException::class, $currentException::class);
             $this->assertMatchesRegularExpression(
@@ -171,27 +188,21 @@ class ObjectCollectionTest extends TestCase
     public function testToArrayWorks(): void
     {
         $elements = [
-            new class extends \stdClass implements ElementInterface
+            new class extends stdClass implements ElementInterface
             {
             },
         ];
 
         $collection = new class ($elements) extends AbstractObjectCollection
         {
-            /**
-             * {@inheritDoc}
-             */
             public static function getHandledClassName(): string
             {
                 return 'stdClass';
             }
 
-            /**
-             * {@inheritDoc}
-             */
-            public function getIterator(): \ArrayIterator
+            public function getIterator(): ArrayIterator
             {
-                return new \ArrayIterator($this->elements);
+                return new ArrayIterator($this->elements);
             }
         };
 
@@ -199,10 +210,11 @@ class ObjectCollectionTest extends TestCase
     }
 
     /**
+     * @return array<array{string, ReflectionClass<ObjectCollectionInterface<ElementInterface>>}>
+     *
      * @throws \RuntimeException
-     * @return array<array{string, \ReflectionClass<ObjectCollectionInterface<ElementInterface>>}>
      */
-    public function genericDataProvider_getAllObjectCollectionClasses(): array
+    public function genericDataProviderGetAllObjectCollectionClasses(): array
     {
         $cases = [];
 
@@ -211,7 +223,7 @@ class ObjectCollectionTest extends TestCase
             dirname(TEST_ROOT_PATH),
         ));
 
-        assert($srcDirectory instanceof \Directory); // Make phpstan happy
+        assert($srcDirectory instanceof Directory); // Make phpstan happy
 
         $pattern = sprintf(
             '%s/Collection/*.php',
@@ -251,8 +263,8 @@ class ObjectCollectionTest extends TestCase
             }
 
             if (is_subclass_of($className, ObjectCollectionInterface::class, true)) {
-                /** @var \ReflectionClass<ObjectCollectionInterface<ElementInterface>> $reflectionClass */
-                $reflectionClass = new \ReflectionClass($className);
+                /** @var ReflectionClass<ObjectCollectionInterface<ElementInterface>> $reflectionClass */
+                $reflectionClass = new ReflectionClass($className);
 
                 $cases[] = [
                     'Class: \\' . $className,
@@ -267,9 +279,9 @@ class ObjectCollectionTest extends TestCase
     }
 
     /**
-     * @param \ReflectionClass<object> $reflectionClassHandledClass
+     * @param ReflectionClass<object> $reflectionClassHandledClass
      */
-    private function mockHandledClass(\ReflectionClass $reflectionClassHandledClass): MockObject
+    private function mockHandledClass(ReflectionClass $reflectionClassHandledClass): MockObject
     {
         return $this
             ->getMockBuilder($reflectionClassHandledClass->getName())

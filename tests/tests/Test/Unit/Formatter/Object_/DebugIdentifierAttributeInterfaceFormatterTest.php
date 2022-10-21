@@ -9,8 +9,18 @@ use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\DebugIdentifierAttributeInterface;
 use Eboreum\Caster\Formatter\Object_\DebugIdentifierAttributeInterfaceFormatter;
 use PHPUnit\Framework\TestCase;
+use ReflectionObject;
+use stdClass;
 use TestResource\Unit\Eboreum\Caster\Formatter\Object_\DebugIdentifierAttributeInterfaceFormatterTest\testFormatWorksWithAOjectWithAParentButWithNoConflictingProperties; // phpcs:ignore
 use TestResource\Unit\Eboreum\Caster\Formatter\Object_\DebugIdentifierAttributeInterfaceFormatterTest\testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities; // phpcs:ignore
+
+use function array_keys;
+use function assert;
+use function basename;
+use function implode;
+use function is_string;
+use function preg_quote;
+use function sprintf;
 
 class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
 {
@@ -18,7 +28,7 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
     {
         $caster = Caster::create();
         $debugIdentifierAttributeInterfaceFormatter = new DebugIdentifierAttributeInterfaceFormatter();
-        $object = new \stdClass();
+        $object = new stdClass();
 
         $this->assertFalse($debugIdentifierAttributeInterfaceFormatter->isHandling($object));
         $this->assertNull($debugIdentifierAttributeInterfaceFormatter->format($caster, $object));
@@ -72,7 +82,7 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
         $object = new $className();
 
         $propertyNameToReflectionProperties = $debugIdentifierAttributeInterfaceFormatter
-            ->getPropertyNameToReflectionProperties(new \ReflectionObject($object));
+            ->getPropertyNameToReflectionProperties(new ReflectionObject($object));
         $propertyNames = array_keys($propertyNameToReflectionProperties);
 
         $this->assertTrue($debugIdentifierAttributeInterfaceFormatter->isHandling($object));
@@ -128,7 +138,7 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
         $object = new $className();
 
         $propertyNameToReflectionProperties = $debugIdentifierAttributeInterfaceFormatter
-            ->getPropertyNameToReflectionProperties(new \ReflectionObject($object));
+            ->getPropertyNameToReflectionProperties(new ReflectionObject($object));
         $propertyNames = array_keys($propertyNameToReflectionProperties);
 
         $this->assertTrue($debugIdentifierAttributeInterfaceFormatter->isHandling($object));

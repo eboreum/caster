@@ -6,13 +6,14 @@ namespace Test\Unit\Eboreum\Caster\Caster;
 
 use Eboreum\Caster\Caster\Context;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 class ContextTest extends TestCase
 {
     public function testBasics(): void
     {
         $contextA = new Context();
-        $object = new \stdClass();
+        $object = new stdClass();
 
         $this->assertCount(0, $contextA);
         $this->assertTrue($contextA->isEmpty());
@@ -28,7 +29,7 @@ class ContextTest extends TestCase
     public function testWithAddedVisitedObjectWorks(): void
     {
         $contextA = new Context();
-        $object = new \stdClass();
+        $object = new stdClass();
 
         $this->assertFalse($contextA->hasVisitedObject($object));
 

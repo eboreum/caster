@@ -6,12 +6,22 @@ namespace Test\Unit\Eboreum\Caster\Common\DataType\Integer;
 
 use Eboreum\Caster\Common\DataType\Integer\NegativeInteger;
 use Eboreum\Caster\Exception\RuntimeException;
+use Exception;
 use PHPUnit\Framework\TestCase;
+
+use function assert;
+use function implode;
+use function is_object;
+use function json_encode;
+use function preg_quote;
+use function sprintf;
+
+use const PHP_INT_MIN;
 
 class NegativeIntegerTest extends TestCase
 {
     /**
-     * @dataProvider dataProvider_testBasics
+     * @dataProvider dataProviderTestBasics
      */
     public function testBasics(int $integer): void
     {
@@ -33,7 +43,7 @@ class NegativeIntegerTest extends TestCase
     /**
      * @return array<int, array{0: int}>
      */
-    public function dataProvider_testBasics(): array
+    public function dataProviderTestBasics(): array
     {
         return [
             [
@@ -42,9 +52,7 @@ class NegativeIntegerTest extends TestCase
             [
                 -42,
             ],
-            [
-                PHP_INT_MIN,
-            ],
+            [PHP_INT_MIN],
         ];
     }
 
@@ -52,7 +60,7 @@ class NegativeIntegerTest extends TestCase
     {
         try {
             new NegativeInteger(0);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $exceptionCurrent = $e;
             $this->assertSame(RuntimeException::class, $exceptionCurrent::class);
             $this->assertMatchesRegularExpression(

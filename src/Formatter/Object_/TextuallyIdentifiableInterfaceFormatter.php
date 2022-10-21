@@ -8,6 +8,11 @@ use Eboreum\Caster\Abstraction\Formatter\AbstractObjectFormatter;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\Contract\TextuallyIdentifiableInterface;
+use ReflectionObject;
+
+use function assert;
+use function boolval;
+use function sprintf;
 
 /**
  * @inheritDoc
@@ -16,9 +21,6 @@ use Eboreum\Caster\Contract\TextuallyIdentifiableInterface;
  */
 class TextuallyIdentifiableInterfaceFormatter extends AbstractObjectFormatter
 {
-    /**
-     * {@inheritDoc}
-     */
     public function format(CasterInterface $caster, object $object): ?string
     {
         if (false === $this->isHandling($object)) {
@@ -29,14 +31,11 @@ class TextuallyIdentifiableInterfaceFormatter extends AbstractObjectFormatter
 
         return sprintf(
             '%s: %s',
-            Caster::makeNormalizedClassName(new \ReflectionObject($object)),
+            Caster::makeNormalizedClassName(new ReflectionObject($object)),
             $object->toTextualIdentifier($caster),
         );
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isHandling(object $object): bool
     {
         return boolval($object instanceof TextuallyIdentifiableInterface);

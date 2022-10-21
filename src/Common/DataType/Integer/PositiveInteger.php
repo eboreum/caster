@@ -11,9 +11,6 @@ namespace Eboreum\Caster\Common\DataType\Integer;
  */
 class PositiveInteger extends AbstractInteger
 {
-    /**
-     * {@inheritDoc}
-     */
     public static function getMinimumLimit(): int
     {
         return 1;

@@ -15,9 +15,6 @@ use Eboreum\Caster\EncryptedString;
  */
 class EncryptedStringCollection extends AbstractObjectCollection
 {
-    /**
-     * {@inheritDoc}
-     */
     public static function getHandledClassName(): string
     {
         return EncryptedString::class;

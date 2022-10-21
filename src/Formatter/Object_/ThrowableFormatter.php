@@ -9,6 +9,11 @@ use Eboreum\Caster\Caster;
 use Eboreum\Caster\Common\DataType\Integer\PositiveInteger;
 use Eboreum\Caster\Common\DataType\Integer\UnsignedInteger;
 use Eboreum\Caster\Contract\CasterInterface;
+use ReflectionObject;
+use Throwable;
+
+use function assert;
+use function sprintf;
 
 /**
  * @inheritDoc
@@ -27,16 +32,13 @@ class ThrowableFormatter extends AbstractObjectFormatter
         $this->messageMaximumLength = new UnsignedInteger(5000);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function format(CasterInterface $caster, object $object): ?string
     {
         if (false === $this->isHandling($object)) {
             return null; // Pass on
         }
 
-        assert($object instanceof \Throwable); // Make phpstan happy
+        assert($object instanceof Throwable); // Make phpstan happy
 
         if (1 === $caster->getContext()->count()) {
             /*
@@ -50,7 +52,7 @@ class ThrowableFormatter extends AbstractObjectFormatter
 
         return sprintf(
             '%s {$code = %s, $file = %s, $line = %s, $message = %s, $previous = %s}',
-            Caster::makeNormalizedClassName(new \ReflectionObject($object)),
+            Caster::makeNormalizedClassName(new ReflectionObject($object)),
             $caster->cast($object->getCode()),
             $caster->cast($object->getFile()),
             $caster->cast($object->getLine()),
@@ -85,11 +87,8 @@ class ThrowableFormatter extends AbstractObjectFormatter
         return $this->messageMaximumLength;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isHandling(object $object): bool
     {
-        return ($object instanceof \Throwable);
+        return ($object instanceof Throwable);
     }
 }

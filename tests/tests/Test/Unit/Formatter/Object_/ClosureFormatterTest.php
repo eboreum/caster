@@ -5,11 +5,19 @@ declare(strict_types=1);
 namespace Test\Unit\Eboreum\Caster\Formatter\Object_;
 
 use ArrayIterator;
+use Closure;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Formatter\Object_\ClosureFormatter;
 use Iterator;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 use Traversable;
+
+use function assert;
+use function implode;
+use function is_string;
+use function rand;
+use function sprintf;
 
 class ClosureFormatterTest extends TestCase
 {
@@ -19,16 +27,16 @@ class ClosureFormatterTest extends TestCase
     {
         $caster = Caster::create();
         $closureFormatter = new ClosureFormatter();
-        $object = new \stdClass();
+        $object = new stdClass();
 
         $this->assertFalse($closureFormatter->isHandling($object));
         $this->assertNull($closureFormatter->format($caster, $object));
     }
 
     /**
-     * @dataProvider dataProvider_testFormatWorks
+     * @dataProvider dataProviderTestFormatWorks
      */
-    public function testFormatWorks(string $message, string $expected, \Closure $closure): void
+    public function testFormatWorks(string $message, string $expected, Closure $closure): void
     {
         $caster = Caster::create();
         $closureFormatter = new ClosureFormatter();
@@ -41,9 +49,9 @@ class ClosureFormatterTest extends TestCase
     }
 
     /**
-     * @return array<int, array{string, string, \Closure}>
+     * @return array<int, array{string, string, Closure}>
      */
-    public function dataProvider_testFormatWorks(): array
+    public function dataProviderTestFormatWorks(): array
     {
         return [
             [
@@ -198,7 +206,7 @@ class ClosureFormatterTest extends TestCase
             [
                 'The big one.',
                 '\\Closure($a, &$b, int $c, bool $d, stdClass $e, array $f = [0 => "lala"], ?string ...$z): int',
-                static function ($a, &$b, int $c, bool $d, \stdClass $e, array $f = ['lala'], ?string ...$z): int {
+                static function ($a, &$b, int $c, bool $d, stdClass $e, array $f = ['lala'], ?string ...$z): int {
                     return 1; // phpstan love
                 },
             ],

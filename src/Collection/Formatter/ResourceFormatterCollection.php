@@ -17,9 +17,6 @@ use Eboreum\Caster\Contract\Formatter\ResourceFormatterInterface;
  */
 class ResourceFormatterCollection extends AbstractObjectCollection implements FormatterCollectionInterface
 {
-    /**
-     * {@inheritDoc}
-     */
     public static function getHandledClassName(): string
     {
         return ResourceFormatterInterface::class;

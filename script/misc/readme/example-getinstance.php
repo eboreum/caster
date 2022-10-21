@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1); // README.md.remove
+declare(strict_types=1);
 
 namespace My\Application;
 
@@ -10,42 +10,35 @@ use Eboreum\Caster\CharacterEncoding;
 use Eboreum\Caster\Collection\Formatter\ArrayFormatterCollection;
 use Eboreum\Caster\Contract\CasterInterface;
 
-require_once dirname(__DIR__, 2) . "/bootstrap.php"; // README.md.remove
+use function assert;
+use function dirname;
+use function json_encode;
+use function sprintf;
 
-/**
- * @inheritDoc
- */
+require_once dirname(__DIR__, 2) . '/bootstrap.php'; // README.md.remove
+
 class Caster extends EboreumCaster
 {
     private static ?Caster $instance = null;
 
-    /**
-     * {@inheritDoc}
-     */
     public static function getInstance(): self
     {
         if (null === self::$instance) {
             self::$instance = new self(CharacterEncoding::getInstance());
 
             $instance = self::$instance->withCustomArrayFormatterCollection(new ArrayFormatterCollection([
-                new class extends AbstractArrayFormatter
+            new class extends AbstractArrayFormatter
                 {
-                    /**
-                     * {@inheritDoc}
-                     */
-                    public function format(CasterInterface $caster, array $array): ?string
-                    {
-                        return "I am an array!";
-                    }
-
-                    /**
-                     * {@inheritDoc}
-                     */
-                    public function isHandling(array $array): bool
-                    {
-                        return true;
-                    }
+                public function format(CasterInterface $caster, array $array): ?string
+                {
+                    return 'I am an array!';
                 }
+
+                public function isHandling(array $array): bool
+                {
+                    return true;
+                }
+            },
             ]));
 
             assert($instance instanceof Caster);
@@ -60,14 +53,14 @@ class Caster extends EboreumCaster
 }
 
 echo sprintf(
-    "Instances \\%s::getInstance() !== \\%s::getInstance(): %s",
+    'Instances \\%s::getInstance() !== \\%s::getInstance(): %s',
     EboreumCaster::class,
     Caster::class,
     json_encode(EboreumCaster::getInstance() !== Caster::getInstance()),
 ) . "\n";
 
 echo sprintf(
-    "But \\%s::getInstance() === \\%s::getInstance() (same): %s",
+    'But \\%s::getInstance() === \\%s::getInstance() (same): %s',
     Caster::class,
     Caster::class,
     json_encode(Caster::getInstance() === Caster::getInstance()),

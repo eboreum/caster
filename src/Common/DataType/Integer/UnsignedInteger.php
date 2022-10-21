@@ -11,9 +11,6 @@ namespace Eboreum\Caster\Common\DataType\Integer;
  */
 class UnsignedInteger extends AbstractInteger
 {
-    /**
-     * {@inheritDoc}
-     */
     public static function getMinimumLimit(): int
     {
         return 0;

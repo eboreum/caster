@@ -4,9 +4,16 @@ declare(strict_types=1);
 
 namespace Eboreum\Caster\Formatter\Object_;
 
+use DateTimeInterface;
 use Eboreum\Caster\Abstraction\Formatter\AbstractObjectFormatter;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\CasterInterface;
+use ReflectionObject;
+
+use function assert;
+use function boolval;
+use function sprintf;
+use function strval;
 
 /**
  * @inheritDoc
@@ -15,29 +22,23 @@ use Eboreum\Caster\Contract\CasterInterface;
  */
 class DateTimeInterfaceFormatter extends AbstractObjectFormatter
 {
-    /**
-     * {@inheritDoc}
-     */
     public function format(CasterInterface $caster, object $object): ?string
     {
         if (false === $this->isHandling($object)) {
             return null;
         }
 
-        assert($object instanceof \DateTimeInterface); // Make phpstan happy
+        assert($object instanceof DateTimeInterface); // Make phpstan happy
 
         return sprintf(
             '%s (%s)',
-            Caster::makeNormalizedClassName(new \ReflectionObject($object)),
+            Caster::makeNormalizedClassName(new ReflectionObject($object)),
             $caster->withIsPrependingType(false)->cast(strval($object->format('c'))),
         );
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isHandling(object $object): bool
     {
-        return boolval($object instanceof \DateTimeInterface);
+        return boolval($object instanceof DateTimeInterface);
     }
 }

@@ -32,12 +32,41 @@ use Eboreum\Caster\Formatter\DefaultResourceFormatter;
 use Eboreum\Caster\Formatter\DefaultStringFormatter;
 use Eboreum\Caster\Formatter\Object_\DebugIdentifierAttributeInterfaceFormatter;
 use Eboreum\Caster\Formatter\Object_\TextuallyIdentifiableInterfaceFormatter;
+use ReflectionClass;
+use ReflectionObject;
+use Throwable;
 
+use function addcslashes;
+use function array_filter;
+use function array_map;
+use function array_merge;
+use function array_unique;
+use function array_values;
+use function assert;
+use function count;
 use function Eboreum\Caster\functions\is_enum;
+use function implode;
+use function is_array;
+use function is_bool;
+use function is_float;
+use function is_int;
+use function is_object;
+use function is_resource;
+use function is_string;
+use function mb_strlen;
+use function preg_match;
+use function preg_quote;
+use function preg_replace;
+use function preg_split;
+use function spl_object_hash;
+use function sprintf;
+use function str_repeat;
+use function strcspn;
+use function strval;
+use function substr_replace;
+use function trim;
+use function uasort;
 
-/**
- * {@inheritDoc}
- */
 class Caster implements CasterInterface
 {
     private static ?Caster $instance = null;
@@ -165,9 +194,6 @@ class Caster implements CasterInterface
         $this->context = new Context();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public static function getInstance(): Caster
     {
         if (null === self::$instance) {
@@ -211,9 +237,6 @@ class Caster implements CasterInterface
         $this->customStringFormatterCollection = clone $this->customStringFormatterCollection;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public static function create(?CharacterEncodingInterface $characterEncoding = null): static
     {
         if (null === $characterEncoding) {
@@ -224,9 +247,9 @@ class Caster implements CasterInterface
     }
 
     /**
-     * @param \ReflectionClass<object> $reflectionClass
+     * @param ReflectionClass<object> $reflectionClass
      */
-    public static function makeNormalizedClassName(\ReflectionClass $reflectionClass): string
+    public static function makeNormalizedClassName(ReflectionClass $reflectionClass): string
     {
         if ($reflectionClass->isAnonymous()) {
             assert(is_string($reflectionClass->getFileName())); // Make phpstan happy
@@ -256,9 +279,9 @@ class Caster implements CasterInterface
     }
 
     /**
-     * {@inheritDoc}
+     * @param mixed $value
      */
-    public function cast($value): string
+    public function cast($value): string // phpcs:ignore
     {
         $return = null;
 
@@ -353,7 +376,7 @@ class Caster implements CasterInterface
             if ($caster->getDepthCurrent()->toInteger() > $caster->getDepthMaximum()->toInteger()) {
                 $return = sprintf(
                     '%s: %s',
-                    self::makeNormalizedClassName(new \ReflectionObject($value)),
+                    self::makeNormalizedClassName(new ReflectionObject($value)),
                     $caster->getOmittedMaximumDepthOfXReachedMessage(),
                 );
 
@@ -486,16 +509,13 @@ class Caster implements CasterInterface
     }
 
     /**
-     * {@inheritDoc}
+     * @param mixed $value
      */
-    public function castTyped($value): string
+    public function castTyped($value): string // phpcs:ignore
     {
         return $this->withIsPrependingType(true)->cast($value);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function escape(string $str): string
     {
         $escapee = '\\';
@@ -507,9 +527,6 @@ class Caster implements CasterInterface
         return addcslashes($str, $escapee);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function maskString(string $str): string
     {
         if (false === $this->maskedEncryptedStringCollection->isEmpty()) {
@@ -615,9 +632,6 @@ class Caster implements CasterInterface
         return $str;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function quoteAndEscape(string $str): string
     {
         return implode(
@@ -630,9 +644,6 @@ class Caster implements CasterInterface
         );
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function withArraySampleSize(UnsignedInteger $arraySampleSize): static
     {
         $clone = clone $this;
@@ -641,9 +652,6 @@ class Caster implements CasterInterface
         return $clone;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function withCharacterEncoding(CharacterEncodingInterface $characterEncoding): static
     {
         $clone = clone $this;
@@ -652,9 +660,6 @@ class Caster implements CasterInterface
         return $clone;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function withContext(ContextInterface $context): static
     {
         $clone = clone $this;
@@ -663,9 +668,6 @@ class Caster implements CasterInterface
         return $clone;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function withCustomArrayFormatterCollection(ArrayFormatterCollection $customArrayFormatterCollection): static
     {
         $clone = clone $this;
@@ -674,9 +676,6 @@ class Caster implements CasterInterface
         return $clone;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function withCustomEnumFormatterCollection(EnumFormatterCollection $customEnumFormatterCollection): static
     {
         $clone = clone $this;
@@ -685,9 +684,6 @@ class Caster implements CasterInterface
         return $clone;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function withCustomObjectFormatterCollection(
         ObjectFormatterCollection $customObjectFormatterCollection,
     ): static {
@@ -697,9 +693,6 @@ class Caster implements CasterInterface
         return $clone;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function withCustomResourceFormatterCollection(
         ResourceFormatterCollection $customResourceFormatterCollection,
     ): static {
@@ -709,9 +702,6 @@ class Caster implements CasterInterface
         return $clone;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function withCustomStringFormatterCollection(
         StringFormatterCollection $customStringFormatterCollection,
     ): static {
@@ -721,9 +711,6 @@ class Caster implements CasterInterface
         return $clone;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function withDepthCurrent(PositiveInteger $depthCurrent): static
     {
         $clone = clone $this;
@@ -732,9 +719,6 @@ class Caster implements CasterInterface
         return $clone;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function withDepthMaximum(PositiveInteger $depthMaximum): static
     {
         $clone = clone $this;
@@ -743,9 +727,6 @@ class Caster implements CasterInterface
         return $clone;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function withIsMakingSamples(bool $isMakingSamples): static
     {
         $clone = clone $this;
@@ -754,9 +735,6 @@ class Caster implements CasterInterface
         return $clone;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function withIsPrependingType(bool $isPrependingType): static
     {
         $clone = clone $this;
@@ -765,9 +743,6 @@ class Caster implements CasterInterface
         return $clone;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function withMaskedEncryptedStringCollection(
         EncryptedStringCollection $maskedEncryptedStringCollection,
     ): static {
@@ -777,9 +752,6 @@ class Caster implements CasterInterface
         return $clone;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function withMaskingCharacter(CharacterInterface $maskingCharacter): static
     {
         $clone = clone $this;
@@ -788,9 +760,6 @@ class Caster implements CasterInterface
         return $clone;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function withMaskingStringLength(PositiveInteger $maskingStringLength): static
     {
         $clone = clone $this;
@@ -799,9 +768,6 @@ class Caster implements CasterInterface
         return $clone;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function withSampleEllipsis(string $sampleEllipsis): static
     {
         try {
@@ -837,7 +803,7 @@ class Caster implements CasterInterface
 
             $clone = clone $this;
             $clone->sampleEllipsis = $sampleEllipsis;
-        } catch (\Throwable $t) {
+        } catch (Throwable $t) {
             $argumentsAsStrings = [];
             $argumentsAsStrings[] = sprintf(
                 '$sampleEllipsis = %s',
@@ -846,7 +812,7 @@ class Caster implements CasterInterface
 
             throw new CasterException(sprintf(
                 'Failure in %s->%s(%s): %s',
-                self::makeNormalizedClassName(new \ReflectionObject($this)),
+                self::makeNormalizedClassName(new ReflectionObject($this)),
                 __FUNCTION__,
                 implode(', ', $argumentsAsStrings),
                 self::getInternalInstance()->castTyped($this),
@@ -856,9 +822,6 @@ class Caster implements CasterInterface
         return $clone;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function withStringSampleSize(UnsignedInteger $stringSampleSize): static
     {
         $clone = clone $this;
@@ -867,9 +830,6 @@ class Caster implements CasterInterface
         return $clone;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function withStringQuotingCharacter(CharacterInterface $stringQuotingCharacter): static
     {
         try {
@@ -882,7 +842,7 @@ class Caster implements CasterInterface
 
             $clone = clone $this;
             $clone->stringQuotingCharacter = $stringQuotingCharacter;
-        } catch (\Throwable $t) {
+        } catch (Throwable $t) {
             $argumentsAsStrings = [];
             $argumentsAsStrings[] = sprintf(
                 '$stringQuotingCharacter = %s',
@@ -891,7 +851,7 @@ class Caster implements CasterInterface
 
             throw new CasterException(sprintf(
                 'Failure in %s->%s(%s): %s',
-                self::makeNormalizedClassName(new \ReflectionObject($this)),
+                self::makeNormalizedClassName(new ReflectionObject($this)),
                 __FUNCTION__,
                 implode(', ', $argumentsAsStrings),
                 self::getInternalInstance()->castTyped($this),
@@ -901,121 +861,76 @@ class Caster implements CasterInterface
         return $clone;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getArraySampleSize(): UnsignedInteger
     {
         return $this->arraySampleSize;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getCharacterEncoding(): CharacterEncodingInterface
     {
         return $this->characterEncoding;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getContext(): ContextInterface
     {
         return $this->context;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getCustomArrayFormatterCollection(): ArrayFormatterCollection
     {
         return $this->customArrayFormatterCollection;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getCustomEnumFormatterCollection(): EnumFormatterCollection
     {
         return $this->customEnumFormatterCollection;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getCustomObjectFormatterCollection(): ObjectFormatterCollection
     {
         return $this->customObjectFormatterCollection;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getCustomResourceFormatterCollection(): ResourceFormatterCollection
     {
         return $this->customResourceFormatterCollection;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getCustomStringFormatterCollection(): StringFormatterCollection
     {
         return $this->customStringFormatterCollection;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getDefaultArrayFormatter(): DefaultArrayFormatter
     {
         return $this->defaultArrayFormatter;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getDefaultEnumFormatter(): DefaultEnumFormatter
     {
         return $this->defaultEnumFormatter;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getDefaultObjectFormatter(): DefaultObjectFormatter
     {
         return $this->defaultObjectFormatter;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getDefaultResourceFormatter(): DefaultResourceFormatter
     {
         return $this->defaultResourceFormatter;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getDefaultStringFormatter(): DefaultStringFormatter
     {
         return $this->defaultStringFormatter;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getDepthCurrent(): PositiveInteger
     {
         return $this->depthCurrent;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getDepthMaximum(): PositiveInteger
     {
         return $this->depthMaximum;
@@ -1029,33 +944,21 @@ class Caster implements CasterInterface
         return $this->maskedEncryptedStringCollection;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getMaskingCharacter(): CharacterInterface
     {
         return $this->maskingCharacter;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getMaskingString(): string
     {
         return str_repeat((string)$this->getMaskingCharacter(), $this->getMaskingStringLength()->toInteger());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getMaskingStringLength(): PositiveInteger
     {
         return $this->maskingStringLength;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getOmittedMaximumDepthOfXReachedMessage(): string
     {
         return sprintf(
@@ -1064,53 +967,35 @@ class Caster implements CasterInterface
         );
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getRecursionMessage(object $object): string
     {
         return sprintf(
             '** RECURSION ** (%s, %s)',
-            self::makeNormalizedClassName(new \ReflectionObject($object)),
+            self::makeNormalizedClassName(new ReflectionObject($object)),
             spl_object_hash($object),
         );
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getSampleEllipsis(): string
     {
         return $this->sampleEllipsis;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getStringSampleSize(): UnsignedInteger
     {
         return $this->stringSampleSize;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getStringQuotingCharacter(): CharacterInterface
     {
         return $this->stringQuotingCharacter;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isMakingSamples(): bool
     {
         return $this->isMakingSamples;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isPrependingType(): bool
     {
         return $this->isPrependingType;

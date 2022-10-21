@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Test\Unit\Eboreum\Caster\Formatter\Object_;
 
+use DateTimeZone;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Formatter\Object_\DateTimeZoneFormatter;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 class DateTimeZoneFormatterTest extends TestCase
 {
@@ -14,7 +16,7 @@ class DateTimeZoneFormatterTest extends TestCase
     {
         $caster = Caster::create();
         $dateTimeZoneFormatter = new DateTimeZoneFormatter();
-        $object = new \stdClass();
+        $object = new stdClass();
 
         $this->assertFalse($dateTimeZoneFormatter->isHandling($object));
         $this->assertNull($dateTimeZoneFormatter->format($caster, $object));
@@ -25,7 +27,7 @@ class DateTimeZoneFormatterTest extends TestCase
         $caster = Caster::create();
         $dateTimeZoneFormatter = new DateTimeZoneFormatter();
 
-        $object = new \DateTimeZone('+0000');
+        $object = new DateTimeZone('+0000');
 
         $this->assertTrue($dateTimeZoneFormatter->isHandling($object));
         $this->assertSame(

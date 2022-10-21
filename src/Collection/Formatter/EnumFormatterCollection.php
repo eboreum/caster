@@ -17,9 +17,6 @@ use Eboreum\Caster\Contract\Formatter\EnumFormatterInterface;
  */
 class EnumFormatterCollection extends AbstractObjectCollection implements FormatterCollectionInterface
 {
-    /**
-     * {@inheritDoc}
-     */
     public static function getHandledClassName(): string
     {
         return EnumFormatterInterface::class;

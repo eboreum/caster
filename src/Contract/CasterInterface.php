@@ -58,16 +58,30 @@ interface CasterInterface extends ImmutableObjectInterface
      * To prepend information about the data type, first call `withIsPrependingType(true)` or simply call
      * `castTyped(...)` instead.
      *
+     * NOTICE: We do "phpcs:ignore" below, because we cannot change the interface now as it may cause backwards
+     * compatibility issues if introducing the "mixed" type now.
+     *
+     * NEXT: Next major version, the "$value" parameter should receive the native type "mixed".
+     *
      * @param mixed $value Accepts any data type.
      */
-    public function cast($value): string;
+    public function cast( // phpcs:ignore
+        $value
+    ): string;
 
     /**
      * A convenience/proxy method for CasterInterface->withIsPrependingType(true)->cast(...).
      *
+     * NOTICE: We do "phpcs:ignore" below, because we cannot change the interface now as it may cause backwards
+     * compatibility issues if introducing the "mixed" type now.
+     *
+     * NEXT: Next major version, the "$value" parameter should receive the native type "mixed".
+     *
      * @param mixed $value Accepts any data type.
      */
-    public function castTyped($value): string;
+    public function castTyped( // phpcs:ignore
+        $value
+    ): string;
 
     /**
      * Must escape backslashes and the quoting character with additional baskslashes.
@@ -237,8 +251,8 @@ interface CasterInterface extends ImmutableObjectInterface
      * Must change the character used for quoting on a clone of the current instance.
      * Must return said clone.
      *
-     * @param CharacterInterface $stringQuotingCharacter
-     *                                          Must not be backlash. Otherwise, must throw a CasterException.
+     * @param CharacterInterface $stringQuotingCharacter Must not be backlash. Otherwise, must throw a CasterException.
+     *
      * @throws CasterException
      */
     public function withStringQuotingCharacter(CharacterInterface $stringQuotingCharacter): static;

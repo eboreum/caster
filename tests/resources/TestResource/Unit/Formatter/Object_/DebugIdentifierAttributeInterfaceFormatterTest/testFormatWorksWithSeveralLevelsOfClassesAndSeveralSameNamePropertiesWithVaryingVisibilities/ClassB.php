@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TestResource\Unit\Eboreum\Caster\Formatter\Object_\DebugIdentifierAttributeInterfaceFormatterTest\testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities;
+namespace TestResource\Unit\Eboreum\Caster\Formatter\Object_\DebugIdentifierAttributeInterfaceFormatterTest\testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities; // phpcs:ignore
 
 use Eboreum\Caster\Attribute\DebugIdentifier;
 
@@ -24,7 +24,8 @@ abstract class ClassB extends ClassC
     protected string $publicProtectedPrivate = 'b';
 
     #[DebugIdentifier]
-    private string $publicPrivatePrivate = 'b'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
+    // @phpstan-ignore-next-line Suppression code babdc1d2; see README.md
+    private string $publicPrivatePrivate = 'b';
 
     #[DebugIdentifier]
     protected string $protectedProtectedProtected = 'b';
@@ -33,16 +34,20 @@ abstract class ClassB extends ClassC
     protected string $protectedProtectedPrivate = 'b';
 
     #[DebugIdentifier]
-    private string $protectedPrivatePrivate = 'b'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
+    // @phpstan-ignore-next-line Suppression code babdc1d2; see README.md
+    private string $protectedPrivatePrivate = 'b';
 
     #[DebugIdentifier]
-    private string $privatePrivatePrivate = 'b'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
+    // @phpstan-ignore-next-line Suppression code babdc1d2; see README.md
+    private string $privatePrivatePrivate = 'b';
 
     #[DebugIdentifier]
-    private static string $staticPrivatePrivatePrivate = 'b'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
+    // @phpstan-ignore-next-line Suppression code babdc1d2; see README.md
+    private static string $staticPrivatePrivatePrivate = 'b';
 
     #[DebugIdentifier]
-    private string $onlyInB = 'b'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
+    // @phpstan-ignore-next-line Suppression code babdc1d2; see README.md
+    private string $onlyInB = 'b';
 
     #[DebugIdentifier]
     public string $onlyInBAndCPublicPublic = 'b';
@@ -62,9 +67,9 @@ abstract class ClassB extends ClassC
     #[DebugIdentifier]
     protected string $onlyInBAndCPrivatePrivate = 'b';
 
-    public $publicDoNotIncludeMe;
+    public $publicDoNotIncludeMe; // phpcs:ignore
 
-    protected $protectedDoNotIncludeMe;
+    protected $protectedDoNotIncludeMe; // phpcs:ignore
 
-    protected $privateDoNotIncludeMe;
+    protected $privateDoNotIncludeMe; // phpcs:ignore
 }

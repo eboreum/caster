@@ -6,13 +6,14 @@ namespace Eboreum\Caster\Contract\DataType\Integer;
 
 use Eboreum\Caster\Contract\DebugIdentifierAttributeInterface;
 use Eboreum\Caster\Contract\ImmutableObjectInterface;
+use JsonSerializable;
 
 /**
  * @inheritDoc
  *
  * Denotes that the implementing class contains an integer of some special sort.
  */
-interface IntegerInterface extends ImmutableObjectInterface, DebugIdentifierAttributeInterface, \JsonSerializable
+interface IntegerInterface extends ImmutableObjectInterface, DebugIdentifierAttributeInterface, JsonSerializable
 {
     /**
      * The value the integer must be less than or equal to when the implementing class is being constructed or cloned.

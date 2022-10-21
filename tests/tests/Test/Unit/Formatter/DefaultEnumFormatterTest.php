@@ -7,14 +7,21 @@ namespace Test\Unit\Eboreum\Caster\Formatter;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Formatter\DefaultEnumFormatter;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 use TestResource\Unit\Eboreum\Caster\Formatter\DefaultEnumFormatterTest\testBasics\IntEnum;
 use TestResource\Unit\Eboreum\Caster\Formatter\DefaultEnumFormatterTest\testBasics\StringEnum;
 use TestResource\Unit\Eboreum\Caster\Formatter\DefaultEnumFormatterTest\testBasics\UntypedEnum;
 
+use function assert;
+use function implode;
+use function is_string;
+use function preg_quote;
+use function sprintf;
+
 class DefaultEnumFormatterTest extends TestCase
 {
     /**
-     * @dataProvider dataProvier_testBasics
+     * @dataProvider dataProviderTestBasics
      */
     public function testBasics(
         string $message,
@@ -56,7 +63,7 @@ class DefaultEnumFormatterTest extends TestCase
     /**
      * @return array<int, array{string, string, string, string, Caster, object}>
      */
-    public function dataProvier_testBasics(): array
+    public function dataProviderTestBasics(): array
     {
         return [
             [
@@ -188,13 +195,13 @@ class DefaultEnumFormatterTest extends TestCase
     public function testFormatReturnsNullWhenANonEnumObjectIsPassed(): void
     {
         $defaultEnumFormatter = new DefaultEnumFormatter();
-        $this->assertNull($defaultEnumFormatter->format(Caster::getInstance(), new \stdClass()));
+        $this->assertNull($defaultEnumFormatter->format(Caster::getInstance(), new stdClass()));
     }
 
     public function testIsHandlingReturnsFalseWhenANonEnumObjectIsPassed(): void
     {
         $defaultEnumFormatter = new DefaultEnumFormatter();
-        $this->assertFalse($defaultEnumFormatter->isHandling(new \stdClass()));
+        $this->assertFalse($defaultEnumFormatter->isHandling(new stdClass()));
     }
 
     public function testWithIsAppendingSplObjectHashWorks(): void

@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace Test\Unit\Eboreum\Caster;
 
 use PHPUnit\Framework\TestCase;
+use stdClass;
 use TestResource\Unit\Eboreum\Caster\functionsTest\test_is_enum_works\FooEnum;
 
+use function dirname;
 use function Eboreum\Caster\functions\is_enum;
 use function Eboreum\Caster\functions\rglob;
+use function in_array;
 
 class functionsTest extends TestCase // phpcs:ignore
 {
@@ -39,7 +42,7 @@ class functionsTest extends TestCase // phpcs:ignore
         $this->assertFalse(is_enum(3.14));
         $this->assertFalse(is_enum('foo'));
         $this->assertFalse(is_enum([]));
-        $this->assertFalse(is_enum(new \stdClass()));
+        $this->assertFalse(is_enum(new stdClass()));
         $this->assertTrue(is_enum(FooEnum::Lorem));
         $this->assertTrue(is_enum(FooEnum::Ipsum));
         $this->assertTrue(is_enum(FooEnum::from('Lorem')));

@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Eboreum\Caster\Formatter\Object_;
 
+use DateInterval;
+
+use function boolval;
+
 /**
  * @inheritDoc
  *
@@ -11,11 +15,8 @@ namespace Eboreum\Caster\Formatter\Object_;
  */
 class DateIntervalFormatter extends PublicVariableFormatter
 {
-    /**
-     * {@inheritDoc}
-     */
     public function isHandling(object $object): bool
     {
-        return boolval($object instanceof \DateInterval);
+        return boolval($object instanceof DateInterval);
     }
 }

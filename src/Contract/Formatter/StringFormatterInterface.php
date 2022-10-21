@@ -6,9 +6,6 @@ namespace Eboreum\Caster\Contract\Formatter;
 
 use Eboreum\Caster\Contract\CasterInterface;
 
-/**
- * @inheritDoc
- */
 interface StringFormatterInterface extends FormatterInterface
 {
     /**

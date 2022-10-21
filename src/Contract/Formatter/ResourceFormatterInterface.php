@@ -7,9 +7,6 @@ namespace Eboreum\Caster\Contract\Formatter;
 use Eboreum\Caster\Common\DataType\Resource_;
 use Eboreum\Caster\Contract\CasterInterface;
 
-/**
- * @inheritDoc
- */
 interface ResourceFormatterInterface extends FormatterInterface
 {
     /**

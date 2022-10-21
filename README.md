@@ -72,6 +72,8 @@ The data types are converted as illustrated in the table below.
 ```php
 <?php
 
+declare(strict_types=1);
+
 use Eboreum\Caster\Caster;
 
 $caster = Caster::create();
@@ -80,8 +82,8 @@ echo sprintf(
     "%s\n%s\n%s\n%s",
     $caster->cast(null),
     $caster->cast(true),
-    $caster->cast("foo"),
-    $caster->cast(new \stdClass)
+    $caster->cast('foo'),
+    $caster->cast(new stdClass())
 );
 
 $caster = $caster->withIsPrependingType(true);
@@ -92,8 +94,8 @@ echo sprintf(
     "%s\n%s\n%s\n%s",
     $caster->cast(null),
     $caster->cast(true),
-    $caster->cast("foo"),
-    $caster->cast(new \stdClass)
+    $caster->cast('foo'),
+    $caster->cast(new stdClass())
 );
 
 ```
@@ -119,23 +121,26 @@ true
 ```php
 <?php
 
+declare(strict_types=1);
+
 use Eboreum\Caster\Caster;
 
 /**
- * @throws \InvalidArgumentException
+ * @throws InvalidArgumentException
  */
-function foo(mixed $value): void {
+function foo(mixed $value): void
+{
     if (false === is_string($value) && false === is_int($value)) {
-        throw new \InvalidArgumentException(sprintf(
-            "Expects argument \$value to be a string or an integer. Found: %s",
+        throw new InvalidArgumentException(sprintf(
+            'Expects argument $value to be a string or an integer. Found: %s',
             Caster::create()->castTyped($value),
         ));
     }
-};
+}
 
 try {
-    foo(["bar"]);
-} catch (\InvalidArgumentException $e) {
+    foo(['bar']);
+} catch (InvalidArgumentException $e) {
     echo $e->getMessage();
 }
 
@@ -158,6 +163,8 @@ It is recommended that you, in your own application, implement a `\My\Applicatio
 ```php
 <?php
 
+declare(strict_types=1);
+
 namespace My\Application;
 
 use Eboreum\Caster\Abstraction\Formatter\AbstractArrayFormatter;
@@ -166,40 +173,33 @@ use Eboreum\Caster\CharacterEncoding;
 use Eboreum\Caster\Collection\Formatter\ArrayFormatterCollection;
 use Eboreum\Caster\Contract\CasterInterface;
 
-/**
- * @inheritDoc
- */
+use function assert;
+use function dirname;
+use function json_encode;
+use function sprintf;
+
 class Caster extends EboreumCaster
 {
     private static ?Caster $instance = null;
 
-    /**
-     * {@inheritDoc}
-     */
     public static function getInstance(): self
     {
         if (null === self::$instance) {
             self::$instance = new self(CharacterEncoding::getInstance());
 
             $instance = self::$instance->withCustomArrayFormatterCollection(new ArrayFormatterCollection([
-                new class extends AbstractArrayFormatter
+            new class extends AbstractArrayFormatter
                 {
-                    /**
-                     * {@inheritDoc}
-                     */
-                    public function format(CasterInterface $caster, array $array): ?string
-                    {
-                        return "I am an array!";
-                    }
-
-                    /**
-                     * {@inheritDoc}
-                     */
-                    public function isHandling(array $array): bool
-                    {
-                        return true;
-                    }
+                public function format(CasterInterface $caster, array $array): ?string
+                {
+                    return 'I am an array!';
                 }
+
+                public function isHandling(array $array): bool
+                {
+                    return true;
+                }
+            },
             ]));
 
             assert($instance instanceof Caster);
@@ -214,14 +214,14 @@ class Caster extends EboreumCaster
 }
 
 echo sprintf(
-    "Instances \\%s::getInstance() !== \\%s::getInstance(): %s",
+    'Instances \\%s::getInstance() !== \\%s::getInstance(): %s',
     EboreumCaster::class,
     Caster::class,
     json_encode(EboreumCaster::getInstance() !== Caster::getInstance()),
 ) . "\n";
 
 echo sprintf(
-    "But \\%s::getInstance() === \\%s::getInstance() (same): %s",
+    'But \\%s::getInstance() === \\%s::getInstance() (same): %s',
     Caster::class,
     Caster::class,
     json_encode(Caster::getInstance() === Caster::getInstance()),
@@ -267,22 +267,23 @@ You may customize the formatter to your specific needs, e.g. changing string sam
 ```php
 <?php
 
+declare(strict_types=1);
+
 use Eboreum\Caster\Caster;
-use Eboreum\Caster\CharacterEncoding;
-use Eboreum\Caster\Common\DataType\String_\Character;
 use Eboreum\Caster\Common\DataType\Integer\PositiveInteger;
 use Eboreum\Caster\Common\DataType\Integer\UnsignedInteger;
+use Eboreum\Caster\Common\DataType\String_\Character;
 
 $caster = Caster::create();
 $caster = $caster->withDepthMaximum(new PositiveInteger(2));
 $caster = $caster->withArraySampleSize(new UnsignedInteger(3));
 $caster = $caster->withStringSampleSize(new UnsignedInteger(4));
-$caster = $caster->withStringQuotingCharacter(new Character("`"));
+$caster = $caster->withStringQuotingCharacter(new Character('`'));
 
-echo "\$caster->getDepthMaximum()->toInteger(): " . $caster->getDepthMaximum()->toInteger() . "\n";
-echo "\$caster->getArraySampleSize()->toInteger(): " . $caster->getArraySampleSize()->toInteger() . "\n";
-echo "\$caster->getStringSampleSize()->toInteger(): " . $caster->getStringSampleSize()->toInteger() . "\n";
-echo "\$caster->getStringQuotingCharacter(): " . $caster->getStringQuotingCharacter() . "\n";
+echo '$caster->getDepthMaximum()->toInteger(): ' . $caster->getDepthMaximum()->toInteger() . "\n";
+echo '$caster->getArraySampleSize()->toInteger(): ' . $caster->getArraySampleSize()->toInteger() . "\n";
+echo '$caster->getStringSampleSize()->toInteger(): ' . $caster->getStringSampleSize()->toInteger() . "\n";
+echo '$caster->getStringQuotingCharacter(): ' . $caster->getStringQuotingCharacter() . "\n";
 
 ```
 
@@ -340,22 +341,17 @@ The following object formatters are readily available. You may use them as-is or
 ```php
 <?php
 
+declare(strict_types=1);
+
 use Eboreum\Caster\Abstraction\Formatter\AbstractArrayFormatter;
 use Eboreum\Caster\Caster;
-use Eboreum\Caster\CharacterEncoding;
 use Eboreum\Caster\Collection\Formatter\ArrayFormatterCollection;
 use Eboreum\Caster\Contract\CasterInterface;
 
 $caster = Caster::create();
 $caster = $caster->withCustomArrayFormatterCollection(new ArrayFormatterCollection([
-    /**
-     * @inheritDoc
-     */
     new class extends AbstractArrayFormatter
     {
-        /**
-         * {@inheritDoc}
-         */
         public function format(CasterInterface $caster, array $array): ?string
         {
             if (false === $this->isHandling($array)) {
@@ -371,11 +367,11 @@ $caster = $caster->withCustomArrayFormatterCollection(new ArrayFormatterCollecti
             }
 
             if (2 === count($array)) {
-                return "I am an array!";
+                return 'I am an array!';
             }
 
             if (3 === count($array)) {
-                $array[0] = "SURPRISE!";
+                $array[0] = 'SURPRISE!';
 
                 // Override and use DefaultArrayFormatter for rendering output
                 return $caster->getDefaultArrayFormatter()->format($caster, $array);
@@ -384,25 +380,22 @@ $caster = $caster->withCustomArrayFormatterCollection(new ArrayFormatterCollecti
             return null; // Pass on to next formatter or lastly DefaultArrayFormatter
         }
 
-        /**
-         * {@inheritDoc}
-         */
         public function isHandling(array $array): bool
         {
             return true;
         }
-    }
+    },
 ]));
 
-echo $caster->cast(["foo"]) . "\n";
+echo $caster->cast(['foo']) . "\n";
 
-echo $caster->cast(["foo", "bar"]) . "\n";
+echo $caster->cast(['foo', 'bar']) . "\n";
 
-echo $caster->cast(["foo", "bar", "baz"]) . "\n";
+echo $caster->cast(['foo', 'bar', 'baz']) . "\n";
 
-echo $caster->cast(["foo", "bar", "baz", "bim"]) . "\n";
+echo $caster->cast(['foo', 'bar', 'baz', 'bim']) . "\n";
 
-echo $caster->castTyped(["foo", "bar", "baz", "bim"]) . "\n";
+echo $caster->castTyped(['foo', 'bar', 'baz', 'bim']) . "\n";
 
 ```
 
@@ -431,88 +424,70 @@ In this example, `\DateTimeInterface` and `\Throwable` are utilized to supply go
 ```php
 <?php
 
-use Eboreum\Caster\Abstraction\Formatter\AbstractFormatter;
+declare(strict_types=1);
+
 use Eboreum\Caster\Abstraction\Formatter\AbstractObjectFormatter;
 use Eboreum\Caster\Caster;
-use Eboreum\Caster\CharacterEncoding;
 use Eboreum\Caster\Collection\Formatter\ObjectFormatterCollection;
 use Eboreum\Caster\Contract\CasterInterface;
-use Eboreum\Caster\Formatter\DefaultObjectFormatter;
-use PHPUnit\Framework\MockObject\Generator;
-use PHPUnit\Framework\TestCase;
 
 $caster = Caster::create();
 
 $caster = $caster->withCustomObjectFormatterCollection(new ObjectFormatterCollection([
-    /**
-     * @inheritDoc
-     */
     new class extends AbstractObjectFormatter
     {
-        /**
-         * {@inheritDoc}
-         */
         public function format(CasterInterface $caster, object $object): ?string
         {
             if (false === $this->isHandling($object)) {
                 return null; // Pass on to next formatter or lastly DefaultObjectFormatter
             }
 
-            assert($object instanceof \DateTimeInterface);
+            assert($object instanceof DateTimeInterface);
 
             return sprintf(
-                "%s (%s)",
-                Caster::makeNormalizedClassName(new \ReflectionObject($object)),
-                $object->format("c"),
+                '%s (%s)',
+                Caster::makeNormalizedClassName(new ReflectionObject($object)),
+                $object->format('c'),
             );
         }
 
-        /**
-         * {@inheritDoc}
-         */
         public function isHandling(object $object): bool
         {
-            return ($object instanceof \DateTimeInterface);
+            return ($object instanceof DateTimeInterface);
         }
     },
     new class extends AbstractObjectFormatter
     {
-        /**
-         * {@inheritDoc}
-         */
         public function format(CasterInterface $caster, object $object): ?string
         {
             if (false === $this->isHandling($object)) {
                 return null; // Pass on to next formatter or lastly DefaultObjectFormatter
             }
 
-            assert($object instanceof \Throwable);
+            assert($object instanceof Throwable);
 
             return sprintf(
-                "%s {\$code = %s, \$file = %s, \$line = %s, \$message = %s}",
-                Caster::makeNormalizedClassName(new \ReflectionObject($object)),
+                '%s {$code = %s, $file = %s, $line = %s, $message = %s}',
+                Caster::makeNormalizedClassName(new ReflectionObject($object)),
                 $caster->cast($object->getCode()),
-                $caster->cast(".../" . basename($object->getFile())),
+                $caster->cast('.../' . basename($object->getFile())),
                 $caster->cast($object->getLine()),
                 $caster->cast($object->getMessage()),
             );
         }
 
-        /**
-         * {@inheritDoc}
-         */
         public function isHandling(object $object): bool
         {
-            return ($object instanceof \Throwable);
+            return ($object instanceof Throwable);
         }
     },
 ]));
 
-echo $caster->cast(new \stdClass) . "\n";
+echo $caster->cast(new stdClass()) . "\n";
 
-echo $caster->cast(new \DateTimeImmutable("2019-01-01T00:00:00+00:00")) . "\n";
+echo $caster->cast(new DateTimeImmutable('2019-01-01T00:00:00+00:00')) . "\n";
 
-echo $caster->cast(new \RuntimeException("test", 1)) . "\n";
+echo $caster->cast(new RuntimeException('test', 1)) . "\n";
 
 ```
 
@@ -521,7 +496,7 @@ echo $caster->cast(new \RuntimeException("test", 1)) . "\n";
 ```php
 \stdClass
 \DateTimeImmutable (2019-01-01T00:00:00+00:00)
-\RuntimeException {$code = 1, $file = ".../example-custom-object-formatter.php", $line = 88, $message = "test"}
+\RuntimeException {$code = 1, $file = ".../example-custom-object-formatter.php", $line = 68, $message = "test"}
 
 ```
 
@@ -533,10 +508,10 @@ echo $caster->cast(new \RuntimeException("test", 1)) . "\n";
 ```php
 <?php
 
-use Eboreum\Caster\Abstraction\Formatter\AbstractFormatter;
+declare(strict_types=1);
+
 use Eboreum\Caster\Abstraction\Formatter\AbstractResourceFormatter;
 use Eboreum\Caster\Caster;
-use Eboreum\Caster\CharacterEncoding;
 use Eboreum\Caster\Collection\Formatter\ResourceFormatterCollection;
 use Eboreum\Caster\Common\DataType\Resource_;
 use Eboreum\Caster\Contract\CasterInterface;
@@ -544,23 +519,17 @@ use Eboreum\Caster\Contract\CasterInterface;
 $caster = Caster::create();
 
 $caster = $caster->withCustomResourceFormatterCollection(new ResourceFormatterCollection([
-    /**
-     * @inheritDoc
-     */
     new class extends AbstractResourceFormatter
     {
-        /**
-         * {@inheritDoc}
-         */
         public function format(CasterInterface $caster, Resource_ $resource): ?string
         {
             if (false === $this->isHandling($resource)) {
                 return null; // Pass on to next formatter or lastly DefaultResourceFormatter
             }
 
-            if ("stream" === get_resource_type($resource->getResource())) {
+            if ('stream' === get_resource_type($resource->getResource())) {
                 return sprintf(
-                    "opendir/fopen/tmpfile/popen/fsockopen/pfsockopen %s",
+                    'opendir/fopen/tmpfile/popen/fsockopen/pfsockopen %s',
                     preg_replace(
                         '/^(Resource id) #\d+$/',
                         '$1 #42',
@@ -572,21 +541,15 @@ $caster = $caster->withCustomResourceFormatterCollection(new ResourceFormatterCo
             return null; // Pass on to next formatter or lastly DefaultResourceFormatter
         }
     },
-    /**
-     * @inheritDoc
-     */
     new class extends AbstractResourceFormatter
     {
-        /**
-         * {@inheritDoc}
-         */
         public function format(CasterInterface $caster, Resource_ $resource): ?string
         {
             if (false === $this->isHandling($resource)) {
                 return null; // Pass on to next formatter or lastly DefaultResourceFormatter
             }
 
-            if ("xml" === get_resource_type($resource->getResource())) {
+            if ('xml' === get_resource_type($resource->getResource())) {
                 $identifier = preg_replace(
                     '/^(Resource id) #\d+$/',
                     '$1 #42',
@@ -596,7 +559,7 @@ $caster = $caster->withCustomResourceFormatterCollection(new ResourceFormatterCo
                 assert(is_string($identifier));
 
                 return sprintf(
-                    "XML %s",
+                    'XML %s',
                     $identifier,
                 );
             }
@@ -606,7 +569,7 @@ $caster = $caster->withCustomResourceFormatterCollection(new ResourceFormatterCo
     },
 ]));
 
-echo $caster->cast(fopen(__FILE__, "r+")) . "\n";
+echo $caster->cast(fopen(__FILE__, 'r+')) . "\n";
 
 ```
 
@@ -625,6 +588,8 @@ opendir/fopen/tmpfile/popen/fsockopen/pfsockopen Resource id #42
 ```php
 <?php
 
+declare(strict_types=1);
+
 use Eboreum\Caster\Abstraction\Formatter\AbstractStringFormatter;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Collection\Formatter\StringFormatterCollection;
@@ -632,30 +597,21 @@ use Eboreum\Caster\Contract\CasterInterface;
 
 $caster = Caster::create();
 $caster = $caster->withCustomStringFormatterCollection(new StringFormatterCollection([
-    /**
-     * @inheritDoc
-     */
     new class extends AbstractStringFormatter
     {
-        /**
-         * {@inheritDoc}
-         */
         public function format(CasterInterface $caster, string $string): ?string
         {
             if (false === $this->isHandling($string)) {
                 return null; // Pass on to next formatter or lastly DefaultStringFormatter
             }
 
-            if ("What do we like?" === (string)$string) {
-                return $caster->cast("CAKE!");
+            if ('What do we like?' === (string)$string) {
+                return $caster->cast('CAKE!');
             }
 
             return null; // Pass on to next formatter or lastly DefaultStringFormatter
         }
 
-        /**
-         * {@inheritDoc}
-         */
         public function isHandling(string $string): bool
         {
             return true;
@@ -663,9 +619,9 @@ $caster = $caster->withCustomStringFormatterCollection(new StringFormatterCollec
     },
 ]));
 
-echo $caster->cast("What do we like?") . "\n";
+echo $caster->cast('What do we like?') . "\n";
 
-echo $caster->castTyped("Mmmm, cake") . "\n";
+echo $caster->castTyped('Mmmm, cake') . "\n";
 
 ```
 
@@ -695,23 +651,25 @@ When using `\Eboreum\Caster\Caster->cast(...)`, any string is masked before it i
 ```php
 <?php
 
+declare(strict_types=1);
+
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Collection\EncryptedStringCollection;
 use Eboreum\Caster\EncryptedString;
 
 $caster = Caster::create();
 $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection([
-    new EncryptedString("bar"),
-    new EncryptedString("bim"),
-    new EncryptedString("345"),
-    new EncryptedString("456"),
+    new EncryptedString('bar'),
+    new EncryptedString('bim'),
+    new EncryptedString('345'),
+    new EncryptedString('456'),
 ]));
 
-echo $caster->castTyped("foo bar baz bim bum") . "\n"; // Notice: Original string length is not revealed
+echo $caster->castTyped('foo bar baz bim bum') . "\n"; // Notice: Original string length is not revealed
 
 echo "\n\n";
 
-echo $caster->castTyped("0123456789") . "\n"; // Notice: 3456 are masked because 345 and 456 overlap
+echo $caster->castTyped('0123456789') . "\n"; // Notice: 3456 are masked because 345 and 456 overlap
 
 ```
 
@@ -732,7 +690,9 @@ echo $caster->castTyped("0123456789") . "\n"; // Notice: 3456 are masked because
 ```json
 "nikic/php-parser": "^4.12",
 "phpstan/phpstan": "^1.8",
-"phpunit/phpunit": "^9.5"
+"phpunit/phpunit": "^9.5",
+"slevomat/coding-standard": "^8.3",
+"squizlabs/php_codesniffer": "^3.7"
 ```
 
 ## Running tests

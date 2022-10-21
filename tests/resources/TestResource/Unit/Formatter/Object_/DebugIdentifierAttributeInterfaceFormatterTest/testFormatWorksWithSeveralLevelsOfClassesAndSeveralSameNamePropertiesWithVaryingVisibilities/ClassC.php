@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TestResource\Unit\Eboreum\Caster\Formatter\Object_\DebugIdentifierAttributeInterfaceFormatterTest\testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities;
+namespace TestResource\Unit\Eboreum\Caster\Formatter\Object_\DebugIdentifierAttributeInterfaceFormatterTest\testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities; // phpcs:ignore
 
 use Eboreum\Caster\Attribute\DebugIdentifier;
 use Eboreum\Caster\Contract\DebugIdentifierAttributeInterface;
@@ -16,34 +16,42 @@ abstract class ClassC implements DebugIdentifierAttributeInterface
     protected string $publicPublicProtected = 'c';
 
     #[DebugIdentifier]
-    private string $publicPublicPrivate = 'c'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
+    // @phpstan-ignore-next-line Suppression code babdc1d2; see README.md
+    private string $publicPublicPrivate = 'c';
 
     #[DebugIdentifier]
     protected string $publicProtectedProtected = 'c';
 
     #[DebugIdentifier]
-    private string $publicProtectedPrivate = 'c'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
+    // @phpstan-ignore-next-line Suppression code babdc1d2; see README.md
+    private string $publicProtectedPrivate = 'c';
 
     #[DebugIdentifier]
-    private string $publicPrivatePrivate = 'c'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
+    // @phpstan-ignore-next-line Suppression code babdc1d2; see README.md
+    private string $publicPrivatePrivate = 'c';
 
     #[DebugIdentifier]
     protected string $protectedProtectedProtected = 'c';
 
     #[DebugIdentifier]
-    private string $protectedProtectedPrivate = 'c'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
+    // @phpstan-ignore-next-line Suppression code babdc1d2; see README.md
+    private string $protectedProtectedPrivate = 'c';
 
     #[DebugIdentifier]
-    private string $protectedPrivatePrivate = 'c'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
+    // @phpstan-ignore-next-line Suppression code babdc1d2; see README.md
+    private string $protectedPrivatePrivate = 'c';
 
     #[DebugIdentifier]
-    private string $privatePrivatePrivate = 'c'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
+    // @phpstan-ignore-next-line Suppression code babdc1d2; see README.md
+    private string $privatePrivatePrivate = 'c';
 
     #[DebugIdentifier]
-    private static string $staticPrivatePrivatePrivate = 'c'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
+    // @phpstan-ignore-next-line Suppression code babdc1d2; see README.md
+    private static string $staticPrivatePrivatePrivate = 'c';
 
     #[DebugIdentifier]
-    private string $onlyInC = 'c'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
+    // @phpstan-ignore-next-line Suppression code babdc1d2; see README.md
+    private string $onlyInC = 'c';
 
     #[DebugIdentifier]
     public string $onlyInBAndCPublicPublic = 'c';
@@ -52,29 +60,32 @@ abstract class ClassC implements DebugIdentifierAttributeInterface
     protected string $onlyInBAndCPublicProtected = 'c';
 
     #[DebugIdentifier]
-    private string $onlyInBAndCPublicPrivate = 'c'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
+    // @phpstan-ignore-next-line Suppression code babdc1d2; see README.md
+    private string $onlyInBAndCPublicPrivate = 'c';
 
     #[DebugIdentifier]
     protected string $onlyInBAndCProtectedProtected = 'c';
 
     #[DebugIdentifier]
-    private string $onlyInBAndCProtectedPrivate = 'c'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
+    // @phpstan-ignore-next-line Suppression code babdc1d2; see README.md
+    private string $onlyInBAndCProtectedPrivate = 'c';
 
     #[DebugIdentifier]
-    private string $onlyInBAndCPrivatePrivate = 'c'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
+    // @phpstan-ignore-next-line Suppression code babdc1d2; see README.md
+    private string $onlyInBAndCPrivatePrivate = 'c';
 
     /**
      * @var mixed
      */
-    public $publicDoNotIncludeMe;
+    public $publicDoNotIncludeMe; // phpcs:ignore
 
     /**
      * @var mixed
      */
-    protected $protectedDoNotIncludeMe;
+    protected $protectedDoNotIncludeMe; // phpcs:ignore
 
     /**
      * @var mixed
      */
-    protected $privateDoNotIncludeMe;
+    protected $privateDoNotIncludeMe; // phpcs:ignore
 }

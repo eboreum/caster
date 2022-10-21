@@ -7,6 +7,11 @@ namespace Test\Unit\Eboreum\Caster\Formatter\Object_;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Formatter\Object_\SplFileInfoFormatter;
 use PHPUnit\Framework\TestCase;
+use SplFileInfo;
+use stdClass;
+
+use function assert;
+use function is_string;
 
 class SplFileInfoFormatterTest extends TestCase
 {
@@ -14,7 +19,7 @@ class SplFileInfoFormatterTest extends TestCase
     {
         $caster = Caster::create();
         $splFileInfoFormatter = new SplFileInfoFormatter();
-        $object = new \stdClass();
+        $object = new stdClass();
 
         $this->assertFalse($splFileInfoFormatter->isHandling($object));
         $this->assertNull($splFileInfoFormatter->format($caster, $object));
@@ -25,7 +30,7 @@ class SplFileInfoFormatterTest extends TestCase
         $caster = Caster::create();
         $splFileInfoFormatter = new SplFileInfoFormatter();
 
-        $object = new \SplFileInfo(__FILE__);
+        $object = new SplFileInfo(__FILE__);
 
         $this->assertTrue($splFileInfoFormatter->isHandling($object));
         $formatted = $splFileInfoFormatter->format($caster, $object);

@@ -9,7 +9,15 @@ use Eboreum\Caster\Collection\Formatter\ObjectFormatterCollection;
 use Eboreum\Caster\Common\DataType\Integer\PositiveInteger;
 use Eboreum\Caster\Common\DataType\Integer\UnsignedInteger;
 use Eboreum\Caster\Formatter\Object_\ThrowableFormatter;
+use Exception;
+use LogicException;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
+use stdClass;
+
+use function assert;
+use function implode;
+use function is_string;
 
 class ThrowableFormatterTest extends TestCase
 {
@@ -17,7 +25,7 @@ class ThrowableFormatterTest extends TestCase
     {
         $caster = Caster::create();
         $throwableFormatter = new ThrowableFormatter();
-        $object = new \stdClass();
+        $object = new stdClass();
 
         $this->assertFalse($throwableFormatter->isHandling($object));
         $this->assertNull($throwableFormatter->format($caster, $object));
@@ -27,7 +35,7 @@ class ThrowableFormatterTest extends TestCase
     {
         $caster = Caster::create();
         $throwableFormatter = new ThrowableFormatter();
-        $object = new \Exception('foo');
+        $object = new Exception('foo');
 
         $this->assertTrue($throwableFormatter->isHandling($object));
         $formatted = $throwableFormatter->format($caster, $object);
@@ -59,9 +67,9 @@ class ThrowableFormatterTest extends TestCase
         $caster = $caster->withCustomObjectFormatterCollection(
             new ObjectFormatterCollection([$throwableFormatter]),
         );
-        $third = new \LogicException('baz', 2);
-        $second = new \RuntimeException('bar', 1, $third);
-        $object = new \Exception('foo', 0, $second);
+        $third = new LogicException('baz', 2);
+        $second = new RuntimeException('bar', 1, $third);
+        $object = new Exception('foo', 0, $second);
 
         /**
          * We get 3 levels because, because we didn't not pass it through Caster->cast(...), and so the depth is off by
@@ -112,9 +120,9 @@ class ThrowableFormatterTest extends TestCase
             new ObjectFormatterCollection([$throwableFormatter]),
         );
 
-        $third = new \LogicException('baz', 2);
-        $second = new \RuntimeException('bar', 1, $third);
-        $object = new \Exception('foo', 0, $second);
+        $third = new LogicException('baz', 2);
+        $second = new RuntimeException('bar', 1, $third);
+        $object = new Exception('foo', 0, $second);
 
         /**
          * We get 2 levels because, because we didn't not pass it through Caster->cast(...), and so the depth is off by
