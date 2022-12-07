@@ -12,6 +12,8 @@ use PHPUnit\Framework\TestCase;
 use ReflectionObject;
 use stdClass;
 use TestResource\Unit\Eboreum\Caster\Formatter\Object_\DebugIdentifierAttributeInterfaceFormatterTest\testFormatWorksWithAOjectWithAParentButWithNoConflictingProperties; // phpcs:ignore
+use TestResource\Unit\Eboreum\Caster\Formatter\Object_\DebugIdentifierAttributeInterfaceFormatterTest\testFormatWorksWithATraitDirectlyOnTheFirstClass; // phpcs:ignore
+use TestResource\Unit\Eboreum\Caster\Formatter\Object_\DebugIdentifierAttributeInterfaceFormatterTest\testFormatWorksWithATraitOnAParentClass; // phpcs:ignore
 use TestResource\Unit\Eboreum\Caster\Formatter\Object_\DebugIdentifierAttributeInterfaceFormatterTest\testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities; // phpcs:ignore
 
 use function array_keys;
@@ -448,6 +450,66 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
                 preg_quote($prefix . '\\ClassC', '/'),
                 preg_quote($prefix . '\\ClassB', '/'),
                 preg_quote($prefix . '\\ClassC', '/'),
+            ),
+            $formatted,
+        );
+    }
+
+    public function testFormatWorksWithATraitDirectlyOnTheFirstClassWorks(): void
+    {
+        $object = new testFormatWorksWithATraitDirectlyOnTheFirstClass\ClassA();
+        $caster = Caster::create();
+        $debugIdentifierAttributeInterfaceFormatter = new DebugIdentifierAttributeInterfaceFormatter();
+
+        $formatted = $debugIdentifierAttributeInterfaceFormatter->format($caster, $object);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted)); // Make phpstan happy
+
+        $this->assertMatchesRegularExpression(
+            sprintf(
+                implode('', [
+                    '/',
+                    '^',
+                    '\\\\%s \{',
+                    '\$foo = \(string\(1\)\) "a"',
+                    ', \$baz = \(string\(1\)\) "c"',
+                    ', \$bar = \(string\(1\)\) "b"',
+                    '\}',
+                    '$',
+                    '/',
+                ]),
+                preg_quote(testFormatWorksWithATraitDirectlyOnTheFirstClass\ClassA::class, '/'),
+            ),
+            $formatted,
+        );
+    }
+
+    public function testFormatWorksWithATraitOnAParentClassWorks(): void
+    {
+        $object = new testFormatWorksWithATraitOnAParentClass\ClassA();
+        $caster = Caster::create();
+        $debugIdentifierAttributeInterfaceFormatter = new DebugIdentifierAttributeInterfaceFormatter();
+
+        $formatted = $debugIdentifierAttributeInterfaceFormatter->format($caster, $object);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted)); // Make phpstan happy
+
+        $this->assertMatchesRegularExpression(
+            sprintf(
+                implode('', [
+                    '/',
+                    '^',
+                    '\\\\%s \{',
+                    '\$foo = \(string\(1\)\) "a"',
+                    ', \\\\%s-\>\$bar = \(string\(1\)\) "b"',
+                    ', \\\\%s-\>\$baz = \(string\(1\)\) "c"',
+                    '\}',
+                    '$',
+                    '/',
+                ]),
+                preg_quote(testFormatWorksWithATraitOnAParentClass\ClassA::class, '/'),
+                preg_quote(testFormatWorksWithATraitOnAParentClass\ClassB::class, '/'),
+                preg_quote(testFormatWorksWithATraitOnAParentClass\ClassB::class, '/'),
             ),
             $formatted,
         );
