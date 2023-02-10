@@ -105,7 +105,8 @@ interface CasterInterface extends ImmutableObjectInterface
      * Must have behavior very similar to that of the PHP core function `sprintf`. However, all values contained in the
      * $values argument, which are NOT float or int, must be wrapped using the `cast` method in the implementing class.
      *
-     * Unlike the PHP core function `sprintf`, however, you may pass any data type – including objects and arrays – in
+     * Unlike the PHP core function `sprintf`, however, you may pass any data type – including null, booleans, arrays,
+     * and objects (even objects, which do not implement the Stringable interface or has the `__toString` method) – in
      * this method, as these will be converted to their string represenations via the `cast` method.
      *
      * Method logic must NOT handle things like argnum, flags, width or precision, e.g. "%1$s", "%04s", "%2.3s".
