@@ -18,6 +18,16 @@ use function strval;
 
 abstract class AbstractInteger implements IntegerInterface
 {
+    public static function getMaximumLimit(): ?int
+    {
+        return null;
+    }
+
+    public static function getMinimumLimit(): ?int
+    {
+        return null;
+    }
+
     #[DebugIdentifier]
     protected int $integer;
 
@@ -67,16 +77,6 @@ abstract class AbstractInteger implements IntegerInterface
                 implode(', ', $argumentsAsStrings),
             ), 0, $t);
         }
-    }
-
-    public static function getMaximumLimit(): ?int
-    {
-        return null;
-    }
-
-    public static function getMinimumLimit(): ?int
-    {
-        return null;
     }
 
     public function jsonSerialize(): string

@@ -23,12 +23,12 @@ interface CharacterEncodingInterface extends ImmutableObjectInterface
      */
     public static function isCharacterEncodingValid(string $name): bool;
 
+    public function __toString(): string;
+
     public function getName(): string;
 
     /**
      * Must return true when two character encodings are considered to be the same. Otherwise, must return false.
      */
     public function isSame(CharacterEncodingInterface $characterEncoding): bool;
-
-    public function __toString(): string;
 }

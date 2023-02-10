@@ -39,8 +39,6 @@ interface CasterInterface extends ImmutableObjectInterface
     public const STRING_QUOTING_CHARACTER_DEFAULT = '"';
     public const STRING_SAMPLE_SIZE_DEFAULT = 1000;
 
-    public function __construct(CharacterEncodingInterface $characterEncoding);
-
     /**
      * Must always return the same instance.
      */
@@ -50,6 +48,8 @@ interface CasterInterface extends ImmutableObjectInterface
      * Must return a new instance every time.
      */
     public static function create(?CharacterEncodingInterface $characterEncoding = null): static;
+
+    public function __construct(CharacterEncodingInterface $characterEncoding);
 
     /**
      * Returns the spelled-out value. E.g. `true` will be output as "true", strings will be wrapped in quotes (like

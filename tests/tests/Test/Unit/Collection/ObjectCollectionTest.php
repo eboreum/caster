@@ -119,14 +119,14 @@ class ObjectCollectionTest extends TestCase
         try {
             new class ($elements) extends AbstractObjectCollection
             {
-                public function getIterator(): ArrayIterator
-                {
-                    return new ArrayIterator($this->elements);
-                }
-
                 public static function getHandledClassName(): string
                 {
                     return 'stdClass';
+                }
+
+                public function getIterator(): ArrayIterator
+                {
+                    return new ArrayIterator($this->elements);
                 }
             };
         } catch (Exception $e) { // @phpstan-ignore-line Suppression code 136348fe; see README.md

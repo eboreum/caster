@@ -9,6 +9,10 @@ use Eboreum\Caster\Attribute\DebugIdentifier;
 class ClassA extends ClassB
 {
     #[DebugIdentifier]
+    // @phpstan-ignore-next-line Suppression code babdc1d2; see README.md
+    private static string $staticPrivatePrivatePrivate = 'a';
+
+    #[DebugIdentifier]
     public string $publicPublicPublic = 'a';
 
     #[DebugIdentifier]
@@ -38,10 +42,6 @@ class ClassA extends ClassB
     #[DebugIdentifier]
     // @phpstan-ignore-next-line Suppression code babdc1d2; see README.md
     private string $privatePrivatePrivate = 'a';
-
-    #[DebugIdentifier]
-    // @phpstan-ignore-next-line Suppression code babdc1d2; see README.md
-    private static string $staticPrivatePrivatePrivate = 'a';
 
     #[DebugIdentifier]
     // @phpstan-ignore-next-line Suppression code babdc1d2; see README.md

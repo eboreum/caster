@@ -23,6 +23,24 @@ class CharacterEncoding implements CharacterEncodingInterface
 {
     private static ?CharacterEncoding $instance = null;
 
+    public static function getInstance(): CharacterEncoding
+    {
+        if (null === self::$instance) {
+            self::$instance = new self(mb_internal_encoding());
+        }
+
+        return self::$instance;
+    }
+
+    public static function isCharacterEncodingValid(string $name): bool
+    {
+        return in_array(
+            $name,
+            mb_list_encodings(),
+            true,
+        );
+    }
+
     /** The name of the character encoding, e.g. "UTF-8". */
     protected string $name;
 
@@ -72,27 +90,9 @@ class CharacterEncoding implements CharacterEncodingInterface
         }
     }
 
-    public static function getInstance(): CharacterEncoding
-    {
-        if (null === self::$instance) {
-            self::$instance = new self(mb_internal_encoding());
-        }
-
-        return self::$instance;
-    }
-
     public function __toString(): string
     {
         return $this->name;
-    }
-
-    public static function isCharacterEncodingValid(string $name): bool
-    {
-        return in_array(
-            $name,
-            mb_list_encodings(),
-            true,
-        );
     }
 
     public function getName(): string

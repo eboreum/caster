@@ -146,132 +146,7 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
         $this->assertTrue($debugIdentifierAttributeInterfaceFormatter->isHandling($object));
         $this->assertCount(20, $propertyNameToReflectionProperties);
 
-        $this->assertSame('publicPublicPublic', $propertyNames[0]);
-        $this->assertCount(1, $propertyNameToReflectionProperties['publicPublicPublic']);
-        $this->assertSame(
-            $prefix . '\\ClassA',
-            $propertyNameToReflectionProperties['publicPublicPublic'][0]->getDeclaringClass()->getName(),
-        );
-        $this->assertTrue($propertyNameToReflectionProperties['publicPublicPublic'][0]->isPublic());
-
-        $this->assertSame('publicPublicProtected', $propertyNames[1]);
-        $this->assertCount(1, $propertyNameToReflectionProperties['publicPublicProtected']);
-        $this->assertSame(
-            $prefix . '\\ClassA',
-            $propertyNameToReflectionProperties['publicPublicProtected'][0]->getDeclaringClass()->getName(),
-        );
-        $this->assertTrue($propertyNameToReflectionProperties['publicPublicProtected'][0]->isPublic());
-
-        $this->assertSame('publicPublicPrivate', $propertyNames[2]);
-        $this->assertCount(2, $propertyNameToReflectionProperties['publicPublicPrivate']);
-        $this->assertSame(
-            $prefix . '\\ClassA',
-            $propertyNameToReflectionProperties['publicPublicPrivate'][0]->getDeclaringClass()->getName(),
-        );
-        $this->assertTrue($propertyNameToReflectionProperties['publicPublicPrivate'][0]->isPublic());
-        $this->assertSame(
-            $prefix . '\\ClassC',
-            $propertyNameToReflectionProperties['publicPublicPrivate'][1]->getDeclaringClass()->getName(),
-        );
-        $this->assertTrue($propertyNameToReflectionProperties['publicPublicPrivate'][1]->isPrivate());
-
-        $this->assertSame('publicProtectedProtected', $propertyNames[3]);
-        $this->assertCount(1, $propertyNameToReflectionProperties['publicProtectedProtected']);
-        $this->assertSame(
-            $prefix . '\\ClassA',
-            $propertyNameToReflectionProperties['publicProtectedProtected'][0]->getDeclaringClass()->getName(),
-        );
-        $this->assertTrue($propertyNameToReflectionProperties['publicProtectedProtected'][0]->isPublic());
-
-        $this->assertSame('publicProtectedPrivate', $propertyNames[4]);
-        $this->assertCount(2, $propertyNameToReflectionProperties['publicProtectedPrivate']);
-        $this->assertTrue($propertyNameToReflectionProperties['publicProtectedPrivate'][0]->isPublic());
-        $this->assertSame(
-            $prefix . '\\ClassA',
-            $propertyNameToReflectionProperties['publicProtectedPrivate'][0]->getDeclaringClass()->getName(),
-        );
-        $this->assertSame(
-            $prefix . '\\ClassC',
-            $propertyNameToReflectionProperties['publicProtectedPrivate'][1]->getDeclaringClass()->getName(),
-        );
-        $this->assertTrue($propertyNameToReflectionProperties['publicProtectedPrivate'][1]->isPrivate());
-
-        $this->assertSame('publicPrivatePrivate', $propertyNames[5]);
-        $this->assertCount(3, $propertyNameToReflectionProperties['publicPrivatePrivate']);
-        $this->assertSame(
-            $prefix . '\\ClassA',
-            $propertyNameToReflectionProperties['publicPrivatePrivate'][0]->getDeclaringClass()->getName(),
-        );
-        $this->assertTrue($propertyNameToReflectionProperties['publicPrivatePrivate'][0]->isPublic());
-        $this->assertSame(
-            $prefix . '\\ClassB',
-            $propertyNameToReflectionProperties['publicPrivatePrivate'][1]->getDeclaringClass()->getName(),
-        );
-        $this->assertTrue($propertyNameToReflectionProperties['publicPrivatePrivate'][1]->isPrivate());
-        $this->assertSame(
-            $prefix . '\\ClassC',
-            $propertyNameToReflectionProperties['publicPrivatePrivate'][2]->getDeclaringClass()->getName(),
-        );
-        $this->assertTrue($propertyNameToReflectionProperties['publicPrivatePrivate'][2]->isPrivate());
-
-        $this->assertSame('protectedProtectedProtected', $propertyNames[6]);
-        $this->assertCount(1, $propertyNameToReflectionProperties['protectedProtectedProtected']);
-        $this->assertSame(
-            $prefix . '\\ClassA',
-            $propertyNameToReflectionProperties['protectedProtectedProtected'][0]->getDeclaringClass()->getName(),
-        );
-        $this->assertTrue($propertyNameToReflectionProperties['protectedProtectedProtected'][0]->isProtected());
-
-        $this->assertSame('protectedProtectedPrivate', $propertyNames[7]);
-        $this->assertCount(2, $propertyNameToReflectionProperties['protectedProtectedPrivate']);
-        $this->assertSame(
-            $prefix . '\\ClassA',
-            $propertyNameToReflectionProperties['protectedProtectedPrivate'][0]->getDeclaringClass()->getName(),
-        );
-        $this->assertTrue($propertyNameToReflectionProperties['protectedProtectedPrivate'][0]->isProtected());
-        $this->assertSame(
-            $prefix . '\\ClassC',
-            $propertyNameToReflectionProperties['protectedProtectedPrivate'][1]->getDeclaringClass()->getName(),
-        );
-        $this->assertTrue($propertyNameToReflectionProperties['protectedProtectedPrivate'][1]->isPrivate());
-
-        $this->assertSame('protectedPrivatePrivate', $propertyNames[8]);
-        $this->assertCount(3, $propertyNameToReflectionProperties['protectedPrivatePrivate']);
-        $this->assertSame(
-            $prefix . '\\ClassA',
-            $propertyNameToReflectionProperties['protectedPrivatePrivate'][0]->getDeclaringClass()->getName(),
-        );
-        $this->assertTrue($propertyNameToReflectionProperties['protectedPrivatePrivate'][0]->isProtected());
-        $this->assertSame(
-            $prefix . '\\ClassB',
-            $propertyNameToReflectionProperties['protectedPrivatePrivate'][1]->getDeclaringClass()->getName(),
-        );
-        $this->assertTrue($propertyNameToReflectionProperties['protectedPrivatePrivate'][1]->isPrivate());
-        $this->assertSame(
-            $prefix . '\\ClassC',
-            $propertyNameToReflectionProperties['protectedPrivatePrivate'][2]->getDeclaringClass()->getName(),
-        );
-        $this->assertTrue($propertyNameToReflectionProperties['protectedPrivatePrivate'][2]->isPrivate());
-
-        $this->assertSame('privatePrivatePrivate', $propertyNames[9]);
-        $this->assertCount(3, $propertyNameToReflectionProperties['privatePrivatePrivate']);
-        $this->assertSame(
-            $prefix . '\\ClassA',
-            $propertyNameToReflectionProperties['privatePrivatePrivate'][0]->getDeclaringClass()->getName(),
-        );
-        $this->assertTrue($propertyNameToReflectionProperties['privatePrivatePrivate'][0]->isPrivate());
-        $this->assertSame(
-            $prefix . '\\ClassB',
-            $propertyNameToReflectionProperties['privatePrivatePrivate'][1]->getDeclaringClass()->getName(),
-        );
-        $this->assertTrue($propertyNameToReflectionProperties['privatePrivatePrivate'][1]->isPrivate());
-        $this->assertSame(
-            $prefix . '\\ClassC',
-            $propertyNameToReflectionProperties['privatePrivatePrivate'][2]->getDeclaringClass()->getName(),
-        );
-        $this->assertTrue($propertyNameToReflectionProperties['privatePrivatePrivate'][2]->isPrivate());
-
-        $this->assertSame('staticPrivatePrivatePrivate', $propertyNames[10]);
+        $this->assertSame('staticPrivatePrivatePrivate', $propertyNames[0]);
         $this->assertCount(3, $propertyNameToReflectionProperties['staticPrivatePrivatePrivate']);
         $this->assertSame(
             $prefix . '\\ClassA',
@@ -291,6 +166,131 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
         );
         $this->assertTrue($propertyNameToReflectionProperties['staticPrivatePrivatePrivate'][2]->isPrivate());
         $this->assertTrue($propertyNameToReflectionProperties['staticPrivatePrivatePrivate'][2]->isStatic());
+
+        $this->assertSame('publicPublicPublic', $propertyNames[1]);
+        $this->assertCount(1, $propertyNameToReflectionProperties['publicPublicPublic']);
+        $this->assertSame(
+            $prefix . '\\ClassA',
+            $propertyNameToReflectionProperties['publicPublicPublic'][0]->getDeclaringClass()->getName(),
+        );
+        $this->assertTrue($propertyNameToReflectionProperties['publicPublicPublic'][0]->isPublic());
+
+        $this->assertSame('publicPublicProtected', $propertyNames[2]);
+        $this->assertCount(1, $propertyNameToReflectionProperties['publicPublicProtected']);
+        $this->assertSame(
+            $prefix . '\\ClassA',
+            $propertyNameToReflectionProperties['publicPublicProtected'][0]->getDeclaringClass()->getName(),
+        );
+        $this->assertTrue($propertyNameToReflectionProperties['publicPublicProtected'][0]->isPublic());
+
+        $this->assertSame('publicPublicPrivate', $propertyNames[3]);
+        $this->assertCount(2, $propertyNameToReflectionProperties['publicPublicPrivate']);
+        $this->assertSame(
+            $prefix . '\\ClassA',
+            $propertyNameToReflectionProperties['publicPublicPrivate'][0]->getDeclaringClass()->getName(),
+        );
+        $this->assertTrue($propertyNameToReflectionProperties['publicPublicPrivate'][0]->isPublic());
+        $this->assertSame(
+            $prefix . '\\ClassC',
+            $propertyNameToReflectionProperties['publicPublicPrivate'][1]->getDeclaringClass()->getName(),
+        );
+        $this->assertTrue($propertyNameToReflectionProperties['publicPublicPrivate'][1]->isPrivate());
+
+        $this->assertSame('publicProtectedProtected', $propertyNames[4]);
+        $this->assertCount(1, $propertyNameToReflectionProperties['publicProtectedProtected']);
+        $this->assertSame(
+            $prefix . '\\ClassA',
+            $propertyNameToReflectionProperties['publicProtectedProtected'][0]->getDeclaringClass()->getName(),
+        );
+        $this->assertTrue($propertyNameToReflectionProperties['publicProtectedProtected'][0]->isPublic());
+
+        $this->assertSame('publicProtectedPrivate', $propertyNames[5]);
+        $this->assertCount(2, $propertyNameToReflectionProperties['publicProtectedPrivate']);
+        $this->assertTrue($propertyNameToReflectionProperties['publicProtectedPrivate'][0]->isPublic());
+        $this->assertSame(
+            $prefix . '\\ClassA',
+            $propertyNameToReflectionProperties['publicProtectedPrivate'][0]->getDeclaringClass()->getName(),
+        );
+        $this->assertSame(
+            $prefix . '\\ClassC',
+            $propertyNameToReflectionProperties['publicProtectedPrivate'][1]->getDeclaringClass()->getName(),
+        );
+        $this->assertTrue($propertyNameToReflectionProperties['publicProtectedPrivate'][1]->isPrivate());
+
+        $this->assertSame('publicPrivatePrivate', $propertyNames[6]);
+        $this->assertCount(3, $propertyNameToReflectionProperties['publicPrivatePrivate']);
+        $this->assertSame(
+            $prefix . '\\ClassA',
+            $propertyNameToReflectionProperties['publicPrivatePrivate'][0]->getDeclaringClass()->getName(),
+        );
+        $this->assertTrue($propertyNameToReflectionProperties['publicPrivatePrivate'][0]->isPublic());
+        $this->assertSame(
+            $prefix . '\\ClassB',
+            $propertyNameToReflectionProperties['publicPrivatePrivate'][1]->getDeclaringClass()->getName(),
+        );
+        $this->assertTrue($propertyNameToReflectionProperties['publicPrivatePrivate'][1]->isPrivate());
+        $this->assertSame(
+            $prefix . '\\ClassC',
+            $propertyNameToReflectionProperties['publicPrivatePrivate'][2]->getDeclaringClass()->getName(),
+        );
+        $this->assertTrue($propertyNameToReflectionProperties['publicPrivatePrivate'][2]->isPrivate());
+
+        $this->assertSame('protectedProtectedProtected', $propertyNames[7]);
+        $this->assertCount(1, $propertyNameToReflectionProperties['protectedProtectedProtected']);
+        $this->assertSame(
+            $prefix . '\\ClassA',
+            $propertyNameToReflectionProperties['protectedProtectedProtected'][0]->getDeclaringClass()->getName(),
+        );
+        $this->assertTrue($propertyNameToReflectionProperties['protectedProtectedProtected'][0]->isProtected());
+
+        $this->assertSame('protectedProtectedPrivate', $propertyNames[8]);
+        $this->assertCount(2, $propertyNameToReflectionProperties['protectedProtectedPrivate']);
+        $this->assertSame(
+            $prefix . '\\ClassA',
+            $propertyNameToReflectionProperties['protectedProtectedPrivate'][0]->getDeclaringClass()->getName(),
+        );
+        $this->assertTrue($propertyNameToReflectionProperties['protectedProtectedPrivate'][0]->isProtected());
+        $this->assertSame(
+            $prefix . '\\ClassC',
+            $propertyNameToReflectionProperties['protectedProtectedPrivate'][1]->getDeclaringClass()->getName(),
+        );
+        $this->assertTrue($propertyNameToReflectionProperties['protectedProtectedPrivate'][1]->isPrivate());
+
+        $this->assertSame('protectedPrivatePrivate', $propertyNames[9]);
+        $this->assertCount(3, $propertyNameToReflectionProperties['protectedPrivatePrivate']);
+        $this->assertSame(
+            $prefix . '\\ClassA',
+            $propertyNameToReflectionProperties['protectedPrivatePrivate'][0]->getDeclaringClass()->getName(),
+        );
+        $this->assertTrue($propertyNameToReflectionProperties['protectedPrivatePrivate'][0]->isProtected());
+        $this->assertSame(
+            $prefix . '\\ClassB',
+            $propertyNameToReflectionProperties['protectedPrivatePrivate'][1]->getDeclaringClass()->getName(),
+        );
+        $this->assertTrue($propertyNameToReflectionProperties['protectedPrivatePrivate'][1]->isPrivate());
+        $this->assertSame(
+            $prefix . '\\ClassC',
+            $propertyNameToReflectionProperties['protectedPrivatePrivate'][2]->getDeclaringClass()->getName(),
+        );
+        $this->assertTrue($propertyNameToReflectionProperties['protectedPrivatePrivate'][2]->isPrivate());
+
+        $this->assertSame('privatePrivatePrivate', $propertyNames[10]);
+        $this->assertCount(3, $propertyNameToReflectionProperties['privatePrivatePrivate']);
+        $this->assertSame(
+            $prefix . '\\ClassA',
+            $propertyNameToReflectionProperties['privatePrivatePrivate'][0]->getDeclaringClass()->getName(),
+        );
+        $this->assertTrue($propertyNameToReflectionProperties['privatePrivatePrivate'][0]->isPrivate());
+        $this->assertSame(
+            $prefix . '\\ClassB',
+            $propertyNameToReflectionProperties['privatePrivatePrivate'][1]->getDeclaringClass()->getName(),
+        );
+        $this->assertTrue($propertyNameToReflectionProperties['privatePrivatePrivate'][1]->isPrivate());
+        $this->assertSame(
+            $prefix . '\\ClassC',
+            $propertyNameToReflectionProperties['privatePrivatePrivate'][2]->getDeclaringClass()->getName(),
+        );
+        $this->assertTrue($propertyNameToReflectionProperties['privatePrivatePrivate'][2]->isPrivate());
 
         $this->assertSame('onlyInA', $propertyNames[11]);
         $this->assertCount(1, $propertyNameToReflectionProperties['onlyInA']);
@@ -389,7 +389,10 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
                     '/',
                     '^',
                     '\\\\%s \{',
-                        '\$publicPublicPublic = \(string\(1\)\) "a"',
+                        '\$staticPrivatePrivatePrivate = \(string\(1\)\) "a"',
+                        ', \\\\%s::\$staticPrivatePrivatePrivate = \(string\(1\)\) "b"',
+                        ', \\\\%s::\$staticPrivatePrivatePrivate = \(string\(1\)\) "c"',
+                        ', \$publicPublicPublic = \(string\(1\)\) "a"',
                         ', \$publicPublicProtected = \(string\(1\)\) "a"',
                         ', \$publicPublicPrivate = \(string\(1\)\) "a"',
                         ', \\\\%s-\>\$publicPublicPrivate = \(string\(1\)\) "c"',
@@ -408,9 +411,6 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
                         ', \$privatePrivatePrivate = \(string\(1\)\) "a"',
                         ', \\\\%s-\>\$privatePrivatePrivate = \(string\(1\)\) "b"',
                         ', \\\\%s-\>\$privatePrivatePrivate = \(string\(1\)\) "c"',
-                        ', \$staticPrivatePrivatePrivate = \(string\(1\)\) "a"',
-                        ', \\\\%s::\$staticPrivatePrivatePrivate = \(string\(1\)\) "b"',
-                        ', \\\\%s::\$staticPrivatePrivatePrivate = \(string\(1\)\) "c"',
                         ', \$onlyInA = \(string\(1\)\) "a"',
                         ', \\\\%s-\>\$onlyInBAndCPublicPublic = \(string\(1\)\) "b"',
                         ', \\\\%s-\>\$onlyInBAndCPublicProtected = \(string\(1\)\) "b"',
@@ -428,12 +428,12 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
                     '/',
                 ]),
                 preg_quote($className, '/'),
+                preg_quote($prefix . '\\ClassB', '/'),
+                preg_quote($prefix . '\\ClassC', '/'),
                 preg_quote($prefix . '\\ClassC', '/'),
                 preg_quote($prefix . '\\ClassC', '/'),
                 preg_quote($prefix . '\\ClassB', '/'),
                 preg_quote($prefix . '\\ClassC', '/'),
-                preg_quote($prefix . '\\ClassC', '/'),
-                preg_quote($prefix . '\\ClassB', '/'),
                 preg_quote($prefix . '\\ClassC', '/'),
                 preg_quote($prefix . '\\ClassB', '/'),
                 preg_quote($prefix . '\\ClassC', '/'),

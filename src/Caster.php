@@ -76,6 +76,75 @@ class Caster implements CasterInterface
      */
     private static ?Caster $internalInstance = null;
 
+    public static function getInstance(): Caster
+    {
+        if (null === self::$instance) {
+            self::$instance = self::create();
+        }
+
+        return self::$instance;
+    }
+
+    /**
+     * An instance meant for use internally within this library (eboreum/caster).
+     */
+    public static function getInternalInstance(): Caster
+    {
+        if (null === self::$internalInstance) {
+            self::$internalInstance = self::getInstance();
+
+            self::$internalInstance = self::$internalInstance->withCustomObjectFormatterCollection(
+                new ObjectFormatterCollection([
+                    new DebugIdentifierAttributeInterfaceFormatter(),
+                    new TextuallyIdentifiableInterfaceFormatter(),
+                ]),
+            );
+        }
+
+        return self::$internalInstance;
+    }
+
+    public static function create(?CharacterEncodingInterface $characterEncoding = null): static
+    {
+        if (null === $characterEncoding) {
+            $characterEncoding = CharacterEncoding::getInstance();
+        }
+
+        return new static($characterEncoding);
+    }
+
+    /**
+     * @param ReflectionClass<object> $reflectionClass
+     */
+    public static function makeNormalizedClassName(ReflectionClass $reflectionClass): string
+    {
+        if ($reflectionClass->isAnonymous()) {
+            assert(is_string($reflectionClass->getFileName())); // Make phpstan happy
+
+            $pretext = 'class';
+
+            if ($reflectionClass->getParentClass()) {
+                $pretext = '\\' . $reflectionClass->getParentClass()->getName();
+            }
+
+            return sprintf(
+                '%s@anonymous/in/%s:%d',
+                $pretext,
+                preg_replace(
+                    '/^\//',
+                    '',
+                    $reflectionClass->getFileName(),
+                ),
+                $reflectionClass->getStartLine(),
+            );
+        }
+
+        return sprintf(
+            '\\%s',
+            $reflectionClass->getName(),
+        );
+    }
+
     /**
      * The character encoding to be used within the caster.
      */
@@ -194,34 +263,6 @@ class Caster implements CasterInterface
         $this->context = new Context();
     }
 
-    public static function getInstance(): Caster
-    {
-        if (null === self::$instance) {
-            self::$instance = self::create();
-        }
-
-        return self::$instance;
-    }
-
-    /**
-     * An instance meant for use internally within this library (eboreum/caster).
-     */
-    public static function getInternalInstance(): Caster
-    {
-        if (null === self::$internalInstance) {
-            self::$internalInstance = self::getInstance();
-
-            self::$internalInstance = self::$internalInstance->withCustomObjectFormatterCollection(
-                new ObjectFormatterCollection([
-                    new DebugIdentifierAttributeInterfaceFormatter(),
-                    new TextuallyIdentifiableInterfaceFormatter(),
-                ]),
-            );
-        }
-
-        return self::$internalInstance;
-    }
-
     public function __clone()
     {
         $this->defaultArrayFormatter = clone $this->defaultArrayFormatter;
@@ -235,47 +276,6 @@ class Caster implements CasterInterface
         $this->customObjectFormatterCollection = clone $this->customObjectFormatterCollection;
         $this->customResourceFormatterCollection = clone $this->customResourceFormatterCollection;
         $this->customStringFormatterCollection = clone $this->customStringFormatterCollection;
-    }
-
-    public static function create(?CharacterEncodingInterface $characterEncoding = null): static
-    {
-        if (null === $characterEncoding) {
-            $characterEncoding = CharacterEncoding::getInstance();
-        }
-
-        return new static($characterEncoding);
-    }
-
-    /**
-     * @param ReflectionClass<object> $reflectionClass
-     */
-    public static function makeNormalizedClassName(ReflectionClass $reflectionClass): string
-    {
-        if ($reflectionClass->isAnonymous()) {
-            assert(is_string($reflectionClass->getFileName())); // Make phpstan happy
-
-            $pretext = 'class';
-
-            if ($reflectionClass->getParentClass()) {
-                $pretext = '\\' . $reflectionClass->getParentClass()->getName();
-            }
-
-            return sprintf(
-                '%s@anonymous/in/%s:%d',
-                $pretext,
-                preg_replace(
-                    '/^\//',
-                    '',
-                    $reflectionClass->getFileName(),
-                ),
-                $reflectionClass->getStartLine(),
-            );
-        }
-
-        return sprintf(
-            '\\%s',
-            $reflectionClass->getName(),
-        );
     }
 
     /**

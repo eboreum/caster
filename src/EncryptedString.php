@@ -36,6 +36,19 @@ class EncryptedString implements ImmutableObjectInterface, ElementInterface
 {
     public const ENCRYPTION_METHOD_DEFAULT = 'aes-256-cbc';
 
+    /**
+     * @throws Exception
+     */
+    public static function generateRandomSalt(): string
+    {
+        return bin2hex(random_bytes(64));
+    }
+
+    public static function isEncryptionMethodValid(string $encryptionMethod): bool
+    {
+        return in_array($encryptionMethod, openssl_get_cipher_methods(), true);
+    }
+
     protected string $initializationVectorBase;
 
     protected string $salt;
@@ -123,19 +136,6 @@ class EncryptedString implements ImmutableObjectInterface, ElementInterface
                 implode(', ', $argumentSegments),
             ), 0, $t);
         }
-    }
-
-    /**
-     * @throws Exception
-     */
-    public static function generateRandomSalt(): string
-    {
-        return bin2hex(random_bytes(64));
-    }
-
-    public static function isEncryptionMethodValid(string $encryptionMethod): bool
-    {
-        return in_array($encryptionMethod, openssl_get_cipher_methods(), true);
     }
 
     /**

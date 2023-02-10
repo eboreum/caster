@@ -29,6 +29,17 @@ use function sprintf;
  */
 abstract class AbstractObjectCollection implements ObjectCollectionInterface
 {
+    public static function isElementAccepted(mixed $element): bool
+    {
+        if (is_object($element)) {
+            $className = static::getHandledClassName();
+
+            return ($element instanceof $className);
+        }
+
+        return false;
+    }
+
     /** @var array<T> */
     protected array $elements;
 
@@ -78,17 +89,6 @@ abstract class AbstractObjectCollection implements ObjectCollectionInterface
                 implode(', ', $argumentsAsStrings),
             ), 0, $t);
         }
-    }
-
-    public static function isElementAccepted(mixed $element): bool
-    {
-        if (is_object($element)) {
-            $className = static::getHandledClassName();
-
-            return ($element instanceof $className);
-        }
-
-        return false;
     }
 
     public function count(): int

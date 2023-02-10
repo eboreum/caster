@@ -9,6 +9,10 @@ use Eboreum\Caster\Attribute\DebugIdentifier;
 abstract class ClassB extends ClassC
 {
     #[DebugIdentifier]
+    // @phpstan-ignore-next-line Suppression code babdc1d2; see README.md
+    private static string $staticPrivatePrivatePrivate = 'b';
+
+    #[DebugIdentifier]
     public string $publicPublicPublic = 'b';
 
     #[DebugIdentifier]
@@ -16,38 +20,6 @@ abstract class ClassB extends ClassC
 
     #[DebugIdentifier]
     public string $publicPublicPrivate = 'b';
-
-    #[DebugIdentifier]
-    protected string $publicProtectedProtected = 'b';
-
-    #[DebugIdentifier]
-    protected string $publicProtectedPrivate = 'b';
-
-    #[DebugIdentifier]
-    // @phpstan-ignore-next-line Suppression code babdc1d2; see README.md
-    private string $publicPrivatePrivate = 'b';
-
-    #[DebugIdentifier]
-    protected string $protectedProtectedProtected = 'b';
-
-    #[DebugIdentifier]
-    protected string $protectedProtectedPrivate = 'b';
-
-    #[DebugIdentifier]
-    // @phpstan-ignore-next-line Suppression code babdc1d2; see README.md
-    private string $protectedPrivatePrivate = 'b';
-
-    #[DebugIdentifier]
-    // @phpstan-ignore-next-line Suppression code babdc1d2; see README.md
-    private string $privatePrivatePrivate = 'b';
-
-    #[DebugIdentifier]
-    // @phpstan-ignore-next-line Suppression code babdc1d2; see README.md
-    private static string $staticPrivatePrivatePrivate = 'b';
-
-    #[DebugIdentifier]
-    // @phpstan-ignore-next-line Suppression code babdc1d2; see README.md
-    private string $onlyInB = 'b';
 
     #[DebugIdentifier]
     public string $onlyInBAndCPublicPublic = 'b';
@@ -59,6 +31,18 @@ abstract class ClassB extends ClassC
     public string $onlyInBAndCPublicPrivate = 'b';
 
     #[DebugIdentifier]
+    protected string $publicProtectedProtected = 'b';
+
+    #[DebugIdentifier]
+    protected string $publicProtectedPrivate = 'b';
+
+    #[DebugIdentifier]
+    protected string $protectedProtectedProtected = 'b';
+
+    #[DebugIdentifier]
+    protected string $protectedProtectedPrivate = 'b';
+
+    #[DebugIdentifier]
     protected string $onlyInBAndCProtectedProtected = 'b';
 
     #[DebugIdentifier]
@@ -66,6 +50,22 @@ abstract class ClassB extends ClassC
 
     #[DebugIdentifier]
     protected string $onlyInBAndCPrivatePrivate = 'b';
+
+    #[DebugIdentifier]
+    // @phpstan-ignore-next-line Suppression code babdc1d2; see README.md
+    private string $publicPrivatePrivate = 'b';
+
+    #[DebugIdentifier]
+    // @phpstan-ignore-next-line Suppression code babdc1d2; see README.md
+    private string $protectedPrivatePrivate = 'b';
+
+    #[DebugIdentifier]
+    // @phpstan-ignore-next-line Suppression code babdc1d2; see README.md
+    private string $privatePrivatePrivate = 'b';
+
+    #[DebugIdentifier]
+    // @phpstan-ignore-next-line Suppression code babdc1d2; see README.md
+    private string $onlyInB = 'b';
 
     public $publicDoNotIncludeMe; // phpcs:ignore
 
