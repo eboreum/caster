@@ -644,6 +644,22 @@ class Caster implements CasterInterface
         );
     }
 
+    public function sprintf(string $format, mixed ...$values): string
+    {
+        /** @var array<float|int|string> $valuesVariant */
+        $valuesVariant = [];
+
+        foreach ($values as $k => $v) {
+            if (false === is_float($v) && false === is_int($v)) {
+                $v = $this->cast($v);
+            }
+
+            $valuesVariant[$k] = $v;
+        }
+
+        return sprintf($format, ...$valuesVariant);
+    }
+
     public function withArraySampleSize(UnsignedInteger $arraySampleSize): static
     {
         $clone = clone $this;

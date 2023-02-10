@@ -102,6 +102,23 @@ interface CasterInterface extends ImmutableObjectInterface
     public function quoteAndEscape(string $str): string;
 
     /**
+     * Must have behavior very similar to that of the PHP core function `sprintf`. However, all values contained in the
+     * $values argument, which are NOT float or int, must be wrapped using the `cast` method in the implementing class.
+     *
+     * Unlike the PHP core function `sprint`, however, you may pass any data type – including objects and arrays – in
+     * this method, as these will be converted to their string represenations via the `cast` method.
+     *
+     * Method logic must NOT handle things like argnum, flags, width or precision, e.g. "%1$s", "%04s", "%2.3s".
+     * Instead, format the values beforehand, pass them as strings, and use a simple "%s". The result of
+     * "$this->cast('%04s', 'a')" will be `0"a"` (2x double quote takes up two of the characters) and NOT `"0a"` or
+     * `"000a"`. Supporting these flags to make outputs like `"000a"`, would require a lot of reimplementing the
+     * internals of the `sprintf` function, which we do not wish to do here. The use cases are very limited.
+     *
+     * @see https://www.php.net/manual/en/function.sprintf.php
+     */
+    public function sprintf(string $format, mixed ...$values): string;
+
+    /**
      * Must set the maximum number of elements to be displayed in an array on a clone of the current instance.
      * Must return said clone.
      */

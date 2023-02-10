@@ -1788,6 +1788,67 @@ class CasterTest extends TestCase
         $this->assertSame('"\\\\foo\\""', Caster::create()->quoteAndEscape('\\foo"'));
     }
 
+    /**
+     * @param array<mixed> $values
+     *
+     * @dataProvider dataProviderTestSprintfWorks
+     */
+    public function testSprintfWorks(string $expected, string $format, array $values): void
+    {
+        $this->assertSame($expected, Caster::getInstance()->sprintf($format, ...$values));
+    }
+
+    /**
+     * @return array<array{string, string, array<mixed>}>
+     */
+    public function dataProviderTestSprintfWorks(): array
+    {
+        return [
+            [
+                '"foo"',
+                '%s',
+                ['foo'],
+            ],
+            [
+                '42 43 3.140000',
+                '%s %d %f',
+                [42, 43, 3.14],
+            ],
+            [
+                '"foo" "bar" "baz"',
+                '%s %s %s',
+                ['foo', 'bar', 'baz'],
+            ],
+            [
+                '"foo" "foo"',
+                '%s %1$s',
+                ['foo'],
+            ],
+            [
+                /**
+                 * Perhaps this output may seem strange, but it is covered in the CasterInterface at the `sprintf`
+                 * method. You might have expected the output to be `"000a"`, alas, we have opted out of supporting this
+                 * behavior due to complexity and limited use cases.
+                 *
+                 * 2x double quotes take up 2 characters, which is why it is not `000"a".
+                 */
+                '0"a"',
+                '%04s',
+                ['a'],
+            ],
+            [
+                '[0 => "foo"]',
+                '%s',
+                [['foo']],
+            ],
+            [
+                '\\stdClass',
+                '%s',
+                [new stdClass()],
+            ],
+        ];
+    }
+
     public function testWithArraySampleSizeWorks(): void
     {
         $casterA = Caster::create();
