@@ -53,12 +53,17 @@ use FooBar_9f8a3c814a1d42dda2672abede7ce454;
 use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use ReflectionAttribute;
+use ReflectionClass;
 use ReflectionEnum;
 use ReflectionObject;
+use ReflectionProperty;
 use RuntimeException;
 use SplFileObject;
 use stdClass;
 use TestResource\Unit\Eboreum\Caster\CasterTest\testCastWorks\StringEnum;
+use TestResource\Unit\Eboreum\Caster\Formatter\Object_\ReflectionAttributeFormatterTest\testFormatWorksWithAReflectionAttributeWitNamedArguments\Attributef982a9e0c18911edafa10242ac120002;
+use TestResource\Unit\Eboreum\Caster\Formatter\Object_\ReflectionAttributeFormatterTest\testFormatWorksWithAReflectionAttributeWitNamedArguments\Classf982a9e0c18911edafa10242ac120002;
 use Throwable;
 
 use function array_fill;
@@ -151,6 +156,128 @@ class CasterTest extends TestCase
         $this->assertNotSame($caster->getDefaultObjectFormatter(), $clone->getDefaultObjectFormatter());
         $this->assertNotSame($caster->getDefaultResourceFormatter(), $clone->getDefaultResourceFormatter());
         $this->assertNotSame($caster->getDefaultStringFormatter(), $clone->getDefaultStringFormatter());
+    }
+
+    public function testCastReflectionAttributeToStringWorks(): void
+    {
+        /** @var ReflectionClass<Classf982a9e0c18911edafa10242ac120002> $reflectionClass */
+        $reflectionClass = new ReflectionClass(Classf982a9e0c18911edafa10242ac120002::class);
+
+        /** @var ReflectionAttribute<Attributef982a9e0c18911edafa10242ac120002> $reflectionAttribute */
+        $reflectionAttribute = (
+            $reflectionClass->getAttributes(Attributef982a9e0c18911edafa10242ac120002::class)[0] ?? null
+        );
+
+        $this->assertIsObject($reflectionAttribute);
+        assert(is_object($reflectionAttribute));
+
+        $this->assertSame(
+            sprintf(
+                '\\%s (foo: "lorem", bar: "ipsum")',
+                Attributef982a9e0c18911edafa10242ac120002::class,
+            ),
+            Caster::create()->castReflectionAttributeToString($reflectionAttribute),
+        );
+
+        $this->assertSame(
+            sprintf(
+                '(attribute) \\%s (foo: (string(5)) "lorem", bar: (string(5)) "ipsum")',
+                Attributef982a9e0c18911edafa10242ac120002::class,
+            ),
+            Caster::create()->withIsPrependingType(true)->castReflectionAttributeToString($reflectionAttribute),
+        );
+    }
+
+    public function testCastReflectionClassToStringWorks(): void
+    {
+        /** @var ReflectionClass<self> $reflectionClass */
+        $reflectionClass = new ReflectionClass(self::class);
+
+        $this->assertSame(
+            sprintf(
+                '\\%s',
+                self::class,
+            ),
+            Caster::create()->castReflectionClassToString($reflectionClass),
+        );
+
+        $this->assertSame(
+            sprintf(
+                '(class) \\%s',
+                self::class,
+            ),
+            Caster::create()->withIsPrependingType(true)->castReflectionClassToString($reflectionClass),
+        );
+    }
+
+    public function testCastReflectionMethodToStringWorks(): void
+    {
+        $object = new class
+        {
+            public function lorem(int $foo = 42, string $bar = 'lala', bool $baz = false): void
+            {
+            }
+        };
+
+        $reflectionObject = new ReflectionObject($object);
+
+        $reflectionMethod = $reflectionObject->getMethod('lorem');
+
+        $this->assertMatchesRegularExpression(
+            sprintf(
+                implode('', [
+                    '/^class@anonymous\/in\/.+\/%s:\d+->lorem\(int \$foo = 42, string \$bar = "lala", bool \$baz =',
+                    ' false\): void$/',
+                ]),
+                basename(__FILE__),
+            ),
+            Caster::create()->castReflectionMethodToString($reflectionMethod),
+        );
+
+        $this->assertMatchesRegularExpression(
+            sprintf(
+                implode('', [
+                    '/^class@anonymous\/in\/.+\/%s:\d+->lorem\(int \$foo = \(int\) 42, string \$bar = \(string\(4\)\)',
+                    ' "lala", bool \$baz = \(bool\) false\): void$/',
+                ]),
+                basename(__FILE__),
+            ),
+            Caster::create()->withIsPrependingType(true)->castReflectionMethodToString($reflectionMethod),
+        );
+    }
+
+    public function testCastReflectionPropertyToStringWorks(): void
+    {
+        $reflectionProperty = new ReflectionProperty(EncryptedString::class, 'salt');
+
+        $this->assertSame(
+            sprintf(
+                '\\%s->$salt',
+                EncryptedString::class,
+            ),
+            Caster::create()->castReflectionPropertyToString($reflectionProperty),
+        );
+
+        $this->assertSame(
+            sprintf(
+                'string \\%s->$salt',
+                EncryptedString::class,
+            ),
+            Caster::create()->withIsPrependingType(true)->castReflectionPropertyToString($reflectionProperty),
+        );
+    }
+
+    public function testCastReflectionTypeToStringWorks(): void
+    {
+        $reflectionProperty = new ReflectionProperty(EncryptedString::class, 'salt');
+
+        $this->assertIsObject($reflectionProperty->getType());
+        assert(is_object($reflectionProperty->getType()));
+
+        $this->assertSame(
+            'string',
+            Caster::create()->castReflectionTypeToString($reflectionProperty->getType()),
+        );
     }
 
     /**

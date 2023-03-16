@@ -31,9 +31,18 @@ use Eboreum\Caster\Formatter\DefaultObjectFormatter;
 use Eboreum\Caster\Formatter\DefaultResourceFormatter;
 use Eboreum\Caster\Formatter\DefaultStringFormatter;
 use Eboreum\Caster\Formatter\Object_\DebugIdentifierAttributeInterfaceFormatter;
+use Eboreum\Caster\Formatter\Object_\ReflectionAttributeFormatter;
+use Eboreum\Caster\Formatter\Object_\ReflectionClassFormatter;
+use Eboreum\Caster\Formatter\Object_\ReflectionMethodFormatter;
+use Eboreum\Caster\Formatter\Object_\ReflectionPropertyFormatter;
+use Eboreum\Caster\Formatter\Object_\ReflectionTypeFormatter;
 use Eboreum\Caster\Formatter\Object_\TextuallyIdentifiableInterfaceFormatter;
+use ReflectionAttribute;
 use ReflectionClass;
+use ReflectionMethod;
 use ReflectionObject;
+use ReflectionProperty;
+use ReflectionType;
 use Throwable;
 
 use function addcslashes;
@@ -506,6 +515,100 @@ class Caster implements CasterInterface
         }
 
         return $return;
+    }
+
+    /**
+     * Convenience method for casting a ReflectionAttribute to a string, rendering full class namespace and potential
+     * arguments.
+     *
+     * @see https://www.php.net/manual/en/class.reflectionattribute.php
+     *
+     * @param ReflectionAttribute<object> $reflectionAttribute
+     */
+    public function castReflectionAttributeToString(ReflectionAttribute $reflectionAttribute): string
+    {
+        $formatter = new ReflectionAttributeFormatter();
+        $formatter = $formatter->withIsWrappingInClassName(false);
+        $formatted = $formatter->format($this, $reflectionAttribute);
+
+        Assertion::assertIsString($formatted);
+        assert(is_string($formatted));
+
+        return $formatted;
+    }
+
+    /**
+     * Convenience method for casting a ReflectionClass to a string, rendering full class namespace and an optional type
+     * prefix (class, enum, interface, trait).
+     *
+     * @see https://www.php.net/manual/en/class.reflectionclass.php
+     *
+     * @param ReflectionClass<object> $reflectionClass
+     */
+    public function castReflectionClassToString(ReflectionClass $reflectionClass): string
+    {
+        $formatter = new ReflectionClassFormatter();
+        $formatter = $formatter->withIsWrappingInClassName(false);
+        $formatted = $formatter->format($this, $reflectionClass);
+
+        Assertion::assertIsString($formatted);
+        assert(is_string($formatted));
+
+        return $formatted;
+    }
+
+    /**
+     * Convenience method for casting a ReflectionMethod to a string, rendering full class name space, method name, and
+     * all of the method's parameters.
+     *
+     * @see https://www.php.net/manual/en/class.reflectionmethod.php
+     */
+    public function castReflectionMethodToString(ReflectionMethod $reflectionMethod): string
+    {
+        $formatter = new ReflectionMethodFormatter();
+        $formatter = $formatter->withIsWrappingInClassName(false);
+        $formatted = $formatter->format($this, $reflectionMethod);
+
+        Assertion::assertIsString($formatted);
+        assert(is_string($formatted));
+
+        return $formatted;
+    }
+
+    /**
+     * Convenience method for casting a ReflectionProperty to a string, rendering full class name space, property name,
+     * and optionally the property's type.
+     *
+     * @see https://www.php.net/manual/en/class.reflectionproperty.php
+     */
+    public function castReflectionPropertyToString(ReflectionProperty $reflectionProperty): string
+    {
+        $formatter = new ReflectionPropertyFormatter();
+        $formatter = $formatter->withIsWrappingInClassName(false);
+        $formatted = $formatter->format($this, $reflectionProperty);
+
+        Assertion::assertIsString($formatted);
+        assert(is_string($formatted));
+
+        return $formatted;
+    }
+
+    /**
+     * Convenience method for casting a ReflectionType to a string, normalizing all classish (class, enum, interface,
+     * trait) references.
+     *
+     * @see https://www.php.net/manual/en/class.reflectiontype.php
+     */
+    public function castReflectionTypeToString(ReflectionType $reflectionType): string
+    {
+        $formatter = new ReflectionTypeFormatter();
+        $formatter = $formatter->withIsWrappingInClassName(false);
+        $formatted = $formatter->format($this, $reflectionType);
+
+        Assertion::assertIsString($formatted);
+        assert(is_string($formatted));
+
+        return $formatted;
     }
 
     /**
