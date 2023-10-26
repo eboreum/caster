@@ -6,6 +6,7 @@ namespace Eboreum\Caster\Formatter\Object_;
 
 use Eboreum\Caster\Abstraction\Formatter\AbstractObjectFormatter;
 use Eboreum\Caster\Attribute\DebugIdentifier;
+use Eboreum\Caster\Attribute\SensitiveProperty;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\Contract\DebugIdentifierAttributeInterface;
@@ -51,15 +52,23 @@ class DebugIdentifierAttributeInterfaceFormatter extends AbstractObjectFormatter
             foreach ($reflectionProperties as $reflectionProperty) {
                 $reflectionProperty->setAccessible(true);
 
+                /** @var bool $isSensitive */
+                $isSensitive = (bool) ($reflectionProperty->getAttributes(SensitiveProperty::class)[0] ?? false);
+
                 $segment = sprintf(
-                    '$%s = %s',
+                    '$%s = ',
                     $propertyName,
-                    (
-                        $reflectionProperty->isInitialized($object)
-                        ? $caster->cast($reflectionProperty->getValue($object))
-                        : '(uninitialized)'
-                    ),
                 );
+
+                if ($reflectionProperty->isInitialized($object)) {
+                    if ($isSensitive) {
+                        $segment .= $caster->getSensitiveMessage();
+                    } else {
+                        $segment .= $caster->cast($reflectionProperty->getValue($object));
+                    }
+                } else {
+                    $segment .= '(uninitialized)';
+                }
 
                 $hasClassPrefix = (
                     $reflectionProperty->getDeclaringClass()->getName() !== $reflectionObject->getName()

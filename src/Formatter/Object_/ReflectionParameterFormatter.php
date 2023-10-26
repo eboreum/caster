@@ -11,6 +11,7 @@ use Eboreum\Caster\Exception\RuntimeException;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionParameter;
+use SensitiveParameter;
 use Throwable;
 
 use function array_key_exists;
@@ -117,8 +118,15 @@ class ReflectionParameterFormatter extends AbstractObjectFormatter
 
         $str .= '$' . $object->getName();
 
+        /** @var bool $isSensitive */
+        $isSensitive = (bool) ($object->getAttributes(SensitiveParameter::class)[0] ?? false);
+
         if ($object->isDefaultValueAvailable()) {
-            $str .= ' = ' . $this->formatDefaultValue($caster, $object);
+            if ($isSensitive) {
+                $str .= ' = ' . $caster->getSensitiveMessage();
+            } else {
+                $str .= ' = ' . $this->formatDefaultValue($caster, $object);
+            }
         }
 
         if ($this->isWrappingInClassName()) {

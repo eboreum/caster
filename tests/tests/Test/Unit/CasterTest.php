@@ -134,6 +134,7 @@ class CasterTest extends TestCase
             ]),
             $caster->getRecursionMessage(new stdClass()),
         );
+        $this->assertSame(CasterInterface::SENSITIVE_MESSAGE_DEFAULT, $caster->getSensitiveMessage());
         $this->assertSame(
             CasterInterface::STRING_SAMPLE_SIZE_DEFAULT,
             $caster->getStringSampleSize()->toInteger(),
@@ -2451,6 +2452,19 @@ class CasterTest extends TestCase
             $sampleEllipsisB,
             $casterB->getSampleEllipsis(),
         );
+    }
+
+    public function testWithSensitiveMessageWorks(): void
+    {
+        $casterA = Caster::create();
+        $sensitiveMessageA = $casterA->getSensitiveMessage();
+
+        $sensitiveMessageB = 'FOOBAR';
+        $casterB = $casterA->withSensitiveMessage($sensitiveMessageB);
+
+        $this->assertNotSame($casterA, $casterB);
+        $this->assertSame($sensitiveMessageA, $casterA->getSensitiveMessage());
+        $this->assertSame($sensitiveMessageB, $casterB->getSensitiveMessage());
     }
 
     public function testWithSampleEllipsisThrowsExceptionWhenArgumentSampleEllipsisIsEmpty(): void

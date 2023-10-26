@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Test\Unit\Eboreum\Caster\Formatter\Object_;
 
+use Eboreum\Caster\Attribute\SensitiveProperty;
 use Eboreum\Caster\Caster;
+use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\Formatter\Object_\PublicVariableFormatter;
 use PHPUnit\Framework\TestCase;
 use stdClass;
@@ -86,6 +88,70 @@ class PublicVariableFormatterTest extends TestCase
                     '/',
                 ]),
                 preg_quote(basename(__FILE__), '/'),
+            ),
+            $formatted,
+        );
+    }
+
+    public function testFormatWorksWhenObjectHasOnePublicVariableWhichIsUninitialized(): void
+    {
+        $caster = Caster::create();
+        $publicVariableFormatter = new PublicVariableFormatter();
+
+        $object = new class
+        {
+            public string $foo;
+        };
+
+        $this->assertTrue($publicVariableFormatter->isHandling($object));
+        $formatted = $publicVariableFormatter->format($caster, $object);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted)); // Make phpstan happy
+        $this->assertMatchesRegularExpression(
+            sprintf(
+                implode('', [
+                    '/',
+                    '^',
+                    'class@anonymous\/in\/.+\/%s:\d+ \{',
+                        '\$foo = \(uninitialized\)',
+                    '\}',
+                    '$',
+                    '/',
+                ]),
+                preg_quote(basename(__FILE__), '/'),
+            ),
+            $formatted,
+        );
+    }
+
+    public function testFormatWorksWhenObjectHasOnePublicVariableWhichIsSensitive(): void
+    {
+        $caster = Caster::create();
+        $publicVariableFormatter = new PublicVariableFormatter();
+
+        $object = new class
+        {
+            #[SensitiveProperty]
+            public string $foo = 'bar';
+        };
+
+        $this->assertTrue($publicVariableFormatter->isHandling($object));
+        $formatted = $publicVariableFormatter->format($caster, $object);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted)); // Make phpstan happy
+        $this->assertMatchesRegularExpression(
+            sprintf(
+                implode('', [
+                    '/',
+                    '^',
+                    'class@anonymous\/in\/.+\/%s:\d+ \{',
+                        '\$foo = %s',
+                    '\}',
+                    '$',
+                    '/',
+                ]),
+                preg_quote(basename(__FILE__), '/'),
+                preg_quote(CasterInterface::SENSITIVE_MESSAGE_DEFAULT, '/'),
             ),
             $formatted,
         );

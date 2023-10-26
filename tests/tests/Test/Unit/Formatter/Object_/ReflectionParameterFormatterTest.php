@@ -6,6 +6,7 @@ namespace Test\Unit\Eboreum\Caster\Formatter\Object_;
 
 use DateTimeInterface;
 use Eboreum\Caster\Caster;
+use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\EncryptedString;
 use Eboreum\Caster\Exception\RuntimeException;
 use Eboreum\Caster\Formatter\Object_\ReflectionParameterFormatter;
@@ -17,6 +18,7 @@ use ReflectionFunction;
 use ReflectionMethod;
 use ReflectionObject;
 use ReflectionParameter;
+use SensitiveParameter;
 use SplFileObject;
 use stdClass;
 
@@ -24,6 +26,7 @@ use function assert;
 use function implode;
 use function is_object;
 use function is_string;
+use function preg_quote;
 use function sprintf;
 
 use const JSON_ERROR_NONE;
@@ -238,6 +241,30 @@ class ReflectionParameterFormatterTest extends TestCase
                     {
                         public function lorem(string ...$foo): void
                         {
+                        }
+                    };
+
+                    $reflectionObject = new ReflectionObject($object);
+                    $reflectionMethod = $reflectionObject->getMethod('lorem');
+
+                    return $reflectionMethod->getParameters()[0];
+                })(),
+            ],
+            [
+                'Default value and #[\SensitiveParameter]',
+                sprintf(
+                    '/^\\\\ReflectionParameter \(string \$foo = %s\)$/',
+                    preg_quote(CasterInterface::SENSITIVE_MESSAGE_DEFAULT, '/'),
+                ),
+                Caster::create()->withIsPrependingType(true),
+                new ReflectionParameterFormatter(),
+                (static function (): ReflectionParameter {
+                    $object = new class
+                    {
+                        public function lorem(
+                            #[SensitiveParameter]
+                            string $foo = 'bar'
+                        ): void {
                         }
                     };
 

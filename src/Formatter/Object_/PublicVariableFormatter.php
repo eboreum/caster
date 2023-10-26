@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Eboreum\Caster\Formatter\Object_;
 
 use Eboreum\Caster\Abstraction\Formatter\AbstractObjectFormatter;
+use Eboreum\Caster\Attribute\SensitiveProperty;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\CasterInterface;
 use ReflectionObject;
@@ -79,15 +80,25 @@ class PublicVariableFormatter extends AbstractObjectFormatter
         foreach ($propertyNameToReflectionProperty as $propertyName => $reflectionProperty) {
             $reflectionProperty->setAccessible(true);
 
-            $segments[] = sprintf(
-                '$%s = %s',
+            /** @var bool $isSensitive */
+            $isSensitive = (bool) ($reflectionProperty->getAttributes(SensitiveProperty::class)[0] ?? false);
+
+            $segment = sprintf(
+                '$%s = ',
                 $propertyName,
-                (
-                    $reflectionProperty->isInitialized($object)
-                    ? $caster->cast($reflectionProperty->getValue($object))
-                    : '(uninitialized)'
-                ),
             );
+
+            if ($reflectionProperty->isInitialized($object)) {
+                if ($isSensitive) {
+                    $segment .= $caster->getSensitiveMessage();
+                } else {
+                    $segment .= $caster->cast($reflectionProperty->getValue($object));
+                }
+            } else {
+                $segment .= '(uninitialized)';
+            }
+
+            $segments[] = $segment;
         }
 
         return implode(', ', $segments);

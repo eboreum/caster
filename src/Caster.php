@@ -194,6 +194,12 @@ class Caster implements CasterInterface
     protected string $sampleEllipsis;
 
     /**
+     * The message to be displayed instead of type and value when either a parameter has the #[\SensitiveParameter]
+     * attribute or a class property has the #[\Eboreum\Caster\Attribute\SensitiveProperty] attribute.
+     */
+    protected string $sensitiveMessage = CasterInterface::SENSITIVE_MESSAGE_DEFAULT;
+
+    /**
      * When `true`, the type of a value will be prepended in parenthesis.
      */
     protected bool $isPrependingType = false;
@@ -941,6 +947,14 @@ class Caster implements CasterInterface
         return $clone;
     }
 
+    public function withSensitiveMessage(string $sensitiveMessage): static
+    {
+        $clone = clone $this;
+        $clone->sensitiveMessage = $sensitiveMessage;
+
+        return $clone;
+    }
+
     public function withStringSampleSize(UnsignedInteger $stringSampleSize): static
     {
         $clone = clone $this;
@@ -1098,6 +1112,11 @@ class Caster implements CasterInterface
     public function getSampleEllipsis(): string
     {
         return $this->sampleEllipsis;
+    }
+
+    public function getSensitiveMessage(): string
+    {
+        return $this->sensitiveMessage;
     }
 
     public function getStringSampleSize(): UnsignedInteger

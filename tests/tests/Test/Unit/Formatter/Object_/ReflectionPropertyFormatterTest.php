@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Test\Unit\Eboreum\Caster\Formatter\Object_;
 
+use Eboreum\Caster\Attribute\SensitiveProperty;
 use Eboreum\Caster\Caster;
+use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\Formatter\Object_\ReflectionPropertyFormatter;
 use Eboreum\Caster\Formatter\Object_\ReflectionTypeFormatter;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use ReflectionObject;
 use ReflectionProperty;
 use stdClass;
 
@@ -120,6 +123,25 @@ class ReflectionPropertyFormatterTest extends TestCase
                 new ReflectionPropertyFormatter(),
                 new ReflectionProperty(Caster::class, 'isPrependingType'),
             ],
+            (static function (): array {
+                $object = new class
+                {
+                    #[SensitiveProperty]
+                    private string $foo = 'bar'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
+                };
+
+                return [
+                    'Has sensitive property.',
+                    sprintf(
+                        '/^\\\\ReflectionProperty \(%s->\$foo = %s\)$/',
+                        preg_quote(Caster::makeNormalizedClassName(new ReflectionObject($object)), '/'),
+                        preg_quote(CasterInterface::SENSITIVE_MESSAGE_DEFAULT, '/'),
+                    ),
+                    Caster::create()->withIsPrependingType(true),
+                    new ReflectionPropertyFormatter(),
+                    new ReflectionProperty($object, 'foo'),
+                ];
+            })(),
         ];
     }
 

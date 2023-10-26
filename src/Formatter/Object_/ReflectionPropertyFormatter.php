@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Eboreum\Caster\Formatter\Object_;
 
 use Eboreum\Caster\Abstraction\Formatter\AbstractObjectFormatter;
+use Eboreum\Caster\Attribute\SensitiveProperty;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\CasterInterface;
 use ReflectionClass;
@@ -48,12 +49,19 @@ class ReflectionPropertyFormatter extends AbstractObjectFormatter
             $object->getName(),
         );
 
-        if ($caster->isPrependingType() && $object->getType()) {
-            $str = $this->getReflectionTypeFormatter()->format($caster, $object->getType()) . ' ' . $str;
-        }
+        /** @var bool $isSensitive */
+        $isSensitive = (bool) ($object->getAttributes(SensitiveProperty::class)[0] ?? false);
 
-        if ($object->hasDefaultValue()) {
-            $str .= ' = ' . $caster->cast($object->getDefaultValue());
+        if ($isSensitive) {
+            $str .= ' = ' . $caster->getSensitiveMessage();
+        } else {
+            if ($caster->isPrependingType() && $object->getType()) {
+                $str = $this->getReflectionTypeFormatter()->format($caster, $object->getType()) . ' ' . $str;
+            }
+
+            if ($object->hasDefaultValue()) {
+                $str .= ' = ' . $caster->cast($object->getDefaultValue());
+            }
         }
 
         if ($this->isWrappingInClassName()) {

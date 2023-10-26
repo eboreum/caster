@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace Test\Unit\Eboreum\Caster\Formatter\Object_;
 
 use Eboreum\Caster\Caster;
+use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\Formatter\Object_\ReflectionAttributeFormatter;
 use PHPUnit\Framework\TestCase;
 use ReflectionAttribute;
 use ReflectionClass;
+use ReflectionProperty;
 use stdClass;
 use TestResource\Unit\Eboreum\Caster\Formatter\Object_\ReflectionAttributeFormatterTest\testFormatWorksWithAReflectionAttributeWithIntegerIndexedArguments\Attributeda304392c18711edafa10242ac120002;
 use TestResource\Unit\Eboreum\Caster\Formatter\Object_\ReflectionAttributeFormatterTest\testFormatWorksWithAReflectionAttributeWithIntegerIndexedArguments\Classda304392c18711edafa10242ac120002;
@@ -16,6 +18,7 @@ use TestResource\Unit\Eboreum\Caster\Formatter\Object_\ReflectionAttributeFormat
 use TestResource\Unit\Eboreum\Caster\Formatter\Object_\ReflectionAttributeFormatterTest\testFormatWorksWithAReflectionAttributeWithoutArguments\Classda304090c18711edafa10242ac120002;
 use TestResource\Unit\Eboreum\Caster\Formatter\Object_\ReflectionAttributeFormatterTest\testFormatWorksWithAReflectionAttributeWitNamedArguments\Attributef982a9e0c18911edafa10242ac120002;
 use TestResource\Unit\Eboreum\Caster\Formatter\Object_\ReflectionAttributeFormatterTest\testFormatWorksWithAReflectionAttributeWitNamedArguments\Classf982a9e0c18911edafa10242ac120002;
+use TestResource\Unit\Eboreum\Caster\Formatter\Object_\ReflectionAttributeFormatterTest\testFormatWorksWithASensitiveNamedArgument\Attribute5773ba9c73ed11eeb9620242ac120002;
 
 use function assert;
 use function implode;
@@ -159,6 +162,39 @@ class ReflectionAttributeFormatterTest extends TestCase
             $reflectionAttributeFormatter
                 ->withIsWrappingInClassName(false)
                 ->format($caster->withIsPrependingType(true), $reflectionAttribute),
+        );
+    }
+
+    public function testFormatWorksWithASensitiveNamedArgument(): void
+    {
+        $caster = Caster::create();
+        $caster = $caster->withIsPrependingType(true);
+        $reflectionAttributeFormatter = new ReflectionAttributeFormatter();
+
+        $object = new class
+        {
+            #[Attribute5773ba9c73ed11eeb9620242ac120002(foo: 'bar')]
+            private string $lorem; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
+        };
+
+        $reflectionProperty = new ReflectionProperty($object, 'lorem');
+
+        /** @var ReflectionAttribute<Attribute5773ba9c73ed11eeb9620242ac120002>|null $reflectionAttribute */
+        $reflectionAttribute = (
+            $reflectionProperty->getAttributes(Attribute5773ba9c73ed11eeb9620242ac120002::class)[0] ?? null
+        );
+
+        $this->assertIsObject($reflectionAttribute);
+        assert(is_object($reflectionAttribute));
+
+        $this->assertTrue($reflectionAttributeFormatter->isHandling($reflectionAttribute));
+        $this->assertSame(
+            sprintf(
+                '\\ReflectionAttribute ((attribute) \\%s (foo: %s))',
+                Attribute5773ba9c73ed11eeb9620242ac120002::class,
+                CasterInterface::SENSITIVE_MESSAGE_DEFAULT,
+            ),
+            $reflectionAttributeFormatter->format($caster, $reflectionAttribute),
         );
     }
 

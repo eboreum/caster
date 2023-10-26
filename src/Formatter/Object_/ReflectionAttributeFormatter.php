@@ -9,9 +9,14 @@ use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\CasterInterface;
 use ReflectionAttribute;
 use ReflectionClass;
+use ReflectionMethod;
+use ReflectionParameter;
+use SensitiveParameter;
 
 use function assert;
 use function implode;
+use function is_string;
+use function mb_strtolower;
 use function sprintf;
 
 /**
@@ -39,17 +44,52 @@ class ReflectionAttributeFormatter extends AbstractObjectFormatter
             $str = '(attribute) ';
         }
 
-        $str .= Caster::makeNormalizedClassName(new ReflectionClass($object->getName()));
+        /** @var ReflectionClass<object> $reflectionClassActualClass */
+        $reflectionClassActualClass = new ReflectionClass($object->getName());
+
+        $str .= Caster::makeNormalizedClassName($reflectionClassActualClass);
 
         /** @var array<string> $argumentsAsStrings */
         $argumentsAsStrings = [];
 
         foreach ($object->getArguments() as $key => $value) {
-            $argumentsAsStrings[] = sprintf(
-                '%s: %s',
-                $key,
-                $caster->cast($value),
-            );
+            /** @var bool $isSensitive */
+            $isSensitive = false;
+
+            /** @var ReflectionMethod|null $reflectionMethodConstructor */
+            $reflectionMethodConstructor = $reflectionClassActualClass->getConstructor();
+
+            if ($reflectionMethodConstructor) {
+                /** @var ReflectionParameter|null $reflectionParameterMatchingKey */
+                $reflectionParameterMatchingKey = null;
+
+                foreach ($reflectionMethodConstructor->getParameters() as $index => $reflectionParameter) {
+                    if (is_string($key) && mb_strtolower($key) === mb_strtolower($reflectionParameter->getName())) {
+                        $reflectionParameterMatchingKey = $reflectionParameter;
+
+                        break;
+                    }
+                }
+
+                $isSensitive = (
+                    $reflectionParameterMatchingKey
+                    && ($reflectionParameterMatchingKey->getAttributes(SensitiveParameter::class)[0] ?? false)
+                );
+            }
+
+            if ($isSensitive) {
+                $argumentsAsStrings[] = sprintf(
+                    '%s: %s',
+                    $key,
+                    $caster->getSensitiveMessage(),
+                );
+            } else {
+                $argumentsAsStrings[] = sprintf(
+                    '%s: %s',
+                    $key,
+                    $caster->cast($value),
+                );
+            }
         }
 
         if ($argumentsAsStrings) {

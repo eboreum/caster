@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Test\Unit\Eboreum\Caster\Formatter\Object_;
 
 use Eboreum\Caster\Attribute\DebugIdentifier;
+use Eboreum\Caster\Attribute\SensitiveProperty;
 use Eboreum\Caster\Caster;
+use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\Contract\DebugIdentifierAttributeInterface;
 use Eboreum\Caster\Formatter\Object_\DebugIdentifierAttributeInterfaceFormatter;
 use PHPUnit\Framework\TestCase;
@@ -70,6 +72,86 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
                     '/',
                 ]),
                 preg_quote(basename(__FILE__), '/'),
+            ),
+            $formatted,
+        );
+    }
+
+    public function testFormatWorksWhenAPropertyIsUninitialized(): void
+    {
+        $caster = Caster::create();
+        $debugIdentifierAttributeInterfaceFormatter = new DebugIdentifierAttributeInterfaceFormatter();
+
+        $object = new class implements DebugIdentifierAttributeInterface
+        {
+            public string $foo = '123';
+
+            #[DebugIdentifier]
+            protected int $bar = 42;
+
+            #[DebugIdentifier]
+            private float $baz; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
+        };
+
+        $formatted = $debugIdentifierAttributeInterfaceFormatter->format($caster, $object);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted)); // Make phpstan happy
+
+        $this->assertTrue($debugIdentifierAttributeInterfaceFormatter->isHandling($object));
+        $this->assertMatchesRegularExpression(
+            sprintf(
+                implode('', [
+                    '/',
+                    '^',
+                    'class@anonymous\/in\/.+\/%s:\d+ \{',
+                        '\$bar = \(int\) 42',
+                        ', \$baz = \(uninitialized\)',
+                    '\}',
+                    '$',
+                    '/',
+                ]),
+                preg_quote(basename(__FILE__), '/'),
+            ),
+            $formatted,
+        );
+    }
+
+    public function testFormatWorksWhenAPropertyIsSensitive(): void
+    {
+        $caster = Caster::create();
+        $debugIdentifierAttributeInterfaceFormatter = new DebugIdentifierAttributeInterfaceFormatter();
+
+        $object = new class implements DebugIdentifierAttributeInterface
+        {
+            public string $foo = '123';
+
+            #[DebugIdentifier]
+            protected int $bar = 42;
+
+            #[DebugIdentifier]
+            #[SensitiveProperty]
+            private float $baz = 3.14; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
+        };
+
+        $formatted = $debugIdentifierAttributeInterfaceFormatter->format($caster, $object);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted)); // Make phpstan happy
+
+        $this->assertTrue($debugIdentifierAttributeInterfaceFormatter->isHandling($object));
+        $this->assertMatchesRegularExpression(
+            sprintf(
+                implode('', [
+                    '/',
+                    '^',
+                    'class@anonymous\/in\/.+\/%s:\d+ \{',
+                        '\$bar = \(int\) 42',
+                        ', \$baz = %s',
+                    '\}',
+                    '$',
+                    '/',
+                ]),
+                preg_quote(basename(__FILE__), '/'),
+                preg_quote(CasterInterface::SENSITIVE_MESSAGE_DEFAULT, '/'),
             ),
             $formatted,
         );

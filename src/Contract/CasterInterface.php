@@ -36,6 +36,7 @@ interface CasterInterface extends ImmutableObjectInterface
     public const ARRAY_SAMPLE_SIZE_DEFAULT = 3;
     public const DEPTH_MAXIMUM_DEFAULT = 3;
     public const SAMPLE_ELLIPSIS_DEFAULT = '...';
+    public const SENSITIVE_MESSAGE_DEFAULT = '** SENSITIVE **';
     public const STRING_QUOTING_CHARACTER_DEFAULT = '"';
     public const STRING_SAMPLE_SIZE_DEFAULT = 1000;
 
@@ -403,6 +404,12 @@ interface CasterInterface extends ImmutableObjectInterface
      * Must return the characters to be shown places where an ellipsis is used, e.g. "...".
      */
     public function getSampleEllipsis(): string;
+
+    /**
+     * The message to be displayed instead of type and value when either a parameter has the #[\SensitiveParameter]
+     * attribute or a class property has the #[\Eboreum\Caster\Attribute\SensitiveProperty] attribute.
+     */
+    public function getSensitiveMessage(): string;
 
     /**
      * Must return how long a string must be before it is truncated and a sample of it is displayed.
