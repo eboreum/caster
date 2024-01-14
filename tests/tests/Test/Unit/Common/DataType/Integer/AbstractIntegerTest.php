@@ -11,6 +11,10 @@ use Eboreum\Caster\Exception\RuntimeException;
 use Exception;
 use PHPUnit\Framework\TestCase;
 
+use function assert;
+use function is_object;
+use function sprintf;
+
 /**
  * {@inheritDoc}
  *
