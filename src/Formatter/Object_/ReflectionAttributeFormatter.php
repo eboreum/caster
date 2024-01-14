@@ -63,7 +63,7 @@ class ReflectionAttributeFormatter extends AbstractObjectFormatter
                 /** @var ReflectionParameter|null $reflectionParameterMatchingKey */
                 $reflectionParameterMatchingKey = null;
 
-                foreach ($reflectionMethodConstructor->getParameters() as $index => $reflectionParameter) {
+                foreach ($reflectionMethodConstructor->getParameters() as $reflectionParameter) {
                     if (is_string($key) && mb_strtolower($key) === mb_strtolower($reflectionParameter->getName())) {
                         $reflectionParameterMatchingKey = $reflectionParameter;
 
