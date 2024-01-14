@@ -213,11 +213,12 @@ class ReflectionParameterFormatter extends AbstractObjectFormatter
             $functionText = '';
 
             if ($reflectionParameter->getDeclaringClass()) {
-                $isStatic = false;
+                $declaringFunction = $reflectionParameter->getDeclaringFunction();
 
-                if ($reflectionParameter->getDeclaringFunction() instanceof ReflectionMethod) {
-                    $isStatic = $reflectionParameter->getDeclaringFunction()->isStatic();
-                }
+                $isStatic = (
+                    $declaringFunction instanceof ReflectionMethod
+                    && $declaringFunction->isStatic()
+                );
 
                 $functionText = sprintf(
                     'method %s%s%s',
