@@ -19,6 +19,10 @@ use function sprintf;
  *
  * Formats instances of \ReflectionProperty.
  *
+ * Notice: Properties specified through Constructor Promotion
+ * (https://php.watch/versions/8.0/constructor-property-promotion) will also end up as a ReflectionProperty when calling
+ * method such as ReflectionClass->getProperties() or ReflectionClass->getProperty(...).
+ *
  * @see https://www.php.net/manual/en/class.reflectionproperty.php
  */
 class ReflectionPropertyFormatter extends AbstractObjectFormatter
