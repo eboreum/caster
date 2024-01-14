@@ -22,8 +22,6 @@ use function sprintf;
  */
 class ReflectionPropertyFormatter extends AbstractObjectFormatter
 {
-    protected bool $isRenderingParameters = true;
-
     protected bool $isWrappingInClassName = true;
 
     protected ReflectionTypeFormatter $reflectionTypeFormatter;
