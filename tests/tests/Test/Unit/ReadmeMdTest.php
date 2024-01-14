@@ -23,6 +23,9 @@ use function preg_quote;
 use function preg_split;
 use function sprintf;
 
+/**
+ * @coversNothing
+ */
 class ReadmeMdTest extends TestCase
 {
     private string $contents;

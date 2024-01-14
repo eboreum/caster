@@ -9,6 +9,11 @@ use Eboreum\Caster\Exception\AssertionException;
 use Exception;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * {@inheritDoc}
+ *
+ * @covers \Eboreum\Caster\Assertion
+ */
 class AssertionTest extends TestCase
 {
     public function testAssertIsStringWorks(): void

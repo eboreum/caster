@@ -12,6 +12,11 @@ use stdClass;
 
 use function implode;
 
+/**
+ * {@inheritDoc}
+ *
+ * @covers \Eboreum\Caster\Formatter\Object_\DateIntervalFormatter
+ */
 class DateIntervalFormatterTest extends TestCase
 {
     public function testFormatReturnsNullWhenObjectIsNotQualified(): void

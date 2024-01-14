@@ -25,6 +25,11 @@ use function sprintf;
 
 use const JSON_ERROR_DEPTH;
 
+/**
+ * {@inheritDoc}
+ *
+ * @covers \Eboreum\Caster\Formatter\Object_\ReflectionMethodFormatter
+ */
 class ReflectionMethodFormatterTest extends TestCase
 {
     public function testFormatWorksWithNonReflectionMethod(): void

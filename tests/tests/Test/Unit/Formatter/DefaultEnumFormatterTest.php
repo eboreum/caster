@@ -18,6 +18,11 @@ use function is_string;
 use function preg_quote;
 use function sprintf;
 
+/**
+ * {@inheritDoc}
+ *
+ * @covers \Eboreum\Caster\Formatter\DefaultEnumFormatter
+ */
 class DefaultEnumFormatterTest extends TestCase
 {
     /**

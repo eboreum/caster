@@ -18,6 +18,11 @@ use function mb_internal_encoding;
 use function preg_quote;
 use function sprintf;
 
+/**
+ * {@inheritDoc}
+ *
+ * @covers \Eboreum\Caster\Common\DataType\String_\Character
+ */
 class CharacterTest extends TestCase
 {
     public function testBasics(): void

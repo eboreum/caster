@@ -13,6 +13,12 @@ use stdClass;
 use function assert;
 use function is_string;
 
+/**
+ * {@inheritDoc}
+ *
+ * @covers \Eboreum\Caster\Abstraction\Formatter\AbstractObjectTypeFormatter
+ * @covers \Eboreum\Caster\Formatter\DefaultObjectFormatter
+ */
 class DefaultObjectFormatterTest extends TestCase
 {
     /**

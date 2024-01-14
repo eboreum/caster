@@ -18,6 +18,11 @@ use function sprintf;
 
 use const PHP_INT_MAX;
 
+/**
+ * {@inheritDoc}
+ *
+ * @covers \Eboreum\Caster\Common\DataType\Integer\PositiveInteger
+ */
 class PositiveIntegerTest extends TestCase
 {
     /**

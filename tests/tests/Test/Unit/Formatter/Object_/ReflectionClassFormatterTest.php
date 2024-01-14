@@ -15,6 +15,11 @@ use TestResource\Unit\Eboreum\Caster\Formatter\Object_\ReflectionAttributeFormat
 
 use function sprintf;
 
+/**
+ * {@inheritDoc}
+ *
+ * @covers \Eboreum\Caster\Formatter\Object_\ReflectionClassFormatter
+ */
 class ReflectionClassFormatterTest extends TestCase
 {
     public function testFormatWorksWithNonReflectionClass(): void

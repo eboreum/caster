@@ -18,6 +18,11 @@ use function sprintf;
 
 use const PHP_INT_MIN;
 
+/**
+ * {@inheritDoc}
+ *
+ * @covers \Eboreum\Caster\Common\DataType\Integer\NegativeInteger
+ */
 class NegativeIntegerTest extends TestCase
 {
     /**

@@ -31,6 +31,11 @@ use function sprintf;
 
 use const JSON_ERROR_NONE;
 
+/**
+ * {@inheritDoc}
+ *
+ * @covers \Eboreum\Caster\Formatter\Object_\ReflectionParameterFormatter
+ */
 class ReflectionParameterFormatterTest extends TestCase
 {
     private const TEST_CONSTANT_2330CD52C3D911EDAFA10242AC120002 = 0;

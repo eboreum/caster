@@ -26,6 +26,11 @@ use function is_string;
 use function preg_quote;
 use function sprintf;
 
+/**
+ * {@inheritDoc}
+ *
+ * @covers \Eboreum\Caster\Formatter\Object_\DebugIdentifierAttributeInterfaceFormatter
+ */
 class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
 {
     public function testFormatReturnsNullWhenObjectIsNotQualified(): void

@@ -19,6 +19,11 @@ use function is_string;
 use function rand;
 use function sprintf;
 
+/**
+ * {@inheritDoc}
+ *
+ * @covers \Eboreum\Caster\Formatter\Object_\ClosureFormatter
+ */
 class ClosureFormatterTest extends TestCase
 {
     public const A_CONSTANT = 'foo';

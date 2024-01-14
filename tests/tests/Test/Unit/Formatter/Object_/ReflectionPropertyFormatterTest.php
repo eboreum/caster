@@ -20,6 +20,11 @@ use function is_string;
 use function preg_quote;
 use function sprintf;
 
+/**
+ * {@inheritDoc}
+ *
+ * @covers \Eboreum\Caster\Formatter\Object_\ReflectionPropertyFormatter
+ */
 class ReflectionPropertyFormatterTest extends TestCase
 {
     // @phpstan-ignore-next-line

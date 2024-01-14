@@ -14,6 +14,11 @@ use function assert;
 use function implode;
 use function is_string;
 
+/**
+ * {@inheritDoc}
+ *
+ * @covers \Eboreum\Caster\Formatter\DefaultArrayFormatter
+ */
 class DefaultArrayFormatterTest extends TestCase
 {
     /**

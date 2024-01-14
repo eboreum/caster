@@ -18,6 +18,12 @@ use function sprintf;
 
 use const PHP_INT_MAX;
 
+/**
+ * {@inheritDoc}
+ *
+ * @covers Eboreum\Caster\Common\DataType\Integer\AbstractInteger
+ * @covers Eboreum\Caster\Common\DataType\Integer\UnsignedInteger
+ */
 class UnsignedIntegerTest extends TestCase
 {
     /**

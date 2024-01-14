@@ -13,6 +13,11 @@ use function fclose;
 use function fopen;
 use function implode;
 
+/**
+ * {@inheritDoc}
+ *
+ * @covers \Eboreum\Caster\Common\DataType\Resource_
+ */
 class Resource_Test extends TestCase // phpcs:ignore
 {
     /**

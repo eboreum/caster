@@ -36,6 +36,11 @@ use function preg_replace;
 use function sprintf;
 use function str_replace;
 
+/**
+ * {@inheritDoc}
+ *
+ * @covers \Eboreum\Caster\Abstraction\Collection\AbstractObjectCollection
+ */
 class ObjectCollectionTest extends TestCase
 {
     /**

@@ -10,6 +10,11 @@ use Eboreum\Caster\Formatter\Object_\DateTimeZoneFormatter;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
+/**
+ * {@inheritDoc}
+ *
+ * @covers \Eboreum\Caster\Formatter\Object_\DateTimeZoneFormatter
+ */
 class DateTimeZoneFormatterTest extends TestCase
 {
     public function testFormatReturnsNullWhenObjectIsNotQualified(): void

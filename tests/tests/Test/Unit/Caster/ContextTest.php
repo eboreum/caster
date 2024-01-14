@@ -8,6 +8,11 @@ use Eboreum\Caster\Caster\Context;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
+/**
+ * {@inheritDoc}
+ *
+ * @covers \Eboreum\Caster\Caster\Context
+ */
 class ContextTest extends TestCase
 {
     public function testBasics(): void

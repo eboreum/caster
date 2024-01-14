@@ -20,6 +20,9 @@ use function ob_get_contents;
 use function ob_start;
 use function sprintf;
 
+/**
+ * @coversNothing
+ */
 class AllExampleScriptsWorkTest extends TestCase
 {
     /**

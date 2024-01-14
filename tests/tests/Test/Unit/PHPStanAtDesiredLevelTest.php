@@ -11,6 +11,9 @@ use function escapeshellarg;
 use function exec;
 use function sprintf;
 
+/**
+ * @coversNothing
+ */
 class PHPStanAtDesiredLevelTest extends TestCase
 {
     public function testPHPStanIsAtDesiredLevel(): void

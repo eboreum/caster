@@ -14,6 +14,12 @@ use function fopen;
 use function is_resource;
 use function is_string;
 
+/**
+ * {@inheritDoc}
+ *
+ * @covers \Eboreum\Caster\Abstraction\Formatter\AbstractResourceFormatter
+ * @covers \Eboreum\Caster\Formatter\DefaultResourceFormatter
+ */
 class DefaultResourceFormatterTest extends TestCase
 {
     /**

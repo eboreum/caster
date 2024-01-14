@@ -13,6 +13,12 @@ use function Eboreum\Caster\functions\is_enum;
 use function Eboreum\Caster\functions\rglob;
 use function in_array;
 
+/**
+ * {@inheritDoc}
+ *
+ * @covers \Eboreum\Caster\functions\is_enum
+ * @covers \Eboreum\Caster\functions\rglob
+ */
 class functionsTest extends TestCase // phpcs:ignore
 {
     public function test_rglob_works(): void // phpcs:ignore

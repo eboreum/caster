@@ -19,6 +19,11 @@ use function assert;
 use function implode;
 use function is_string;
 
+/**
+ * {@inheritDoc}
+ *
+ * @covers \Eboreum\Caster\Formatter\Object_\ThrowableFormatter
+ */
 class ThrowableFormatterTest extends TestCase
 {
     public function testFormatWorksWithNonThrowables(): void

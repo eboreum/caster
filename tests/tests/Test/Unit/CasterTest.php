@@ -81,6 +81,11 @@ use function preg_quote;
 use function sprintf;
 use function str_repeat;
 
+/**
+ * {@inheritDoc}
+ *
+ * @covers \Eboreum\Caster\Caster
+ */
 class CasterTest extends TestCase
 {
     public function testBasics(): void
@@ -2714,13 +2719,27 @@ class CasterTest extends TestCase
         $this->fail('Exception was never thrown.');
     }
 
+    /**
+     * @runInSeparateProcess
+     */
     public function testGetInstanceWorks(): void
     {
+        $reflectionProperty = new ReflectionProperty(Caster::class, 'instance');
+        $reflectionProperty->setAccessible(true);
+
+        $this->assertNull($reflectionProperty->getValue());
         $this->assertSame(Caster::getInstance(), Caster::getInstance());
     }
 
+    /**
+     * @runInSeparateProcess
+     */
     public function testGetInternalInstanceWorks(): void
     {
+        $reflectionProperty = new ReflectionProperty(Caster::class, 'internalInstance');
+        $reflectionProperty->setAccessible(true);
+
+        $this->assertNull($reflectionProperty->getValue());
         $this->assertSame(Caster::getInternalInstance(), Caster::getInternalInstance());
         $this->assertNotSame(Caster::getInstance(), Caster::getInternalInstance());
     }

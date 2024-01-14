@@ -14,6 +14,11 @@ use function implode;
 use function is_object;
 use function mb_internal_encoding;
 
+/**
+ * {@inheritDoc}
+ *
+ * @covers \Eboreum\Caster\CharacterEncoding
+ */
 class CharacterEncodingTest extends TestCase
 {
     public function testBasics(): void
@@ -72,6 +77,15 @@ class CharacterEncodingTest extends TestCase
         $this->assertFalse(CharacterEncoding::isCharacterEncodingValid('5ffaf0ea-7520-4a09-b188-2a542e04d0f3'));
     }
 
+    public function testIsSameWorks(): void
+    {
+        $this->assertTrue(CharacterEncoding::getInstance()->isSame(CharacterEncoding::getInstance()));
+        $this->assertTrue((new CharacterEncoding('UTF-8'))->isSame(new CharacterEncoding('UTF-8')));
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
     public function testGetInstanceWorks(): void
     {
         $this->assertSame(CharacterEncoding::getInstance(), CharacterEncoding::getInstance());

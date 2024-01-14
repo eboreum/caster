@@ -13,6 +13,11 @@ use stdClass;
 use function assert;
 use function is_string;
 
+/**
+ * {@inheritDoc}
+ *
+ * @covers \Eboreum\Caster\Formatter\Object_\SplFileInfoFormatter
+ */
 class SplFileInfoFormatterTest extends TestCase
 {
     public function testFormatReturnsNullWhenObjectIsNotQualified(): void

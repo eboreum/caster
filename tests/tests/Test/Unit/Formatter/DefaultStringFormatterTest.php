@@ -12,6 +12,11 @@ use PHPUnit\Framework\TestCase;
 use function assert;
 use function is_string;
 
+/**
+ * {@inheritDoc}
+ *
+ * @covers \Eboreum\Caster\Formatter\DefaultStringFormatter
+ */
 class DefaultStringFormatterTest extends TestCase
 {
     /**
@@ -54,6 +59,13 @@ class DefaultStringFormatterTest extends TestCase
                 '/^"foo"$/',
                 Caster::getInstance(),
                 'foo',
+            ],
+            [
+                'Empty string.',
+                '/^""$/',
+                '/^""$/',
+                Caster::getInstance()->withIsMakingSamples(true),
+                '',
             ],
         ];
     }

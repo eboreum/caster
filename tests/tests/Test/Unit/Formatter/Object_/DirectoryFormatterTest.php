@@ -14,6 +14,11 @@ use function assert;
 use function dir;
 use function is_string;
 
+/**
+ * {@inheritDoc}
+ *
+ * @covers \Eboreum\Caster\Formatter\Object_\DirectoryFormatter
+ */
 class DirectoryFormatterTest extends TestCase
 {
     public function testFormatReturnsNullWhenObjectIsNotQualified(): void

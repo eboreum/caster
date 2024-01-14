@@ -15,6 +15,11 @@ use function implode;
 use function is_object;
 use function sprintf;
 
+/**
+ * {@inheritDoc}
+ *
+ * @covers \Eboreum\Caster\EncryptedString
+ */
 class EncryptedStringTest extends TestCase
 {
     /**

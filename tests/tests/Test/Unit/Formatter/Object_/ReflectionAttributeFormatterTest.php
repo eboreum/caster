@@ -25,6 +25,11 @@ use function implode;
 use function is_object;
 use function sprintf;
 
+/**
+ * {@inheritDoc}
+ *
+ * @covers \Eboreum\Caster\Formatter\Object_\ReflectionAttributeFormatter
+ */
 class ReflectionAttributeFormatterTest extends TestCase
 {
     public function testFormatWorksWithNonReflectionAttributes(): void

@@ -30,7 +30,11 @@ use function preg_quote;
 use function sprintf;
 
 /**
+ * {@inheritDoc}
+ *
  * Did we leave bogus comments, names, file paths, etc. lying around in the project?
+ *
+ * @coversNothing
  */
 class BogusScannerTest extends TestCase
 {

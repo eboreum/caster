@@ -10,6 +10,11 @@ use Eboreum\Caster\Formatter\Object_\DateTimeInterfaceFormatter;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
+/**
+ * {@inheritDoc}
+ *
+ * @covers \Eboreum\Caster\Formatter\Object_\DateTimeInterfaceFormatter
+ */
 class DateTimeInterfaceFormatterTest extends TestCase
 {
     public function testFormatReturnsNullWhenObjectIsNotQualified(): void
