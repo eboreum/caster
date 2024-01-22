@@ -42,7 +42,7 @@ class ReflectionMethodFormatterTest extends TestCase
         $this->assertNull($reflectionMethodFormatter->format($caster, $object));
     }
 
-    public function testFormatWorksWithReflectionMethodWihtoutArguments(): void
+    public function testFormatWorksWithReflectionMethodWithoutArguments(): void
     {
         $caster = Caster::create();
         $reflectionMethodFormatter = new ReflectionMethodFormatter();
@@ -84,9 +84,9 @@ class ReflectionMethodFormatterTest extends TestCase
     }
 
     /**
-     * @dataProvider dataProviderTestFormatWorksWithReflectionMethodWihtArguments
+     * @dataProvider dataProviderTestFormatWorksWithReflectionMethodWithArguments
      */
-    public function testFormatWorksWithReflectionMethodWihtArguments(
+    public function testFormatWorksWithReflectionMethodWithArguments(
         string $message,
         string $expectedRegex,
         Caster $caster,
@@ -105,7 +105,7 @@ class ReflectionMethodFormatterTest extends TestCase
     /**
      * @return array<array{string, string, Caster, ReflectionMethodFormatter, ReflectionMethod}>
      */
-    public function dataProviderTestFormatWorksWithReflectionMethodWihtArguments(): array
+    public function dataProviderTestFormatWorksWithReflectionMethodWithArguments(): array
     {
         return [
             [
@@ -435,6 +435,34 @@ class ReflectionMethodFormatterTest extends TestCase
                 })(),
             ],
         ];
+    }
+
+    public function testFormatWorksWhenWrapping(): void
+    {
+        $reflectionMethodFormatter = new ReflectionMethodFormatter();
+
+        $object = new class
+        {
+            public function foo(int $a, float $b, bool $c): void
+            {
+            }
+        };
+
+        $reflectionMethod = new ReflectionMethod($object, 'foo');
+
+        $this->assertSame(
+            sprintf(
+                implode("\n", [
+                    '\\ReflectionMethod (%s->foo(',
+                    '    int $a,',
+                    '    float $b,',
+                    '    bool $c',
+                    '): void)',
+                ]),
+                Caster::makeNormalizedClassName(new ReflectionObject($object)),
+            ),
+            $reflectionMethodFormatter->format(Caster::create()->withIsWrapping(true), $reflectionMethod),
+        );
     }
 
     public function testWithIsRenderingParametersWorks(): void

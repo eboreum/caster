@@ -21,7 +21,7 @@ $composerJsonArray = (static function (): array {
     return $decoded;
 })();
 
-$regexLineBreaks = '/(\r\n|\r|\n)/';
+$regexLineBreaks = '/(\r?\n|\r)/';
 $split = preg_split($regexLineBreaks, $content);
 
 assert(is_array($split));

@@ -51,6 +51,7 @@ use function array_map;
 use function array_merge;
 use function array_unique;
 use function array_values;
+use function array_walk;
 use function assert;
 use function count;
 use function Eboreum\Caster\functions\is_enum;
@@ -200,6 +201,18 @@ class Caster implements CasterInterface
     protected string $sensitiveMessage = CasterInterface::SENSITIVE_MESSAGE_DEFAULT;
 
     /**
+     * When `true`, ASCII control characters (including new line feed (\n) and carriage return (\r)) in strings must be
+     * converted to their equivalent hex annotation. Said control characters include [\x00-\x1f] and \x7f. Example: A
+     * new line (\n or \x0a) will appear as "\x0a".
+     *
+     * When `false`, no conversions occur. This may cause strings to appear in binary, e.g. when a string contains the
+     * null byte (\x00) character.
+     *
+     * Notice: Any calculation of string length MUST be performed BEFORE the conversion is performed and AFTER escaping.
+     */
+    protected bool $isConvertingASCIIControlCharactersToHexAnnotationInStrings = false;
+
+    /**
      * When `true`, the type of a value will be prepended in parenthesis.
      */
     protected bool $isPrependingType = false;
@@ -209,6 +222,17 @@ class Caster implements CasterInterface
      * and only a sample will be displayed.
      */
     protected bool $isMakingSamples = true;
+
+    /**
+     * When `true`, array, object, function/method arguments, etc. will be text wrapped, potentially improving
+     * readability, especially of large and/or multi-level array/objects. Otherwise, no wrapping will occur.
+     */
+    protected bool $isWrapping = false;
+
+    /**
+     * The characters to be used for indentation when wrapping (see property $isWrapping) is enabled.
+     */
+    protected string $wrappingIndentationCharacters = '    ';
 
     protected DefaultStringFormatter $defaultStringFormatter;
 
@@ -448,6 +472,30 @@ class Caster implements CasterInterface
                 );
             }
 
+            if ($caster->isWrapping()) {
+                $lines = preg_split('/(\r?\n|\r)/', $return);
+
+                assert(is_array($lines));
+
+                $lines = array_values($lines);
+
+                if ($this->getDepthCurrent()->toInteger() > 1) {
+                    array_walk($lines, static function (string &$line, int $index) use ($caster): void {
+                        if (0 === $index) {
+                            /**
+                             * First element is not being indented, because it is on the right side of an equal sign and
+                             * should appear following that equal sign – not on a new line.
+                             */
+                            return;
+                        }
+
+                        $line = $caster->getWrappingIndentationCharacters() . $line;
+                    });
+                }
+
+                $return = implode("\n", $lines);
+            }
+
             return $return;
         }
 
@@ -494,6 +542,30 @@ class Caster implements CasterInterface
                     count($value),
                     $return,
                 );
+            }
+
+            if ($caster->isWrapping()) {
+                $lines = preg_split('/(\r?\n|\r)/', $return);
+
+                assert(is_array($lines));
+
+                $lines = array_values($lines);
+
+                if ($this->getDepthCurrent()->toInteger() > 1) {
+                    array_walk($lines, static function (string &$line, int $index) use ($caster): void {
+                        if (0 === $index) {
+                            /**
+                             * First element is not being indented, because it is on the right side of an equal sign and
+                             * should appear following that equal sign – not on a new line.
+                             */
+                            return;
+                        }
+
+                        $line = $caster->getWrappingIndentationCharacters() . $line;
+                    });
+                }
+
+                $return = implode("\n", $lines);
             }
 
             return $return;
@@ -852,6 +924,15 @@ class Caster implements CasterInterface
         return $clone;
     }
 
+    public function withIsConvertingASCIIControlCharactersToHexAnnotationInStrings(
+        bool $isConvertingASCIIControlCharactersToHexAnnotationInStrings,
+    ): static {
+        $clone = clone $this;
+        $clone->isConvertingASCIIControlCharactersToHexAnnotationInStrings = $isConvertingASCIIControlCharactersToHexAnnotationInStrings;
+
+        return $clone;
+    }
+
     public function withIsMakingSamples(bool $isMakingSamples): static
     {
         $clone = clone $this;
@@ -864,6 +945,14 @@ class Caster implements CasterInterface
     {
         $clone = clone $this;
         $clone->isPrependingType = $isPrependingType;
+
+        return $clone;
+    }
+
+    public function withIsWrapping(bool $isWrapping): static
+    {
+        $clone = clone $this;
+        $clone->isWrapping = $isWrapping;
 
         return $clone;
     }
@@ -1129,6 +1218,16 @@ class Caster implements CasterInterface
         return $this->stringQuotingCharacter;
     }
 
+    public function getWrappingIndentationCharacters(): string
+    {
+        return $this->wrappingIndentationCharacters;
+    }
+
+    public function isConvertingASCIIControlCharactersToHexAnnotationInStrings(): bool
+    {
+        return $this->isConvertingASCIIControlCharactersToHexAnnotationInStrings;
+    }
+
     public function isMakingSamples(): bool
     {
         return $this->isMakingSamples;
@@ -1137,5 +1236,10 @@ class Caster implements CasterInterface
     public function isPrependingType(): bool
     {
         return $this->isPrependingType;
+    }
+
+    public function isWrapping(): bool
+    {
+        return $this->isWrapping;
     }
 }

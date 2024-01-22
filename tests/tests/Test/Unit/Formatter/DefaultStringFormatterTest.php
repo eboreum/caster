@@ -9,8 +9,13 @@ use Eboreum\Caster\Common\DataType\Integer\UnsignedInteger;
 use Eboreum\Caster\Formatter\DefaultStringFormatter;
 use PHPUnit\Framework\TestCase;
 
+use function array_map;
+use function array_merge;
 use function assert;
+use function chr;
+use function implode;
 use function is_string;
+use function range;
 
 /**
  * {@inheritDoc}
@@ -70,6 +75,69 @@ class DefaultStringFormatterTest extends TestCase
         ];
     }
 
+    public function testConvertASCIIControlCharactersToHexAnnotationWorks(): void
+    {
+        $defaultStringFormatter = new DefaultStringFormatter();
+
+        $value = implode(
+            '',
+            array_merge(
+                ['a'],
+                array_map(
+                    static function (int $codepoint): string {
+                        return chr($codepoint);
+                    },
+                    range(0, 31),
+                ),
+                ['b'],
+                ["\x7f"],
+                ['c'],
+            ),
+        );
+
+        $this->assertSame(
+            implode('', [
+                'a',
+                '\\x00',
+                '\\x01',
+                '\\x02',
+                '\\x03',
+                '\\x04',
+                '\\x05',
+                '\\x06',
+                '\\x07',
+                '\\x08',
+                '\\x09',
+                '\\x0a',
+                '\\x0b',
+                '\\x0c',
+                '\\x0d',
+                '\\x0e',
+                '\\x0f',
+                '\\x10',
+                '\\x11',
+                '\\x12',
+                '\\x13',
+                '\\x14',
+                '\\x15',
+                '\\x16',
+                '\\x17',
+                '\\x18',
+                '\\x19',
+                '\\x1a',
+                '\\x1b',
+                '\\x1c',
+                '\\x1d',
+                '\\x1e',
+                '\\x1f',
+                'b',
+                '\\x7f',
+                'c',
+            ]),
+            $defaultStringFormatter->convertASCIIControlCharactersToHexAnnotation($value),
+        );
+    }
+
     /**
      * @dataProvider dataProviderTestFormatWorksWithEllipsis
      */
@@ -124,5 +192,204 @@ class DefaultStringFormatterTest extends TestCase
             '"lorem ipsum"',
             $defaultStringFormatter->format($caster, 'lorem ipsum'),
         );
+    }
+
+    public function testFormatWorksWhenConvertingASCIIControlCharactersToHexAnnotation(): void
+    {
+        $casterWithoutConversion = Caster::create()->withIsMakingSamples(false);
+        $casterWithConversion = $casterWithoutConversion->withIsConvertingASCIIControlCharactersToHexAnnotationInStrings(true);
+        $defaultStringFormatter = new DefaultStringFormatter();
+
+        $value = implode(
+            '',
+            array_merge(
+                ['a'],
+                array_map(
+                    static function (int $codepoint): string {
+                        return chr($codepoint);
+                    },
+                    range(0, 31),
+                ),
+                ['b'],
+                ["\x7f"],
+                ['c'],
+            ),
+        );
+
+        $this->assertSame(
+            implode('', [
+                '"',
+                'a',
+                "\x00",
+                "\x01",
+                "\x02",
+                "\x03",
+                "\x04",
+                "\x05",
+                "\x06",
+                "\x07",
+                "\x08",
+                "\x09",
+                "\x0a",
+                "\x0b",
+                "\x0c",
+                "\x0d",
+                "\x0e",
+                "\x0f",
+                "\x10",
+                "\x11",
+                "\x12",
+                "\x13",
+                "\x14",
+                "\x15",
+                "\x16",
+                "\x17",
+                "\x18",
+                "\x19",
+                "\x1a",
+                "\x1b",
+                "\x1c",
+                "\x1d",
+                "\x1e",
+                "\x1f",
+                'b',
+                "\x7f",
+                'c',
+                '"',
+            ]),
+            $defaultStringFormatter->format($casterWithoutConversion, $value),
+        );
+
+        $expected = implode('', [
+            '"',
+            'a',
+            '\\x00',
+            '\\x01',
+            '\\x02',
+            '\\x03',
+            '\\x04',
+            '\\x05',
+            '\\x06',
+            '\\x07',
+            '\\x08',
+            '\\x09',
+            '\\x0a',
+            '\\x0b',
+            '\\x0c',
+            '\\x0d',
+            '\\x0e',
+            '\\x0f',
+            '\\x10',
+            '\\x11',
+            '\\x12',
+            '\\x13',
+            '\\x14',
+            '\\x15',
+            '\\x16',
+            '\\x17',
+            '\\x18',
+            '\\x19',
+            '\\x1a',
+            '\\x1b',
+            '\\x1c',
+            '\\x1d',
+            '\\x1e',
+            '\\x1f',
+            'b',
+            '\\x7f',
+            'c',
+            '"',
+        ]);
+
+        $this->assertSame($expected, $defaultStringFormatter->format($casterWithConversion, $value));
+        $this->assertSame(
+            $expected,
+            $defaultStringFormatter->format($casterWithConversion->withIsMakingSamples(true), $value),
+        );
+    }
+
+    /**
+     * @dataProvider providerTestFormatWorksWhenWrapping
+     */
+    public function testFormatWorksWhenWrapping(
+        string $message,
+        string $expectedWithoutWrapping,
+        string $expectedWithWrapping,
+        string $value,
+        Caster $caster,
+    ): void {
+        $casterWithoutWrapping = $caster->withIsWrapping(false);
+        $casterWithWrapping = $casterWithoutWrapping->withIsWrapping(true);
+        $defaultStringFormatter = new DefaultStringFormatter();
+
+        $this->assertSame(
+            $expectedWithoutWrapping,
+            $defaultStringFormatter->format($casterWithoutWrapping, $value),
+            $message,
+        );
+        $this->assertSame(
+            $expectedWithWrapping,
+            $defaultStringFormatter->format($casterWithWrapping, $value),
+            $message,
+        );
+    }
+
+    /**
+     * @return array<array{string, string, string, string, Caster}>
+     */
+    public function providerTestFormatWorksWhenWrapping(): array
+    {
+        return [
+            [
+                'An empty string.',
+                '""',
+                '""',
+                '',
+                Caster::create(),
+            ],
+            [
+                'A simple "foo" string.',
+                '"foo"',
+                '"foo"',
+                'foo',
+                Caster::create(),
+            ],
+            [
+                'A string with one line break at the beginning.',
+                "\"\nfoo\"",
+                "\"\n    foo\" (indented)",
+                "\nfoo",
+                Caster::create(),
+            ],
+            [
+                'A string with one line break at the end.',
+                "\"foo\n\"",
+                "\"foo\n    \" (indented)",
+                "foo\n",
+                Caster::create(),
+            ],
+            [
+                'A string with several line breaks, both new like (\n) and carriage return (\r).',
+                "\"a\nb\rc\r\nd\"",
+                "\"a\n    b\n    c\n    d\" (indented)",
+                implode('', [
+                    'a',
+                    "\n",
+                    'b',
+                    "\r",
+                    'c',
+                    "\r\n",
+                    'd',
+                ]),
+                Caster::create(),
+            ],
+            [
+                'A string with line break and sampling is disabled.',
+                "\"a\nb\"",
+                "\"a\n    b\" (indented)",
+                "a\nb",
+                Caster::create()->withIsMakingSamples(false),
+            ],
+        ];
     }
 }

@@ -10,10 +10,12 @@ use Eboreum\Caster\Attribute\SensitiveProperty;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\Contract\DebugIdentifierAttributeInterface;
+use Eboreum\Caster\Contract\Formatter\WrappableInterface;
 use ReflectionObject;
 use ReflectionProperty;
 
 use function array_key_exists;
+use function array_walk;
 use function count;
 use function implode;
 use function sprintf;
@@ -23,7 +25,7 @@ use function sprintf;
  *
  * Handles classes, which implement `DebugIdentifierAttributeInterface`.
  */
-class DebugIdentifierAttributeInterfaceFormatter extends AbstractObjectFormatter
+class DebugIdentifierAttributeInterfaceFormatter extends AbstractObjectFormatter implements WrappableInterface
 {
     public static function doReflectionPropertiesHaveSameVisibilityWhenInsideA(
         ReflectionProperty $a,
@@ -91,12 +93,24 @@ class DebugIdentifierAttributeInterfaceFormatter extends AbstractObjectFormatter
             }
         }
 
+        $isWrapping = $caster->isWrapping();
         $return = Caster::makeNormalizedClassName($reflectionObject);
+        $delimiter = ', ';
+
+        if ($isWrapping) {
+            array_walk($segments, static function (string &$segment) use ($caster): void {
+                $segment = $caster->getWrappingIndentationCharacters() . $segment;
+            });
+
+            $delimiter = ",\n";
+        }
 
         if ($segments) {
             $return .= sprintf(
-                ' {%s}',
-                implode(', ', $segments),
+                ' {%s%s%s}',
+                ($isWrapping ? "\n" : ''),
+                implode($delimiter, $segments),
+                ($isWrapping ? "\n" : ''),
             );
         } else {
             $return .= ' {}';

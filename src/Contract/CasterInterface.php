@@ -211,6 +211,16 @@ interface CasterInterface extends ImmutableObjectInterface
     public function withDepthMaximum(PositiveInteger $depthMaximum): static;
 
     /**
+     * Must change a clone of the current instance, instructing whether it on string should be converting ASCII control
+     * character to their equivalent hex annotations.
+     *
+     * Must return said clone.
+     */
+    public function withIsConvertingASCIIControlCharactersToHexAnnotationInStrings(
+        bool $isConvertingASCIIControlCharactersToHexAnnotationInStrings,
+    ): static;
+
+    /**
      * Must change a clone of the current instance, instructing whether it should make samples of values with large
      * amounts of data such as arrays with many elements and long text strings.
      * Must return said clone.
@@ -223,6 +233,13 @@ interface CasterInterface extends ImmutableObjectInterface
      * Must return said clone.
      */
     public function withIsPrependingType(bool $isPrependingType): static;
+
+    /**
+     * Must set the wrapping state on a clone of the current instance.
+     *
+     * Must return said clone.
+     */
+    public function withIsWrapping(bool $isWrapping): static;
 
     /**
      * Must change the utilized masked EncryptedStringCollection on a clone of the current instance.
@@ -422,8 +439,31 @@ interface CasterInterface extends ImmutableObjectInterface
     public function getStringQuotingCharacter(): CharacterInterface;
 
     /**
+     * Must return the characters to be used for indentation when wrapping is enabled.
+     *
+     * Formatters should only apply one level of wrapping for its own shope. Instances of CasterInterface must handle
+     * outer indentation.
+     */
+    public function getWrappingIndentationCharacters(): string;
+
+    /**
+     * Must return true when ASCII control characters (including new line feed (\n) and carriage return (\r)) in strings
+     * must be converted to their equivalent hex annotation. Said control characters include [\x00-\x1f] and \x7f.
+     * Example: A new line (\n or \x0a) must subsequently appear as "\x0a".
+     *
+     * When `false`, no conversions may occur. Without conversion, strings may appear in binary, e.g. when a string
+     * contains the null byte (\x00) character, and on multiple different lines.
+     *
+     * Notice: Any calculation of string length MUST be performed BEFORE the conversion is performed and AFTER escaping.
+     *
+     * Otherwise, must return false.
+     */
+    public function isConvertingASCIIControlCharactersToHexAnnotationInStrings(): bool;
+
+    /**
      * Must return true when data types susceptible to be coming samples (string and array) is being changed to samples
      * upon reaching their respective limits.
+     *
      * Otherwise, must return false.
      */
     public function isMakingSamples(): bool;
@@ -431,7 +471,25 @@ interface CasterInterface extends ImmutableObjectInterface
     /**
      * Must return true when the data type is prepended (in parentheses) when using the casting logic. A prepended type
      * is for instance the "(int)" part of: (int) 42
+     *
      * Otherwise, must return false.
      */
     public function isPrependingType(): bool;
+
+    /**
+     * Must return true when contents of arrays, objects, string, method arguments, etc. should be wrapped and thus have
+     * their contents appear on several different lines.
+     *
+     * Otherwise, must return false.
+     *
+     * Wrapping may also cause indentations.
+     *
+     * Wrapping includes:
+     *
+     *   - Arrays: Keys and values will appear on individual lines.
+     *   - Objects: Properties will appear on individual lines.
+     *   - Function/Method arguments appearing on individual lines.
+     *   - New lines in strings may be offset from the left because of indentation.
+     */
+    public function isWrapping(): bool;
 }

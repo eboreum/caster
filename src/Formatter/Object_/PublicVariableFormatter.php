@@ -8,10 +8,12 @@ use Eboreum\Caster\Abstraction\Formatter\AbstractObjectFormatter;
 use Eboreum\Caster\Attribute\SensitiveProperty;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\CasterInterface;
+use Eboreum\Caster\Contract\Formatter\WrappableInterface;
 use ReflectionObject;
 use ReflectionProperty;
 
 use function array_key_exists;
+use function array_walk;
 use function boolval;
 use function implode;
 use function sprintf;
@@ -24,7 +26,7 @@ use function sprintf;
  * As this class utilizes the Reflection API (https://www.php.net/manual/en/book.reflection.php), which is slow,
  * this class should mainly be used in failure scenarios, e.g. as part of building an exception message.
  */
-class PublicVariableFormatter extends AbstractObjectFormatter
+class PublicVariableFormatter extends AbstractObjectFormatter implements WrappableInterface
 {
     public function format(CasterInterface $caster, object $object): ?string
     {
@@ -35,9 +37,11 @@ class PublicVariableFormatter extends AbstractObjectFormatter
         $propertySequenceAsString = $this->getPropertySequenceAsString($caster, $object);
 
         return sprintf(
-            '%s {%s}',
+            '%s {%s%s%s}',
             Caster::makeNormalizedClassName(new ReflectionObject($object)),
+            ($caster->isWrapping() ? "\n" : ''),
             $propertySequenceAsString,
+            ($caster->isWrapping() ? "\n" : ''),
         );
     }
 
@@ -99,6 +103,14 @@ class PublicVariableFormatter extends AbstractObjectFormatter
             }
 
             $segments[] = $segment;
+        }
+
+        if ($caster->isWrapping()) {
+            array_walk($segments, static function (string &$segment) use ($caster): void {
+                $segment = $caster->getWrappingIndentationCharacters() . $segment;
+            });
+
+            return implode("\n,", $segments);
         }
 
         return implode(', ', $segments);

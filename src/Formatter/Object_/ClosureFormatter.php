@@ -8,10 +8,13 @@ use Closure;
 use Eboreum\Caster\Abstraction\Formatter\AbstractObjectFormatter;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\CasterInterface;
+use Eboreum\Caster\Contract\Formatter\WrappableInterface;
 use ReflectionFunction;
 use ReflectionObject;
 
+use function array_walk;
 use function assert;
+use function count;
 use function implode;
 use function preg_match;
 use function sprintf;
@@ -21,7 +24,7 @@ use function sprintf;
  *
  * Formatter for \Closure.
  */
-class ClosureFormatter extends AbstractObjectFormatter
+class ClosureFormatter extends AbstractObjectFormatter implements WrappableInterface
 {
     public function format(CasterInterface $caster, object $object): ?string
     {
@@ -83,10 +86,26 @@ class ClosureFormatter extends AbstractObjectFormatter
 
         $reflectionReturnType = $reflectionFunction->getReturnType();
 
+        $isWrapping = $caster->isWrapping() && count($arguments) > 1;
+        $delimiter = ', ';
+
+        if ($isWrapping) {
+            array_walk($arguments, static function (string &$argument) use ($caster): void {
+                $argument = sprintf(
+                    "\n%s%s",
+                    $caster->getWrappingIndentationCharacters(),
+                    $argument,
+                );
+            });
+
+            $delimiter = ',';
+        }
+
         $return = sprintf(
-            '%s(%s)',
+            '%s(%s%s)',
             Caster::makeNormalizedClassName(new ReflectionObject($object)),
-            implode(', ', $arguments)
+            implode($delimiter, $arguments),
+            ($isWrapping ? "\n" : ''),
         );
 
         if ($reflectionReturnType) {

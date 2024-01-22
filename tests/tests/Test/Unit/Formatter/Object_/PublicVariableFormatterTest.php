@@ -9,6 +9,7 @@ use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\Formatter\Object_\PublicVariableFormatter;
 use PHPUnit\Framework\TestCase;
+use ReflectionObject;
 use stdClass;
 use TestResource\Unit\Eboreum\Caster\Formatter\Object_\PublicVariableFormatterTest\testFormatWorksWhenObjectHasMultipleSameNamePublicVariables; // phpcs:ignore
 
@@ -222,6 +223,41 @@ class PublicVariableFormatterTest extends TestCase
                     '/',
                 ]),
                 preg_quote(testFormatWorksWhenObjectHasMultipleSameNamePublicVariables\ClassA::class, '/'),
+            ),
+            $formatted,
+        );
+    }
+
+    public function testFormatWorksWhenWrapping(): void
+    {
+        $caster = Caster::create()->withIsWrapping(true);
+        $publicVariableFormatter = new PublicVariableFormatter();
+
+        $object = new class
+        {
+            public readonly object $foo;
+
+            public function __construct()
+            {
+                $this->foo = new class
+                {
+                };
+            }
+        };
+
+        $this->assertTrue($publicVariableFormatter->isHandling($object));
+        $formatted = $publicVariableFormatter->format($caster, $object);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted)); // Make phpstan happy
+        $this->assertSame(
+            sprintf(
+                implode("\n", [
+                    '%s {',
+                    '    $foo = %s',
+                    '}',
+                ]),
+                Caster::makeNormalizedClassName(new ReflectionObject($object)),
+                Caster::makeNormalizedClassName(new ReflectionObject($object->foo)),
             ),
             $formatted,
         );

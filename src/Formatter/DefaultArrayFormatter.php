@@ -7,6 +7,7 @@ namespace Eboreum\Caster\Formatter;
 use Eboreum\Caster\Abstraction\Formatter\AbstractArrayFormatter;
 use Eboreum\Caster\Contract\CasterInterface;
 
+use function array_walk;
 use function count;
 use function implode;
 use function sprintf;
@@ -40,20 +41,30 @@ class DefaultArrayFormatter extends AbstractArrayFormatter
                 $index++;
             }
 
-            $return = '[' . implode(', ', $segments);
             $surplusCount = (count($array) - $arraySampleSize);
             $isSample = ($surplusCount > 0);
 
             if ($isSample) {
-                $return .= sprintf(
-                    ', %s and %d more %s',
+                $segments[] = sprintf(
+                    '%s and %d more %s',
                     $caster->getSampleEllipsis(),
                     $surplusCount,
                     (1 === $surplusCount ? 'element' : 'elements')
                 );
             }
 
-            $return .= ']';
+            if ($caster->isWrapping()) {
+                array_walk($segments, static function (string &$segment) use ($caster): void {
+                    $segment = $caster->getWrappingIndentationCharacters() . $segment;
+                });
+
+                $return = sprintf(
+                    "[\n%s\n]",
+                    implode(",\n", $segments),
+                );
+            } else {
+                $return = '[' . implode(', ', $segments) . ']';
+            }
         } else {
             $return = sprintf('[%s]', $caster->getSampleEllipsis());
             $isSample = true;

@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Test\Unit\Eboreum\Caster\Formatter;
 
 use Eboreum\Caster\Caster;
+use Eboreum\Caster\Collection\Formatter\ObjectFormatterCollection;
 use Eboreum\Caster\Common\DataType\Integer\PositiveInteger;
 use Eboreum\Caster\Common\DataType\Integer\UnsignedInteger;
 use Eboreum\Caster\Formatter\DefaultArrayFormatter;
+use Eboreum\Caster\Formatter\Object_\ClosureFormatter;
 use PHPUnit\Framework\TestCase;
 
 use function assert;
@@ -162,7 +164,7 @@ class DefaultArrayFormatterTest extends TestCase
                 ],
             ],
             [
-                'A multidimensional array, being restricted by array sample size with 3 elements in surplus',
+                'A multi element array, being restricted by array sample size with 3 elements in surplus',
                 '/^\["foo" =\> 1, "bar" =\> 2, \.\.\. and 3 more elements\] \(sample\)$/',
                 implode('', [
                     '/',
@@ -192,6 +194,93 @@ class DefaultArrayFormatterTest extends TestCase
                     'baz' => 3,
                     'bim' => 4,
                     'bum' => 5,
+                ],
+            ],
+            [
+                'A multidimensional array with wrapping enabled.',
+                implode('', [
+                    '/',
+                    '^',
+                    '\[',
+                    '\n    "foo" \=\> \[',
+                    '\n        "bar" \=\> \[',
+                    '\n            "a" => 42',
+                    '\n        \],',
+                    '\n        "baz" \=\> \[',
+                    '\n            "b" => 43',
+                    '\n        \]',
+                    '\n    \]',
+                    '\n\]',
+                    '$',
+                    '/',
+                ]),
+                implode('', [
+                    '/',
+                    '^',
+                    '\[',
+                    '\n    \(string\(3\)\) "foo" \=\> \(array\(2\)\) \[',
+                    '\n        \(string\(3\)\) "bar" \=\> \(array\(1\)\) \[',
+                    '\n            \(string\(1\)\) "a" => \(int\) 42',
+                    '\n        \],',
+                    '\n        \(string\(3\)\) "baz" \=\> \(array\(1\)\) \[',
+                    '\n            \(string\(1\)\) "b" => \(int\) 43',
+                    '\n        \]',
+                    '\n    \]',
+                    '\n\]',
+                    '$',
+                    '/',
+                ]),
+                Caster::getInstance()->withIsWrapping(true)->withDepthCurrent(new PositiveInteger(2)),
+                [
+                    'foo' => [
+                        'bar' => ['a' => 42],
+                        'baz' => ['b' => 43],
+                    ],
+                ],
+            ],
+            [
+                'An array with a wrappable object.',
+                implode('', [
+                    '/',
+                    '^',
+                    '\[',
+                    '\n    "foo" \=\> \\\\Closure',
+                    '\n\]',
+                    '$',
+                    '/',
+                ]),
+                implode('', [
+                    '/',
+                    '^',
+                    '\[',
+                    '\n    \(string\(3\)\) "foo" \=\> \(object\) \\\\Closure',
+                    '\n\]',
+                    '$',
+                    '/',
+                ]),
+                (function (): Caster {
+                    $formatter = $this->createMock(ClosureFormatter::class);
+
+                    $formatter
+                        ->expects($this->atLeastOnce())
+                        ->method('format')
+                        ->willReturn('\\Closure');
+
+                    $formatter
+                        ->expects($this->atLeastOnce())
+                        ->method('isHandling')
+                        ->willReturn(true);
+
+                    return Caster::getInstance()
+                        ->withIsWrapping(true)
+                        ->withCustomObjectFormatterCollection(
+                            new ObjectFormatterCollection([$formatter]),
+                        );
+                })(),
+                [
+                    'foo' => static function (): int {
+                        return 42;
+                    },
                 ],
             ],
         ];

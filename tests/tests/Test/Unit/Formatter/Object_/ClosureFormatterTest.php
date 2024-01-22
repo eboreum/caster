@@ -7,6 +7,7 @@ namespace Test\Unit\Eboreum\Caster\Formatter\Object_;
 use ArrayIterator;
 use Closure;
 use Eboreum\Caster\Caster;
+use Eboreum\Caster\Common\DataType\Integer\PositiveInteger;
 use Eboreum\Caster\Formatter\Object_\ClosureFormatter;
 use Iterator;
 use PHPUnit\Framework\TestCase;
@@ -41,9 +42,12 @@ class ClosureFormatterTest extends TestCase
     /**
      * @dataProvider dataProviderTestFormatWorks
      */
-    public function testFormatWorks(string $message, string $expected, Closure $closure): void
-    {
-        $caster = Caster::create();
+    public function testFormatWorks(
+        string $message,
+        string $expected,
+        Closure $closure,
+        Caster $caster,
+    ): void {
         $closureFormatter = new ClosureFormatter();
 
         $this->assertTrue($closureFormatter->isHandling($closure), $message);
@@ -58,26 +62,32 @@ class ClosureFormatterTest extends TestCase
      */
     public function dataProviderTestFormatWorks(): array
     {
+        $caster = Caster::create();
+
         return [
             [
                 '\Closure with no arguments and no return type.',
                 '\\Closure()',
                 static function () {}, // phpcs:ignore
+                $caster,
             ],
             [
                 '\Closure with 1 argument. No default value. No return type.',
                 '\\Closure(int $a)',
                 static function (int $a) {}, // phpcs:ignore
+                $caster,
             ],
             [
                 '\Closure with 1 argument. With default value. No return type.',
                 '\\Closure(int $a = 42)',
                 static function (int $a = 42) {}, // phpcs:ignore
+                $caster,
             ],
             [
                 '\Closure with 1 argument. With default value being a global constant. No return type.',
                 '\\Closure(int $a = PHP_INT_MAX)',
                 static function (int $a = \PHP_INT_MAX) {}, // phpcs:ignore
+                $caster,
             ],
             [
                 implode('', [
@@ -86,6 +96,7 @@ class ClosureFormatterTest extends TestCase
                 ]),
                 '\\Closure(int $a = self::A_CONSTANT)',
                 static function (int $a = self::A_CONSTANT) {}, // phpcs:ignore
+                $caster,
             ],
             [
                 implode('', [
@@ -97,36 +108,43 @@ class ClosureFormatterTest extends TestCase
                     self::class,
                 ),
                 static function (int $a = ClosureFormatterTest::A_CONSTANT) {}, // phpcs:ignore
+                $caster,
             ],
             [
                 '\Closure with 3 arguments. No default values. No return type.',
                 '\\Closure(int $a, string $b, bool $c)',
                 static function (int $a, string $b, bool $c) {}, // phpcs:ignore
+                $caster,
             ],
             [
                 '\Closure with 3 arguments. With 3 default values. No return type.',
                 '\\Closure(int $a = 42, string $b = "foo", bool $c = true)',
                 static function (int $a = 42, string $b = 'foo', bool $c = true) {}, // phpcs:ignore
+                $caster,
             ],
             [
                 '\Closure with 1 typed variadic argument. No return type.',
                 '\\Closure(int ...$a)',
                 static function (int ...$a) {}, // phpcs:ignore
+                $caster,
             ],
             [
                 '\Closure with 1 typed variadic argument being nullable. No return type.',
                 '\\Closure(?int ...$a)',
                 static function (?int ...$a) {}, // phpcs:ignore
+                $caster,
             ],
             [
                 '\Closure with 1 typed argument passed by reference. No return type.',
                 '\\Closure(int &$a)',
                 static function (int &$a) {}, // phpcs:ignore
+                $caster,
             ],
             [
                 '\Closure with 1 typed argument passed by reference being nullable. No return type.',
                 '\\Closure(?int &$a)',
                 static function (?int &$a) {}, // phpcs:ignore
+                $caster,
             ],
             [
                 '\Closure with no arguments Return type "int".',
@@ -134,6 +152,7 @@ class ClosureFormatterTest extends TestCase
                 static function (): int {
                     return 1; // phpstan love
                 },
+                $caster,
             ],
             [
                 '\Closure with no arguments Return type "static".',
@@ -141,6 +160,7 @@ class ClosureFormatterTest extends TestCase
                 function (): static {
                     return $this; // phpstan love
                 },
+                $caster,
             ],
             [
                 '\Closure with no arguments Return type "?int".',
@@ -148,6 +168,7 @@ class ClosureFormatterTest extends TestCase
                 static function (): ?int {
                     return rand(0, 1) === 1 ? 1 : null; // phpstan love
                 },
+                $caster,
             ],
             [
                 '\Closure with no arguments Return type "int|null" (union). Must get shorted to "?int".',
@@ -155,6 +176,7 @@ class ClosureFormatterTest extends TestCase
                 static function (): int|null {
                     return rand(0, 1) === 1 ? 1 : null; // phpstan love
                 },
+                $caster,
             ],
             [
                 '\Closure with no arguments Return type "int|float|string". Must get normalized to "string|int|float".',
@@ -172,6 +194,7 @@ class ClosureFormatterTest extends TestCase
 
                     return 'foo';
                 },
+                $caster,
             ],
             [
                 '\Closure with no arguments Return type "Traversable&Iterator" (intersection).',
@@ -179,11 +202,13 @@ class ClosureFormatterTest extends TestCase
                 static function (): Traversable&Iterator {
                     return new ArrayIterator([]); // phpstan love
                 },
+                $caster,
             ],
             [
                 'Parameter union type.',
                 '\\Closure(int|float $a)',
                 static function (int|float $a) {}, // phpcs:ignore
+                $caster,
             ],
             [
                 'Return union type.',
@@ -191,11 +216,13 @@ class ClosureFormatterTest extends TestCase
                 static function (): int|float {
                     return rand(0, 1) === 1 ? 42 : 3.14; // phpstan love
                 },
+                $caster,
             ],
             [
                 'Parameter intersection type.',
                 '\\Closure(Iterator&Traversable $a)',
                 static function (Iterator&Traversable $a) {}, // phpcs:ignore
+                $caster,
             ],
             [
                 'Return intersection type.',
@@ -207,13 +234,35 @@ class ClosureFormatterTest extends TestCase
                         ->disableOriginalConstructor()
                         ->getMock();
                 },
+                $caster,
             ],
             [
-                'The big one.',
+                'The big one, without wrapping.',
                 '\\Closure($a, &$b, int $c, bool $d, stdClass $e, array $f = [0 => "lala"], ?string ...$z): int',
                 static function ($a, &$b, int $c, bool $d, stdClass $e, array $f = ['lala'], ?string ...$z): int {
                     return 1; // phpstan love
                 },
+                $caster,
+            ],
+            [
+                'The big one, with wrapping.',
+                implode("\n", [
+                    '\\Closure(',
+                    '    $a,',
+                    '    &$b,',
+                    '    int $c,',
+                    '    bool $d,',
+                    '    stdClass $e,',
+                    '    array $f = [',
+                    '        0 => "lala"',
+                    '    ],',
+                    '    ?string ...$z',
+                    '): int',
+                ]),
+                static function ($a, &$b, int $c, bool $d, stdClass $e, array $f = ['lala'], ?string ...$z): int {
+                    return 1; // phpstan love
+                },
+                $caster->withIsWrapping(true)->withDepthCurrent(new PositiveInteger(2)),
             ],
         ];
     }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Test\Unit\Eboreum\Caster;
 
+use Closure;
 use DateInterval;
 use DatePeriod;
 use DateTime;
@@ -39,6 +40,7 @@ use Eboreum\Caster\Formatter\DefaultArrayFormatter;
 use Eboreum\Caster\Formatter\DefaultObjectFormatter;
 use Eboreum\Caster\Formatter\DefaultResourceFormatter;
 use Eboreum\Caster\Formatter\DefaultStringFormatter;
+use Eboreum\Caster\Formatter\Object_\ClosureFormatter;
 use Eboreum\Caster\Formatter\Object_\DateIntervalFormatter;
 use Eboreum\Caster\Formatter\Object_\DatePeriodFormatter;
 use Eboreum\Caster\Formatter\Object_\DateTimeInterfaceFormatter;
@@ -78,6 +80,7 @@ use function get_resource_type;
 use function implode;
 use function is_object;
 use function preg_quote;
+use function property_exists;
 use function sprintf;
 use function str_repeat;
 
@@ -338,6 +341,12 @@ class CasterTest extends TestCase
                 'A string',
                 '/^"foo"$/',
                 'foo',
+                Caster::create(),
+            ],
+            [
+                'A string with line breaks',
+                '/^"foo\nbar"$/',
+                "foo\nbar",
                 Caster::create(),
             ],
             [
@@ -661,6 +670,29 @@ class CasterTest extends TestCase
                 ),
                 StringEnum::Lorem,
                 Caster::create(),
+            ],
+            [
+                'A string being indented due to wrapping.',
+                sprintf(
+                    '/^%s$/',
+                    preg_quote(
+                        implode("\n", [
+                            '[',
+                            '    0 => [',
+                            '        0 => [',
+                            '            0 => "a',
+                            '            b',
+                            '            c',
+                            '            d" (indented)',
+                            '        ]',
+                            '    ]',
+                            ']',
+                        ]),
+                        '/',
+                    ),
+                ),
+                [[["a\nb\r\nc\rd"]]],
+                Caster::create()->withIsWrapping(true),
             ],
         ];
     }
@@ -1723,6 +1755,236 @@ class CasterTest extends TestCase
         );
     }
 
+    /**
+     * @param array<mixed>|object|string $value
+     *
+     * @dataProvider providerTestCastWorksWithWrapping
+     */
+    public function testCastWorksWithWrapping(
+        string $message,
+        string $expected,
+        array|object|string $value,
+        Caster $caster,
+    ): void {
+        $caster = $caster->withIsWrapping(true);
+
+        $this->assertSame($expected, $caster->cast($value), $message);
+    }
+
+    /**
+     * @return array<array{string, string, array<mixed>|object|string, Caster}>
+     */
+    public function providerTestCastWorksWithWrapping(): array
+    {
+        return [
+            [
+                'An empty string.',
+                '""',
+                '',
+                Caster::create(),
+            ],
+            [
+                'An array with one element, one-dimensional.',
+                implode("\n", [
+                    '[',
+                    '    0 => "foo"',
+                    ']',
+                ]),
+                ['foo'],
+                Caster::create(),
+            ],
+            [
+                'An array with two elements, one-dimensional.',
+                implode("\n", [
+                    '[',
+                    '    0 => "foo",',
+                    '    1 => "bar"',
+                    ']',
+                ]),
+                ['foo', 'bar'],
+                Caster::create(),
+            ],
+            [
+                'An array with six elements, one-dimensional, but omitting after 2 elements.',
+                implode("\n", [
+                    '[',
+                    '    0 => "a",',
+                    '    1 => "b",',
+                    '    ... and 4 more elements',
+                    '] (sample)',
+                ]),
+                ['a', 'b', 'c', 'd', 'e', 'f'],
+                Caster::create()->withArraySampleSize(new UnsignedInteger(2)),
+            ],
+            [
+                'A muli-dimensional array with just sub-arrays.',
+                implode("\n", [
+                    '[',
+                    '    "foo" => [',
+                    '        "bar" => [',
+                    '            "baz" => 42',
+                    '        ]',
+                    '    ]',
+                    ']',
+                ]),
+                ['foo' => ['bar' => ['baz' => 42]]],
+                Caster::create(),
+            ],
+            (static function (): array {
+                $object = new class
+                {
+                    public int $foo = 42;
+                };
+
+                $caster = Caster::create()->withCustomObjectFormatterCollection(
+                    new ObjectFormatterCollection([
+                        new PublicVariableFormatter(),
+                    ]),
+                );
+
+                return [
+                    'An object with 1 property.',
+                    sprintf(
+                        implode("\n", [
+                            '%s {',
+                            '    $foo = 42',
+                            '}',
+                        ]),
+                        Caster::makeNormalizedClassName(new ReflectionObject($object)),
+                    ),
+                    $object,
+                    $caster,
+                ];
+            })(),
+            (function (): array {
+                $object = new class
+                {
+                    public object $foo;
+
+                    public function __construct()
+                    {
+                        $this->foo = new class
+                        {
+                            public object $bar;
+
+                            public function __construct()
+                            {
+                                $this->bar = new class
+                                {
+                                    public int $baz = 42;
+                                };
+                            }
+                        };
+                    }
+                };
+
+                $caster = Caster::create()->withCustomObjectFormatterCollection(
+                    new ObjectFormatterCollection([
+                        new PublicVariableFormatter(),
+                    ]),
+                );
+
+                assert(property_exists($object, 'foo'));
+
+                $foo = $object->foo;
+
+                assert(is_object($foo));
+                assert(property_exists($foo, 'bar'));
+
+                $bar = $foo->bar;
+
+                assert(is_object($bar));
+
+                return [
+                    'An object with multiple levels of child objects.',
+                    sprintf(
+                        implode("\n", [
+                            '%s {',
+                            '    $foo = %s {',
+                            '        $bar = %s {',
+                            '            $baz = 42',
+                            '        }',
+                            '    }',
+                            '}',
+                        ]),
+                        Caster::makeNormalizedClassName(new ReflectionObject($object)),
+                        Caster::makeNormalizedClassName(new ReflectionObject($foo)),
+                        Caster::makeNormalizedClassName(new ReflectionObject($bar)),
+                    ),
+                    $object,
+                    $caster,
+                ];
+            })(),
+            [
+                'A Closure without arguments.',
+                '\\Closure(): void',
+                static function (): void {
+                },
+                Caster::create()->withCustomObjectFormatterCollection(
+                    new ObjectFormatterCollection([
+                        new ClosureFormatter(),
+                    ]),
+                ),
+            ],
+            [
+                'A Closure with 3 arguments.',
+                implode("\n", [
+                    '\\Closure(',
+                    '    int $a,',
+                    '    float $b,',
+                    '    bool $c',
+                    '): void',
+                ]),
+                static function (int $a, float $b, bool $c): void {
+                },
+                Caster::create()->withCustomObjectFormatterCollection(
+                    new ObjectFormatterCollection([
+                        new ClosureFormatter(),
+                    ]),
+                ),
+            ],
+            (static function (): array {
+                $caster = Caster::create()->withCustomObjectFormatterCollection(
+                    new ObjectFormatterCollection([
+                        new PublicVariableFormatter(),
+                        new ClosureFormatter(),
+                    ]),
+                );
+
+                $object = new class
+                {
+                    public Closure $bar;
+
+                    public function __construct()
+                    {
+                        $this->bar = static function (int $a, float $b, bool $c): void {
+                        };
+                    }
+                };
+
+                return [
+                    'The big one.',
+                    sprintf(
+                        implode("\n", [
+                            '[',
+                            '    "foo" => %s {',
+                            '        $bar = \\Closure(',
+                            '            int $a,',
+                            '            float $b,',
+                            '            bool $c',
+                            '        ): void',
+                            '    }',
+                            ']',
+                        ]),
+                        Caster::makeNormalizedClassName(new ReflectionObject($object)),
+                    ),
+                    ['foo' => $object],
+                    $caster,
+                ];
+            })(),
+        ];
+    }
+
     public function testCastWorksWhenArrayIsBeingOmitted(): void
     {
         $caster = Caster::create();
@@ -2336,6 +2598,16 @@ class CasterTest extends TestCase
             true,
             $casterB->isPrependingType(),
         );
+    }
+
+    public function testWithIsConvertingASCIIControlCharactersToHexAnnotationInStringsWorks(): void
+    {
+        $casterA = Caster::create();
+        $casterB = $casterA->withIsConvertingASCIIControlCharactersToHexAnnotationInStrings(true);
+
+        $this->assertNotSame($casterA, $casterB);
+        $this->assertFalse($casterA->isConvertingASCIIControlCharactersToHexAnnotationInStrings());
+        $this->assertTrue($casterB->isConvertingASCIIControlCharactersToHexAnnotationInStrings());
     }
 
     public function testWithIsMakingSamplesWorks(): void

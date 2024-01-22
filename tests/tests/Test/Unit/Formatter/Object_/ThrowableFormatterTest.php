@@ -18,6 +18,8 @@ use stdClass;
 use function assert;
 use function implode;
 use function is_string;
+use function preg_quote;
+use function sprintf;
 
 /**
  * {@inheritDoc}
@@ -32,8 +34,10 @@ class ThrowableFormatterTest extends TestCase
         $throwableFormatter = new ThrowableFormatter();
         $object = new stdClass();
 
-        $this->assertFalse($throwableFormatter->isHandling($object));
         $this->assertNull($throwableFormatter->format($caster, $object));
+        $this->assertFalse($throwableFormatter->isHandling($object));
+        $this->assertFalse($throwableFormatter->isIncludingTrace());
+        $this->assertFalse($throwableFormatter->isIncludingTraceAsString());
     }
 
     public function testFormatWorksWithAnExceptionWithNoPrevious(): void
@@ -163,6 +167,113 @@ class ThrowableFormatterTest extends TestCase
         );
     }
 
+    public function testFormatWorksWhenTraceAsStringIsIncluded(): void
+    {
+        $caster = Caster::create();
+        $throwable = new Exception('foo');
+        $throwableFormatter = (new ThrowableFormatter())->withIsIncludingTraceAsString(true);
+
+        $formatted = $throwableFormatter->format($caster, $throwable);
+
+        $this->assertIsString($formatted);
+        assert(is_string($formatted));
+
+        $this->assertMatchesRegularExpression(
+            sprintf(
+                implode('', [
+                    '/',
+                    '^',
+                    '\\\\Exception \{',
+                    '\$code = 0',
+                    ', \$file = %s',
+                    ', \$line = \d+',
+                    ', \$message = %s',
+                    ', \$previous = null',
+                    ', traceAsString = "[^\n]+(\n[^\n]+)+"( \(sample\))?',
+                    '\}',
+                    '$',
+                    '/',
+                ]),
+                preg_quote($caster->cast(__FILE__), '/'),
+                preg_quote($caster->cast('foo'), '/'),
+            ),
+            $formatted,
+        );
+    }
+
+    public function testFormatWorksWhenTraceIsIncluded(): void
+    {
+        $caster = Caster::create();
+        $throwable = new Exception('foo');
+        $throwableFormatter = (new ThrowableFormatter())->withIsIncludingTrace(true);
+
+        $formatted = $throwableFormatter->format($caster, $throwable);
+
+        $this->assertIsString($formatted);
+        assert(is_string($formatted));
+
+        $this->assertMatchesRegularExpression(
+            sprintf(
+                implode('', [
+                    '/',
+                    '^',
+                    '\\\\Exception \{',
+                    '\$code = 0',
+                    ', \$file = %s',
+                    ', \$line = \d+',
+                    ', \$message = %s',
+                    ', \$previous = null',
+                    ', trace = \[.+\]( \(sample\))?',
+                    '\}',
+                    '$',
+                    '/',
+                ]),
+                preg_quote($caster->cast(__FILE__), '/'),
+                preg_quote($caster->cast('foo'), '/'),
+            ),
+            $formatted,
+        );
+    }
+
+    public function testFormatWorksWhenWrapping(): void
+    {
+        $caster = Caster::create()->withIsWrapping(true)->withDepthCurrent(new PositiveInteger(2));
+        $throwable = new Exception('foo');
+        $throwableFormatter = (new ThrowableFormatter())
+            ->withIsIncludingTrace(true)
+            ->withIsIncludingTraceAsString(true);
+
+        $formatted  = $throwableFormatter->format($caster, $throwable);
+
+        $this->assertIsString($formatted);
+        assert(is_string($formatted));
+
+        $this->assertMatchesRegularExpression(
+            sprintf(
+                implode('', [
+                    '/',
+                    '^',
+                    '\\\\Exception \{',
+                    '\n    \$code = 0,',
+                    '\n    \$file = %s,',
+                    '\n    \$line = \d+,',
+                    '\n    \$message = %s,',
+                    '\n    \$previous = null,',
+                    '\n    trace = \[',
+                    '\n((        )[^\n]+\n)+',
+                    '    \]( \(sample\))?,',
+                    '\n    traceAsString = "[^\n]+(\n[^\n]+)+" \(indented\)( \(sample\))?',
+                    '\n\}',
+                    '$',
+                    '/',
+                ]),
+                preg_quote($caster->cast(__FILE__), '/'),
+                preg_quote($caster->cast('foo'), '/'),
+            ),
+            $formatted,
+        );
+    }
+
     public function testWithDepthMaximumWorks(): void
     {
         $throwableFormatterA = new ThrowableFormatter();
@@ -187,5 +298,25 @@ class ThrowableFormatterTest extends TestCase
         $this->assertNotSame($throwableFormatterA, $throwableFormatterB);
         $this->assertSame($messageMaximumLengthA, $throwableFormatterA->getMessageMaximumLength());
         $this->assertSame($messageMaximumLengthB, $throwableFormatterB->getMessageMaximumLength());
+    }
+
+    public function testWithIsIncludingTraceAsStringWorks(): void
+    {
+        $throwableFormatterA = new ThrowableFormatter();
+        $throwableFormatterB = $throwableFormatterA->withIsIncludingTraceAsString(true);
+
+        $this->assertNotSame($throwableFormatterA, $throwableFormatterB);
+        $this->assertFalse($throwableFormatterA->isIncludingTraceAsString());
+        $this->assertTrue($throwableFormatterB->isIncludingTraceAsString());
+    }
+
+    public function testWithIsIncludingTraceWorks(): void
+    {
+        $throwableFormatterA = new ThrowableFormatter();
+        $throwableFormatterB = $throwableFormatterA->withIsIncludingTrace(true);
+
+        $this->assertNotSame($throwableFormatterA, $throwableFormatterB);
+        $this->assertFalse($throwableFormatterA->isIncludingTrace());
+        $this->assertTrue($throwableFormatterB->isIncludingTrace());
     }
 }

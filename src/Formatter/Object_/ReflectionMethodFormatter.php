@@ -7,9 +7,11 @@ namespace Eboreum\Caster\Formatter\Object_;
 use Eboreum\Caster\Abstraction\Formatter\AbstractObjectFormatter;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\CasterInterface;
+use Eboreum\Caster\Contract\Formatter\WrappableInterface;
 use ReflectionClass;
 use ReflectionMethod;
 
+use function array_walk;
 use function assert;
 use function implode;
 use function sprintf;
@@ -21,7 +23,7 @@ use function sprintf;
  *
  * @see https://www.php.net/manual/en/class.reflectionmethod.php
  */
-class ReflectionMethodFormatter extends AbstractObjectFormatter
+class ReflectionMethodFormatter extends AbstractObjectFormatter implements WrappableInterface
 {
     protected bool $isRenderingParameters = true;
 
@@ -64,7 +66,18 @@ class ReflectionMethodFormatter extends AbstractObjectFormatter
                     ->format($caster, $reflectionParameter);
             }
 
-            $str .= '(' . implode(', ', $parametersAsStrings) . ')';
+            if ($caster->isWrapping()) {
+                array_walk($parametersAsStrings, static function (string &$parametersAsString) use ($caster): void {
+                    $parametersAsString = $caster->getWrappingIndentationCharacters() . $parametersAsString;
+                });
+
+                $str .= sprintf(
+                    "(\n%s\n)",
+                    implode(",\n", $parametersAsStrings),
+                );
+            } else {
+                $str .= '(' . implode(', ', $parametersAsStrings) . ')';
+            }
         }
 
         if ($this->isRenderingReturnType() && $object->getReturnType()) {

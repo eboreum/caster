@@ -7,6 +7,8 @@ namespace Test\Unit\Eboreum\Caster\Formatter\Object_;
 use Eboreum\Caster\Attribute\DebugIdentifier;
 use Eboreum\Caster\Attribute\SensitiveProperty;
 use Eboreum\Caster\Caster;
+use Eboreum\Caster\Collection\Formatter\ObjectFormatterCollection;
+use Eboreum\Caster\Common\DataType\Integer\PositiveInteger;
 use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\Contract\DebugIdentifierAttributeInterface;
 use Eboreum\Caster\Formatter\Object_\DebugIdentifierAttributeInterfaceFormatter;
@@ -626,6 +628,46 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
                     '/',
                 ]),
                 preg_quote(basename(__FILE__), '/'),
+            ),
+            $formatted,
+        );
+    }
+
+    public function testFormatWorksWhenWrapping(): void
+    {
+        $debugIdentifierAttributeInterfaceFormatter = new DebugIdentifierAttributeInterfaceFormatter();
+
+        $caster = Caster::create()
+            ->withIsWrapping(true)
+            ->withDepthCurrent(new PositiveInteger(2))
+            ->withCustomObjectFormatterCollection(
+                new ObjectFormatterCollection(
+                    [$debugIdentifierAttributeInterfaceFormatter],
+                ),
+            );
+
+        $object = new class implements DebugIdentifierAttributeInterface
+        {
+            #[DebugIdentifier]
+            public int $foo = 42;
+
+            #[DebugIdentifier]
+            public int $bar = 43;
+        };
+
+        $formatted = $debugIdentifierAttributeInterfaceFormatter->format($caster, $object);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted)); // Make phpstan happy
+
+        $this->assertSame(
+            sprintf(
+                implode("\n", [
+                    '%s {',
+                    '    $foo = (int) 42,',
+                    '    $bar = (int) 43',
+                    '}',
+                ]),
+                Caster::makeNormalizedClassName(new ReflectionObject($object)),
             ),
             $formatted,
         );
