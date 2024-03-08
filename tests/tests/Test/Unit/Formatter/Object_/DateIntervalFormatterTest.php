@@ -10,7 +10,9 @@ use Eboreum\Caster\Formatter\Object_\DateIntervalFormatter;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
+use function assert;
 use function implode;
+use function is_string;
 
 /**
  * {@inheritDoc}
@@ -39,28 +41,50 @@ class DateIntervalFormatterTest extends TestCase
         );
 
         $this->assertTrue($dateIntervalFormatter->isHandling($object));
-        $this->assertSame(
+
+        $formatted = $dateIntervalFormatter->format($caster, $object);
+
+        $this->assertIsString($formatted);
+        assert(is_string($formatted));
+        $this->assertMatchesRegularExpression(
             implode('', [
-                '\\DateInterval {',
-                    '$y = 0',
-                    ', $m = 1',
-                    ', $d = 2',
-                    ', $h = 12',
-                    ', $i = 34',
-                    ', $s = 56',
-                    ', $f = 0',
-                    ', $weekday = 0',
-                    ', $weekday_behavior = 0',
-                    ', $first_last_day_of = 0',
-                    ', $invert = 0',
-                    ', $days = 33',
-                    ', $special_type = 0',
-                    ', $special_amount = 0',
-                    ', $have_weekday_relative = 0',
-                    ', $have_special_relative = 0',
-                '}',
+                '/',
+                '^',
+                '\\\\DateInterval \{',
+                    '\$y = 0',
+                    ', \$m = 1',
+                    ', \$d = 2',
+                    ', \$h = 12',
+                    ', \$i = 34',
+                    ', \$s = 56',
+                    ', \$f = 0',
+                    // The following group exists only up until in PHP 8.1, but was removed in PHP 8.2.
+                    '(',
+                        ', \$weekday = 0',
+                        ', \$weekday_behavior = 0',
+                        ', \$first_last_day_of = 0',
+                    ')?',
+                    ', \$invert = 0',
+                    ', \$days = 33',
+                    '(',
+                        // This first group matches PHP 8.1.
+                        '(',
+                            ', \$special_type = 0',
+                            ', \$special_amount = 0',
+                            ', \$have_weekday_relative = 0',
+                            ', \$have_special_relative = 0',
+                        ')',
+                        '|',
+                        // This second group matches PHP 8.2+.
+                        '(',
+                            ', \$from_string = false',
+                        ')',
+                    ')',
+                '\}',
+                '$',
+                '/',
             ]),
-            $dateIntervalFormatter->format($caster, $object),
+            $formatted,
         );
     }
 }

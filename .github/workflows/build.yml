@@ -14,21 +14,21 @@ jobs:
         php-version: ['8.1']
 
     steps:
-      - name: Checkout
+      - name: "PHP ${{ matrix.php-version }}: Checkout"
         uses: actions/checkout@v3
 
-      - name: Setup PHP ${{ matrix.php-version }}
+      - name: "PHP ${{ matrix.php-version }}: Install"
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
           extensions: mbstring, simplexml, dom
           coverage: xdebug
 
-      - name: Get composer cache directory
+      - name: "PHP ${{ matrix.php-version }}: Get composer cache directory"
         id: composer-cache
         run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
-      - name: Cache composer dependencies
+      - name: "PHP ${{ matrix.php-version }}: Cache composer dependencies"
         uses: actions/cache@v3
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
@@ -37,12 +37,12 @@ jobs:
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: ${{ runner.os }}-composer-
 
-      - name: Install Composer dependencies
+      - name: "PHP ${{ matrix.php-version }}: Install Composer dependencies"
         run: |
           composer config --no-interaction allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
           composer install --no-progress --prefer-dist --optimize-autoloader
 
-      - name: Make N/A code coverage badge in case pipeline below fails
+      - name: "PHP ${{ matrix.php-version }}: Make N/A code coverage badge in case pipeline below fails"
         uses: schneegans/dynamic-badges-action@v1.4.0
         with:
           auth: ${{ secrets.GIST_SECRET_README_BADGES }}
@@ -52,7 +52,7 @@ jobs:
           message: "N/A"
           color: red
 
-      - name: Make N/A phpstan badge in case pipeline below fails
+      - name: "PHP ${{ matrix.php-version }}: Make N/A phpstan badge in case pipeline below fails"
         uses: schneegans/dynamic-badges-action@v1.4.0
         with:
           auth: ${{ secrets.GIST_SECRET_README_BADGES }}
@@ -62,12 +62,12 @@ jobs:
           message: "N/A"
           color: red
 
-      - name: Run PHPUnit tests and make coverage report
+      - name: "PHP ${{ matrix.php-version }}: Run PHPUnit tests and make coverage report"
         run: |
           cd tests && ../vendor/bin/phpunit --coverage-clover=coverage.xml --coverage-text=coverage.txt
           echo "COVERAGE=$(grep -E '^ +Lines: +[0-9]+(\.[0-9]+)?% ' coverage.txt | sed -E 's/^ +Lines: +([0-9]+(\.([0-9]+)?))%.+$/\1/')" >> $GITHUB_ENV
 
-      - name: Generate code coverage percentage badge
+      - name: "PHP ${{ matrix.php-version }}: Generate code coverage percentage badge"
         uses: schneegans/dynamic-badges-action@v1.4.0
         with:
           auth: ${{ secrets.GIST_SECRET_README_BADGES }}
@@ -79,13 +79,13 @@ jobs:
           maxColorRange: 100
           minColorRange: 0
 
-      - name: Run PHPStan
+      - name: "PHP ${{ matrix.php-version }}: Run PHPStan"
         run: vendor/bin/phpstan
 
-      - name: Register PHPStan Level value in $GITHUB_ENV
+      - name: "PHP ${{ matrix.php-version }}: Register PHPStan Level value in $GITHUB_ENV"
         run: echo "PHPSTAN_LEVEL=$(.github/make-phpstan-level-badge-value.php)" >> $GITHUB_ENV
 
-      - name: Generate PHPStan Level badge
+      - name: "PHP ${{ matrix.php-version }}: Generate PHPStan Level badge"
         uses: schneegans/dynamic-badges-action@v1.4.0
         with:
           auth: ${{ secrets.GIST_SECRET_README_BADGES }}
@@ -97,5 +97,67 @@ jobs:
           maxColorRange: 9
           minColorRange: 0
 
-      - name: Run phpcs
+      - name: "PHP ${{ matrix.php-version }}: Run phpcs"
+        run: vendor/bin/phpcs -n -q
+  test-php-82:
+    name: Tests PHP ${{ matrix.php-version }}
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        php-version: ['8.2']
+
+    steps:
+      - name: "PHP ${{ matrix.php-version }}: Checkout"
+        uses: actions/checkout@v3
+
+      - name: "PHP ${{ matrix.php-version }}: Install"
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: mbstring, simplexml, dom
+          coverage: xdebug
+
+      - name: "PHP ${{ matrix.php-version }}: Install Composer dependencies"
+        run: |
+          composer config --no-interaction allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
+          composer install --no-progress --prefer-dist --optimize-autoloader
+
+      - name: "PHP ${{ matrix.php-version }}: Run PHPUnit tests"
+        run: cd tests && ../vendor/bin/phpunit
+
+      - name: "PHP ${{ matrix.php-version }}: Run PHPStan"
+        run: vendor/bin/phpstan
+
+      - name: "PHP ${{ matrix.php-version }}: Run phpcs"
+        run: vendor/bin/phpcs -n -q
+  test-php-83:
+    name: Tests PHP ${{ matrix.php-version }}
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        php-version: ['8.3']
+
+    steps:
+      - name: "PHP ${{ matrix.php-version }}: Checkout"
+        uses: actions/checkout@v3
+
+      - name: "PHP ${{ matrix.php-version }}: Install"
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: mbstring, simplexml, dom
+          coverage: xdebug
+
+      - name: "PHP ${{ matrix.php-version }}: Install Composer dependencies"
+        run: |
+          composer config --no-interaction allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
+          composer install --no-progress --prefer-dist --optimize-autoloader
+
+      - name: "PHP ${{ matrix.php-version }}: Run PHPUnit tests"
+        run: cd tests && ../vendor/bin/phpunit
+
+      - name: "PHP ${{ matrix.php-version }}: Run PHPStan"
+        run: vendor/bin/phpstan
+
+      - name: "PHP ${{ matrix.php-version }}: Run phpcs"
         run: vendor/bin/phpcs -n -q
