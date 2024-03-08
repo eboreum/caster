@@ -130,3 +130,34 @@ jobs:
 
       - name: "PHP ${{ matrix.php-version }}: Run phpcs"
         run: vendor/bin/phpcs -n -q
+  test-php-83:
+    name: Tests PHP ${{ matrix.php-version }}
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        php-version: ['8.3']
+
+    steps:
+      - name: "PHP ${{ matrix.php-version }}: Checkout"
+        uses: actions/checkout@v3
+
+      - name: "PHP ${{ matrix.php-version }}: Install"
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: mbstring, simplexml, dom
+          coverage: xdebug
+
+      - name: "PHP ${{ matrix.php-version }}: Install Composer dependencies"
+        run: |
+          composer config --no-interaction allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
+          composer install --no-progress --prefer-dist --optimize-autoloader
+
+      - name: "PHP ${{ matrix.php-version }}: Run PHPUnit tests"
+        run: cd tests && ../vendor/bin/phpunit
+
+      - name: "PHP ${{ matrix.php-version }}: Run PHPStan"
+        run: vendor/bin/phpstan
+
+      - name: "PHP ${{ matrix.php-version }}: Run phpcs"
+        run: vendor/bin/phpcs -n -q
