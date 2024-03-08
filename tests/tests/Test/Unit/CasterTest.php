@@ -1372,7 +1372,7 @@ class CasterTest extends TestCase
                         return null;
                     }
 
-                    assert($enum instanceof DateTimeInterface); // Make phpstan happy
+                    assert(is_enum($enum)); // Make phpstan happy
 
                     return sprintf(
                         '\\%s {$name = %s, $value = %s}',
@@ -1389,14 +1389,7 @@ class CasterTest extends TestCase
                         $reflectionType = $reflectionEnum->getBackingType();
 
                         if ($reflectionType) {
-                            /**
-                             * PHPStan is clearly confused here. It is true that it is not listed here –
-                             * https://www.php.net/manual/en/class.reflectiontype.php – but the method `getName` does in
-                             * fact exist.
-                             */
-
-                            // @phpstan-ignore-next-line
-                            return 'string' === $reflectionType->getName();
+                            return 'string' === (string) $reflectionType;
                         }
                     }
 
