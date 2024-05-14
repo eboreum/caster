@@ -1,0 +1,44 @@
+services:
+  composer:
+    image: composer:2.7.6
+    container_name: "eboreum-caster-composer"
+    environment:
+      - COMPOSER_CACHE_DIR=/app/.cache/composer
+    volumes:
+      - .:/app
+    restart: no
+    command: composer install
+    user: ${CURRENT_UID:?Variable CURRENT_UID not present.}
+  php81_phpunit:
+    image: php:8.1-cli
+    container_name: "eboreum-caster-php81-phpunit"
+    links:
+      - composer
+    restart: no
+    volumes:
+      - $PWD:/app
+    working_dir: /app/tests
+    user: ${CURRENT_UID:?Variable CURRENT_UID not present.}
+    command: "php ../vendor/bin/phpunit"
+  php82_phpunit:
+    image: php:8.2-cli
+    container_name: "eboreum-caster-php82-phpunit"
+    links:
+      - composer
+    restart: no
+    volumes:
+      - .:/app
+    working_dir: /app/tests
+    command: "php ../vendor/bin/phpunit"
+    user: ${CURRENT_UID:?Variable CURRENT_UID not present.}
+  php83_phpunit:
+    image: php:8.3-cli
+    container_name: "eboreum-caster-php83-phpunit"
+    links:
+      - composer
+    restart: no
+    volumes:
+      - .:/app
+    working_dir: /app/tests
+    command: "php ../vendor/bin/phpunit"
+    user: ${CURRENT_UID:?Variable CURRENT_UID not present.}
