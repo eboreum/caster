@@ -3,7 +3,7 @@
     "description": "Cast any PHP value to a sensible, human readable string. Great for type-safe outputs, exception messages, transparency during debugging, and similar things. Also helps avoiding innate problems such as printing endless, circular referencing objects (endless recursion), limits the output for large arrays and long strings, and prevents (opt-in) the outputting of sensitive strings like passwords.",
     "type": "library",
     "require": {
-        "php": "^8.1",
+        "php": "^8.3",
         "ext-mbstring": "*",
         "ext-openssl": "*"
     },
