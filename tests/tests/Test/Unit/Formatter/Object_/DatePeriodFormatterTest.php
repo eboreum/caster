@@ -9,16 +9,13 @@ use DatePeriod;
 use DateTimeImmutable;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Formatter\Object_\DatePeriodFormatter;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
 use function implode;
 
-/**
- * {@inheritDoc}
- *
- * @covers \Eboreum\Caster\Formatter\Object_\DatePeriodFormatter
- */
+#[CoversClass(DatePeriodFormatter::class)]
 class DatePeriodFormatterTest extends TestCase
 {
     public function testFormatReturnsNullWhenObjectIsNotQualified(): void

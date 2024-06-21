@@ -10,6 +10,9 @@ use Eboreum\Caster\Caster;
 use Eboreum\Caster\Common\DataType\Integer\PositiveInteger;
 use Eboreum\Caster\Formatter\Object_\ClosureFormatter;
 use Iterator;
+use IteratorIterator;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 use Traversable;
@@ -20,47 +23,15 @@ use function is_string;
 use function rand;
 use function sprintf;
 
-/**
- * {@inheritDoc}
- *
- * @covers \Eboreum\Caster\Formatter\Object_\ClosureFormatter
- */
+#[CoversClass(ClosureFormatter::class)]
 class ClosureFormatterTest extends TestCase
 {
     public const A_CONSTANT = 'foo';
 
-    public function testFormatReturnsNullWhenObjectIsNotQualified(): void
-    {
-        $caster = Caster::create();
-        $closureFormatter = new ClosureFormatter();
-        $object = new stdClass();
-
-        $this->assertFalse($closureFormatter->isHandling($object));
-        $this->assertNull($closureFormatter->format($caster, $object));
-    }
-
-    /**
-     * @dataProvider dataProviderTestFormatWorks
-     */
-    public function testFormatWorks(
-        string $message,
-        string $expected,
-        Closure $closure,
-        Caster $caster,
-    ): void {
-        $closureFormatter = new ClosureFormatter();
-
-        $this->assertTrue($closureFormatter->isHandling($closure), $message);
-        $formatted = $closureFormatter->format($caster, $closure);
-        $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
-        $this->assertSame($expected, $formatted, $message);
-    }
-
     /**
      * @return array<int, array{string, string, Closure}>
      */
-    public function dataProviderTestFormatWorks(): array
+    public static function providerTestFormatWorks(): array
     {
         $caster = Caster::create();
 
@@ -157,8 +128,8 @@ class ClosureFormatterTest extends TestCase
             [
                 '\Closure with no arguments Return type "static".',
                 '\\Closure(): static',
-                function (): static {
-                    return $this; // phpstan love
+                static function (): static {
+                    return null; // @phpstan-ignore-line
                 },
                 $caster,
             ],
@@ -227,12 +198,8 @@ class ClosureFormatterTest extends TestCase
             [
                 'Return intersection type.',
                 '\\Closure(): Iterator&Traversable',
-                function (): Iterator&Traversable {
-                     // phpstan love
-                    return $this
-                        ->getMockBuilder(Iterator::class)
-                        ->disableOriginalConstructor()
-                        ->getMock();
+                static function (): Iterator&Traversable {
+                    return new IteratorIterator(new ArrayIterator([]));
                 },
                 $caster,
             ],
@@ -265,5 +232,31 @@ class ClosureFormatterTest extends TestCase
                 $caster->withIsWrapping(true)->withDepthCurrent(new PositiveInteger(2)),
             ],
         ];
+    }
+
+    public function testFormatReturnsNullWhenObjectIsNotQualified(): void
+    {
+        $caster = Caster::create();
+        $closureFormatter = new ClosureFormatter();
+        $object = new stdClass();
+
+        $this->assertFalse($closureFormatter->isHandling($object));
+        $this->assertNull($closureFormatter->format($caster, $object));
+    }
+
+    #[DataProvider('providerTestFormatWorks')]
+    public function testFormatWorks(
+        string $message,
+        string $expected,
+        Closure $closure,
+        Caster $caster,
+    ): void {
+        $closureFormatter = new ClosureFormatter();
+
+        $this->assertTrue($closureFormatter->isHandling($closure), $message);
+        $formatted = $closureFormatter->format($caster, $closure);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted)); // Make phpstan happy
+        $this->assertSame($expected, $formatted, $message);
     }
 }

@@ -2,6 +2,7 @@
 
 /composer.lock
 /bin/
+/tests/.phpunit.cache/
 /tests/.phpunit.result.cache
 /tests/.vagrant/
 /tests/ubuntu-xenial-16.04-cloudimg-console.log

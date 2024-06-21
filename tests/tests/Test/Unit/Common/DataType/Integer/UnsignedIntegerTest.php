@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Test\Unit\Eboreum\Caster\Common\DataType\Integer;
 
+use Eboreum\Caster\Common\DataType\Integer\AbstractInteger;
 use Eboreum\Caster\Common\DataType\Integer\UnsignedInteger;
 use Eboreum\Caster\Exception\RuntimeException;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 use function assert;
@@ -18,17 +21,23 @@ use function sprintf;
 
 use const PHP_INT_MAX;
 
-/**
- * {@inheritDoc}
- *
- * @covers Eboreum\Caster\Common\DataType\Integer\AbstractInteger
- * @covers Eboreum\Caster\Common\DataType\Integer\UnsignedInteger
- */
+#[CoversClass(AbstractInteger::class)]
+#[CoversClass(UnsignedInteger::class)]
 class UnsignedIntegerTest extends TestCase
 {
     /**
-     * @dataProvider dataProviderTestBasics
+     * @return array<int, array{0: int}>
      */
+    public static function providerTestBasics(): array
+    {
+        return [
+            [1],
+            [42],
+            [PHP_INT_MAX],
+        ];
+    }
+
+    #[DataProvider('providerTestBasics')]
     public function testBasics(int $integer): void
     {
         $unsignedIntegerA = new UnsignedInteger($integer);
@@ -44,18 +53,6 @@ class UnsignedIntegerTest extends TestCase
         $unsignedIntegerC = new UnsignedInteger(2);
 
         $this->assertFalse($unsignedIntegerA->isSame($unsignedIntegerC));
-    }
-
-    /**
-     * @return array<int, array{0: int}>
-     */
-    public function dataProviderTestBasics(): array
-    {
-        return [
-            [1],
-            [42],
-            [PHP_INT_MAX],
-        ];
     }
 
     public function testConstructorThrowsExceptionWhenArgumentIntegerIsOutOfBounds(): void

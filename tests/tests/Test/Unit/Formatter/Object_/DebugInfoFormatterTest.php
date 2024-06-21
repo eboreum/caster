@@ -6,6 +6,7 @@ namespace Test\Unit\Eboreum\Caster\Formatter\Object_;
 
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Formatter\Object_\DebugInfoFormatter;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
 use function assert;
@@ -15,11 +16,7 @@ use function is_string;
 use function preg_quote;
 use function sprintf;
 
-/**
- * {@inheritDoc}
- *
- * @covers \Eboreum\Caster\Formatter\Object_\DebugInfoFormatter
- */
+#[CoversClass(DebugInfoFormatter::class)]
 class DebugInfoFormatterTest extends TestCase
 {
     public function testFormatReturnsNullWhenObjectIsNotQualified(): void

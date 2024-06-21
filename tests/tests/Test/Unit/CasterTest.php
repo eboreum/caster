@@ -53,6 +53,9 @@ use Eboreum\Caster\Formatter\Object_\ThrowableFormatter;
 use Exception;
 use FooBar_9f8a3c814a1d42dda2672abede7ce454;
 use LogicException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use ReflectionAttribute;
@@ -85,227 +88,13 @@ use function property_exists;
 use function sprintf;
 use function str_repeat;
 
-/**
- * {@inheritDoc}
- *
- * @covers \Eboreum\Caster\Caster
- */
+#[CoversClass(Caster::class)]
 class CasterTest extends TestCase
 {
-    public function testBasics(): void
-    {
-        $characterEncoding = CharacterEncoding::getInstance();
-        $caster = new Caster($characterEncoding);
-        $this->assertInstanceOf(Caster::class, $caster);
-        $this->assertSame(
-            CasterInterface::ARRAY_SAMPLE_SIZE_DEFAULT,
-            $caster->getArraySampleSize()->toInteger(),
-        );
-        $this->assertSame($characterEncoding, $caster->getCharacterEncoding());
-        $this->assertCount(0, $caster->getContext());
-        $this->assertCount(0, $caster->getCustomArrayFormatterCollection());
-        $this->assertCount(0, $caster->getCustomEnumFormatterCollection());
-        $this->assertCount(0, $caster->getCustomObjectFormatterCollection());
-        $this->assertCount(0, $caster->getCustomResourceFormatterCollection());
-        $this->assertCount(0, $caster->getCustomStringFormatterCollection());
-        $this->assertInstanceOf(DefaultArrayFormatter::class, $caster->getDefaultArrayFormatter());
-        $this->assertInstanceOf(DefaultObjectFormatter::class, $caster->getDefaultObjectFormatter());
-        $this->assertInstanceOf(DefaultResourceFormatter::class, $caster->getDefaultResourceFormatter());
-        $this->assertInstanceOf(DefaultStringFormatter::class, $caster->getDefaultStringFormatter());
-        $this->assertSame(1, $caster->getDepthCurrent()->toInteger());
-        $this->assertSame(
-            CasterInterface::DEPTH_MAXIMUM_DEFAULT,
-            $caster->getDepthMaximum()->toInteger(),
-        );
-        $this->assertCount(0, $caster->getMaskedEncryptedStringCollection());
-        $this->assertSame(
-            '*',
-            (string)$caster->getMaskingCharacter(),
-        );
-        $this->assertSame(
-            '******',
-            $caster->getMaskingString(),
-        );
-        $this->assertSame(
-            6,
-            $caster->getMaskingStringLength()->toInteger(),
-        );
-        $this->assertMatchesRegularExpression(
-            implode('', [
-                '/',
-                '^',
-                '\*\* RECURSION \*\* \(',
-                    '\\\\stdClass',
-                    ', [0-9a-f]{32}',
-                '\)',
-                '$',
-                '/',
-            ]),
-            $caster->getRecursionMessage(new stdClass()),
-        );
-        $this->assertSame(CasterInterface::SENSITIVE_MESSAGE_DEFAULT, $caster->getSensitiveMessage());
-        $this->assertSame(
-            CasterInterface::STRING_SAMPLE_SIZE_DEFAULT,
-            $caster->getStringSampleSize()->toInteger(),
-        );
-        $this->assertSame(
-            CasterInterface::STRING_QUOTING_CHARACTER_DEFAULT,
-            (string)$caster->getStringQuotingCharacter(),
-        );
-        $this->assertFalse($caster->isPrependingType());
-        $this->assertTrue($caster->isMakingSamples());
-    }
-
-    public function testCloneWorks(): void
-    {
-        $characterEncoding = CharacterEncoding::getInstance();
-        $caster = new Caster($characterEncoding);
-
-        $clone = clone $caster;
-        $this->assertNotSame($caster->getDefaultArrayFormatter(), $clone->getDefaultArrayFormatter());
-        $this->assertNotSame($caster->getDefaultObjectFormatter(), $clone->getDefaultObjectFormatter());
-        $this->assertNotSame($caster->getDefaultResourceFormatter(), $clone->getDefaultResourceFormatter());
-        $this->assertNotSame($caster->getDefaultStringFormatter(), $clone->getDefaultStringFormatter());
-    }
-
-    public function testCastReflectionAttributeToStringWorks(): void
-    {
-        /** @var ReflectionClass<Classf982a9e0c18911edafa10242ac120002> $reflectionClass */
-        $reflectionClass = new ReflectionClass(Classf982a9e0c18911edafa10242ac120002::class);
-
-        /** @var ReflectionAttribute<Attributef982a9e0c18911edafa10242ac120002> $reflectionAttribute */
-        $reflectionAttribute = (
-            $reflectionClass->getAttributes(Attributef982a9e0c18911edafa10242ac120002::class)[0] ?? null
-        );
-
-        $this->assertIsObject($reflectionAttribute);
-        assert(is_object($reflectionAttribute));
-
-        $this->assertSame(
-            sprintf(
-                '\\%s (foo: "lorem", bar: "ipsum")',
-                Attributef982a9e0c18911edafa10242ac120002::class,
-            ),
-            Caster::create()->castReflectionAttributeToString($reflectionAttribute),
-        );
-
-        $this->assertSame(
-            sprintf(
-                '(attribute) \\%s (foo: (string(5)) "lorem", bar: (string(5)) "ipsum")',
-                Attributef982a9e0c18911edafa10242ac120002::class,
-            ),
-            Caster::create()->withIsPrependingType(true)->castReflectionAttributeToString($reflectionAttribute),
-        );
-    }
-
-    public function testCastReflectionClassToStringWorks(): void
-    {
-        /** @var ReflectionClass<self> $reflectionClass */
-        $reflectionClass = new ReflectionClass(self::class);
-
-        $this->assertSame(
-            sprintf(
-                '\\%s',
-                self::class,
-            ),
-            Caster::create()->castReflectionClassToString($reflectionClass),
-        );
-
-        $this->assertSame(
-            sprintf(
-                '(class) \\%s',
-                self::class,
-            ),
-            Caster::create()->withIsPrependingType(true)->castReflectionClassToString($reflectionClass),
-        );
-    }
-
-    public function testCastReflectionMethodToStringWorks(): void
-    {
-        $object = new class
-        {
-            public function lorem(int $foo = 42, string $bar = 'lala', bool $baz = false): void
-            {
-            }
-        };
-
-        $reflectionObject = new ReflectionObject($object);
-
-        $reflectionMethod = $reflectionObject->getMethod('lorem');
-
-        $this->assertMatchesRegularExpression(
-            sprintf(
-                implode('', [
-                    '/^class@anonymous\/in\/.+\/%s:\d+->lorem\(int \$foo = 42, string \$bar = "lala", bool \$baz =',
-                    ' false\): void$/',
-                ]),
-                basename(__FILE__),
-            ),
-            Caster::create()->castReflectionMethodToString($reflectionMethod),
-        );
-
-        $this->assertMatchesRegularExpression(
-            sprintf(
-                implode('', [
-                    '/^class@anonymous\/in\/.+\/%s:\d+->lorem\(int \$foo = \(int\) 42, string \$bar = \(string\(4\)\)',
-                    ' "lala", bool \$baz = \(bool\) false\): void$/',
-                ]),
-                basename(__FILE__),
-            ),
-            Caster::create()->withIsPrependingType(true)->castReflectionMethodToString($reflectionMethod),
-        );
-    }
-
-    public function testCastReflectionPropertyToStringWorks(): void
-    {
-        $reflectionProperty = new ReflectionProperty(EncryptedString::class, 'salt');
-
-        $this->assertSame(
-            sprintf(
-                '\\%s->$salt',
-                EncryptedString::class,
-            ),
-            Caster::create()->castReflectionPropertyToString($reflectionProperty),
-        );
-
-        $this->assertSame(
-            sprintf(
-                'string \\%s->$salt',
-                EncryptedString::class,
-            ),
-            Caster::create()->withIsPrependingType(true)->castReflectionPropertyToString($reflectionProperty),
-        );
-    }
-
-    public function testCastReflectionTypeToStringWorks(): void
-    {
-        $reflectionProperty = new ReflectionProperty(EncryptedString::class, 'salt');
-
-        $this->assertIsObject($reflectionProperty->getType());
-        assert(is_object($reflectionProperty->getType()));
-
-        $this->assertSame(
-            'string',
-            Caster::create()->castReflectionTypeToString($reflectionProperty->getType()),
-        );
-    }
-
-    /**
-     * @dataProvider dataProviderTestCastWorks
-     */
-    public function testCastWorks(string $message, string $expected, mixed $value, Caster $caster): void
-    {
-        $this->assertMatchesRegularExpression(
-            $expected,
-            $caster->cast($value),
-            $message,
-        );
-    }
-
     /**
      * @return array<int, array{0: string, 1: string, 2: mixed, 3: Caster}>
      */
-    public function dataProviderTestCastWorks(): array
+    public static function providerTestCastWorks(): array
     {
         return [
             [
@@ -711,119 +500,10 @@ class CasterTest extends TestCase
         ];
     }
 
-    public function testCastWorksWithStringSample(): void
-    {
-        $str = str_repeat('a', CasterInterface::STRING_SAMPLE_SIZE_DEFAULT + 1);
-
-        $this->assertSame(
-            '"' . str_repeat('a', CasterInterface::STRING_SAMPLE_SIZE_DEFAULT - 4) . ' ..." (sample)',
-            Caster::create()->withIsMakingSamples(true)->cast($str),
-        );
-    }
-
-    public function testCastWorksWithoutStringSample(): void
-    {
-        $str = str_repeat('a', CasterInterface::STRING_SAMPLE_SIZE_DEFAULT + 1);
-
-        $this->assertSame(
-            '"' . str_repeat('a', CasterInterface::STRING_SAMPLE_SIZE_DEFAULT + 1) . '"',
-            Caster::create()->withIsMakingSamples(false)->cast($str),
-        );
-    }
-
-    public function testCastWorksWithAnonymousClass(): void
-    {
-        $class = new class
-        {
-        };
-
-        $this->assertMatchesRegularExpression(
-            sprintf(
-                implode('', [
-                    '/',
-                    '^',
-                    'class@anonymous\/in\/.+\/%s:\d+',
-                    '$',
-                    '/',
-                ]),
-                preg_quote(basename(__FILE__), '/'),
-            ),
-            Caster::create()->cast($class),
-        );
-    }
-
-    public function testCastWorksWithResource(): void
-    {
-        $this->assertMatchesRegularExpression(
-            '/^`stream` Resource id #\d+$/',
-            Caster::create()->cast(fopen(__FILE__, 'r+')),
-        );
-    }
-
-    public function testCastWorksWithArrayAndWithSampling(): void
-    {
-        $caster = Caster::create();
-        $caster = $caster->withIsMakingSamples(true);
-        $caster = $caster->withArraySampleSize(new UnsignedInteger(3));
-        $caster = $caster->withStringSampleSize(new UnsignedInteger(5));
-        $array = [
-            'foobar',
-            'loremipsum' => 'dolorsit', // phpcs:ignore
-            1,
-            2,
-            3,
-        ];
-
-        $this->assertSame(
-            implode('', [
-                '[',
-                '0 => "f ..." (sample)',
-                ', "l ..." (sample) => "d ..." (sample)',
-                ', 1 => 1, ... and 2 more elements',
-                '] (sample)',
-            ]),
-            $caster->cast($array),
-        );
-    }
-
-    public function testCastWorksWithArrayButWithoutSampling(): void
-    {
-        $caster = Caster::create();
-        $caster = $caster->withIsMakingSamples(true);
-        $caster = $caster->withArraySampleSize(new UnsignedInteger(10));
-        $caster = $caster->withStringSampleSize(new UnsignedInteger(200));
-        $array = [
-            'foobar',
-            'loremipsum' => 'dolorsit', // phpcs:ignore
-            1,
-            2,
-            3,
-        ];
-
-        $this->assertSame(
-            '[0 => "foobar", "loremipsum" => "dolorsit", 1 => 1, 2 => 2, 3 => 3]',
-            $caster->cast($array),
-        );
-    }
-
-    /**
-     * @param array<mixed> $array
-     *
-     * @dataProvider dataProviderTestCastWorksWithArrayLargerThanSampleSize
-     */
-    public function testCastWorksWithArrayLargerThanSampleSize(string $message, string $expected, array $array): void
-    {
-        $this->assertSame(
-            $expected,
-            Caster::create()->withIsMakingSamples(true)->cast($array),
-            $message,
-        );
-    }
-
     /**
      * @return array<int, array{0: string, 1: string, array<mixed>}>
      */
-    public function dataProviderTestCastWorksWithArrayLargerThanSampleSize(): array
+    public static function providerTestCastWorksWithArrayLargerThanSampleSize(): array
     {
         return [
             [
@@ -839,101 +519,10 @@ class CasterTest extends TestCase
         ];
     }
 
-    public function testCastWorksWithAnAssociativeArray(): void
-    {
-        $array = ['foo' => 1, 'bar' => 2, 'baz' => 3, 'bim' => 4];
-
-        $this->assertSame(
-            '["foo" => 1, "bar" => 2, "baz" => 3, ... and 1 more element] (sample)',
-            Caster::create()->withIsMakingSamples(true)->cast($array),
-        );
-    }
-
-    public function testCastWorksWithAMixedArray(): void
-    {
-        $array = ['foo', 'bar' => 2, 'baz', 'bim' => 4];
-
-        $this->assertSame(
-            '[0 => "foo", "bar" => 2, 1 => "baz", ... and 1 more element] (sample)',
-            Caster::create()->withIsMakingSamples(true)->cast($array),
-        );
-    }
-
-    public function testCastWorksWithMaskedStrings(): void
-    {
-        $caster = Caster::create();
-        $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection([
-            new EncryptedString('bar'),
-            new EncryptedString('bim'),
-        ]));
-
-        $this->assertSame(
-            sprintf(
-                '"foo %s baz %s" (masked)',
-                '******',
-                '******'
-            ),
-            $caster->cast('foo bar baz bim'),
-        );
-    }
-
-    public function testCastWorksWithMaskedStringsAndSimplifying(): void
-    {
-        $caster = Caster::create();
-        $caster = $caster->withIsMakingSamples(true);
-        $caster = $caster->withStringSampleSize(new UnsignedInteger(10));
-        $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection([
-            new EncryptedString('bar'),
-            new EncryptedString('bim'),
-        ]));
-
-        $this->assertSame(
-            '"foo ** ..." (sample) (masked)',
-            $caster->cast('foo bar baz bim'),
-        );
-    }
-
-    public function testCastWillCorrectlyMaskArrayKeys(): void
-    {
-        $caster = Caster::create();
-        $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection([
-            new EncryptedString('bar'),
-            new EncryptedString('bim'),
-        ]));
-        $array = ['foo bar baz bim' => 'bar'];
-
-        // It's the masked length = 19, not the original length. Don't bleed information about masked string
-        $this->assertSame(
-            sprintf(
-                '["foo %s baz %s" (masked) => "%s" (masked)]',
-                '******',
-                '******',
-                '******',
-            ),
-            $caster->cast($array),
-        );
-    }
-
-    /**
-     * @param EncryptedStringCollection<EncryptedString> $encryptedStringCollection
-     *
-     * @dataProvider dataProviderTestCastOnMaskedStringsWillNotCauseMaskingToBePartOfOtherMaskings
-     */
-    public function testCastOnMaskedStringsWillNotCauseMaskingToBePartOfOtherMaskings(
-        string $expected,
-        string $input,
-        EncryptedStringCollection $encryptedStringCollection
-    ): void {
-        $caster = Caster::create();
-        $caster = $caster->withMaskedEncryptedStringCollection($encryptedStringCollection);
-
-        $this->assertSame($expected, $caster->cast($input));
-    }
-
     /**
      * @return array<int, array{string, string, EncryptedStringCollection<EncryptedString>}>
      */
-    public function dataProviderTestCastOnMaskedStringsWillNotCauseMaskingToBePartOfOtherMaskings(): array
+    public static function providerTestCastOnMaskedStringsWillNotCauseMaskingToBePartOfOtherMaskings(): array
     {
         return [
             [
@@ -999,35 +588,9 @@ class CasterTest extends TestCase
     }
 
     /**
-     * @dataProvider dataProviderTestCastWorksWithTypePrepended
-     */
-    public function testCastWorksWithTypePrepended(
-        string $message,
-        string $expected,
-        mixed $value,
-        Caster $caster,
-    ): void {
-        $caster = $caster->withIsPrependingType(true);
-
-        $this->assertMatchesRegularExpression(
-            $expected,
-            $caster->cast($value),
-            $message,
-        );
-
-        $casterWithoutIsPrepepndingType = $caster->withIsPrependingType(false);
-
-        $this->assertMatchesRegularExpression(
-            $expected,
-            $casterWithoutIsPrepepndingType->castTyped($value),
-            $message,
-        );
-    }
-
-    /**
      * @return array<int, array{0: string, 1: string, 2: mixed, 3: Caster}>
      */
-    public function dataProviderTestCastWorksWithTypePrepended(): array
+    public static function providerTestCastWorksWithTypePrepended(): array
     {
         return [
             [
@@ -1361,6 +924,867 @@ class CasterTest extends TestCase
         ];
     }
 
+    /**
+     * @return array<int, array{0: string, 1: string, 2: array<mixed>}>
+     */
+    public static function providerTestCastWorksWithPrependedTypeAndWithArrayLargerThanSampleSize(): array
+    {
+        return [
+            [
+                'Singular "element"',
+                implode('', [
+                    '(array(4)) [(int) 0 => (string(3)) "foo", (int) 1 => (int) 42, (int) 2 => (null) null',
+                    ', ... and 1 more element] (sample)',
+                ]),
+                ['foo', 42, null, false],
+            ],
+            [
+                'Plural "elements"',
+                implode('', [
+                    '(array(100)) [(int) 0 => (int) 1, (int) 1 => (int) 1, (int) 2 => (int) 1',
+                    ', ... and 97 more elements] (sample)',
+                ]),
+                array_fill(0, 100, 1),
+            ],
+        ];
+    }
+
+    /**
+     * @return array<array{string, string, array<mixed>|object|string, Caster}>
+     */
+    public static function providerTestCastWorksWithWrapping(): array
+    {
+        return [
+            [
+                'An empty string.',
+                '""',
+                '',
+                Caster::create(),
+            ],
+            [
+                'An array with one element, one-dimensional.',
+                implode("\n", [
+                    '[',
+                    '    0 => "foo"',
+                    ']',
+                ]),
+                ['foo'],
+                Caster::create(),
+            ],
+            [
+                'An array with two elements, one-dimensional.',
+                implode("\n", [
+                    '[',
+                    '    0 => "foo",',
+                    '    1 => "bar"',
+                    ']',
+                ]),
+                ['foo', 'bar'],
+                Caster::create(),
+            ],
+            [
+                'An array with six elements, one-dimensional, but omitting after 2 elements.',
+                implode("\n", [
+                    '[',
+                    '    0 => "a",',
+                    '    1 => "b",',
+                    '    ... and 4 more elements',
+                    '] (sample)',
+                ]),
+                ['a', 'b', 'c', 'd', 'e', 'f'],
+                Caster::create()->withArraySampleSize(new UnsignedInteger(2)),
+            ],
+            [
+                'A muli-dimensional array with just sub-arrays.',
+                implode("\n", [
+                    '[',
+                    '    "foo" => [',
+                    '        "bar" => [',
+                    '            "baz" => 42',
+                    '        ]',
+                    '    ]',
+                    ']',
+                ]),
+                ['foo' => ['bar' => ['baz' => 42]]],
+                Caster::create(),
+            ],
+            (static function (): array {
+                $object = new class
+                {
+                    public int $foo = 42;
+                };
+
+                $caster = Caster::create()->withCustomObjectFormatterCollection(
+                    new ObjectFormatterCollection([
+                        new PublicVariableFormatter(),
+                    ]),
+                );
+
+                return [
+                    'An object with 1 property.',
+                    sprintf(
+                        implode("\n", [
+                            '%s {',
+                            '    $foo = 42',
+                            '}',
+                        ]),
+                        Caster::makeNormalizedClassName(new ReflectionObject($object)),
+                    ),
+                    $object,
+                    $caster,
+                ];
+            })(),
+            (function (): array {
+                $object = new class
+                {
+                    public object $foo;
+
+                    public function __construct()
+                    {
+                        $this->foo = new class
+                        {
+                            public object $bar;
+
+                            public function __construct()
+                            {
+                                $this->bar = new class
+                                {
+                                    public int $baz = 42;
+                                };
+                            }
+                        };
+                    }
+                };
+
+                $caster = Caster::create()->withCustomObjectFormatterCollection(
+                    new ObjectFormatterCollection([
+                        new PublicVariableFormatter(),
+                    ]),
+                );
+
+                assert(property_exists($object, 'foo'));
+
+                $foo = $object->foo;
+
+                assert(is_object($foo));
+                assert(property_exists($foo, 'bar'));
+
+                $bar = $foo->bar;
+
+                assert(is_object($bar));
+
+                return [
+                    'An object with multiple levels of child objects.',
+                    sprintf(
+                        implode("\n", [
+                            '%s {',
+                            '    $foo = %s {',
+                            '        $bar = %s {',
+                            '            $baz = 42',
+                            '        }',
+                            '    }',
+                            '}',
+                        ]),
+                        Caster::makeNormalizedClassName(new ReflectionObject($object)),
+                        Caster::makeNormalizedClassName(new ReflectionObject($foo)),
+                        Caster::makeNormalizedClassName(new ReflectionObject($bar)),
+                    ),
+                    $object,
+                    $caster,
+                ];
+            })(),
+            [
+                'A Closure without arguments.',
+                '\\Closure(): void',
+                static function (): void {
+                },
+                Caster::create()->withCustomObjectFormatterCollection(
+                    new ObjectFormatterCollection([
+                        new ClosureFormatter(),
+                    ]),
+                ),
+            ],
+            [
+                'A Closure with 3 arguments.',
+                implode("\n", [
+                    '\\Closure(',
+                    '    int $a,',
+                    '    float $b,',
+                    '    bool $c',
+                    '): void',
+                ]),
+                static function (int $a, float $b, bool $c): void {
+                },
+                Caster::create()->withCustomObjectFormatterCollection(
+                    new ObjectFormatterCollection([
+                        new ClosureFormatter(),
+                    ]),
+                ),
+            ],
+            (static function (): array {
+                $caster = Caster::create()->withCustomObjectFormatterCollection(
+                    new ObjectFormatterCollection([
+                        new PublicVariableFormatter(),
+                        new ClosureFormatter(),
+                    ]),
+                );
+
+                $object = new class
+                {
+                    public Closure $bar;
+
+                    public function __construct()
+                    {
+                        $this->bar = static function (int $a, float $b, bool $c): void {
+                        };
+                    }
+                };
+
+                return [
+                    'The big one.',
+                    sprintf(
+                        implode("\n", [
+                            '[',
+                            '    "foo" => %s {',
+                            '        $bar = \\Closure(',
+                            '            int $a,',
+                            '            float $b,',
+                            '            bool $c',
+                            '        ): void',
+                            '    }',
+                            ']',
+                        ]),
+                        Caster::makeNormalizedClassName(new ReflectionObject($object)),
+                    ),
+                    ['foo' => $object],
+                    $caster,
+                ];
+            })(),
+        ];
+    }
+
+    /**
+     * @return array<int, array{0: string, 1: string}>
+     */
+    public static function providerTestEscapeWorks(): array
+    {
+        return [
+            ['\\\\', '\\'],
+            ['\\"', '"'],
+            ['\\\\\\"', '\\"'],
+            ['\\\\foo\\"', '\\foo"'],
+        ];
+    }
+
+    /**
+     * @return array<int, array{0: string, 1: string, 2: Caster, 3: string}>
+     */
+    public static function providerTestMaskStringWorks(): array
+    {
+        return [
+            [
+                '',
+                '',
+                Caster::create(),
+                '',
+            ],
+            [
+                '',
+                'foo bar baz',
+                Caster::create(),
+                'foo bar baz',
+            ],
+            [
+                '',
+                sprintf(
+                    'foo %s baz',
+                    '******',
+                ),
+                (static function () {
+                    $caster = Caster::create();
+                    $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection([
+                        new EncryptedString('bar'),
+                    ]));
+
+                    return $caster;
+                })(),
+                'foo bar baz',
+            ],
+            [
+                '',
+                sprintf(
+                    '12%s78',
+                    '******',
+                ),
+                (static function () {
+                    $caster = Caster::create();
+                    $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection([
+                        new EncryptedString('3'),
+                        new EncryptedString('34'),
+                        new EncryptedString('345'),
+                        new EncryptedString('3456'),
+                    ]));
+
+                    return $caster;
+                })(),
+                '12345678',
+            ],
+            [
+                'It works with overlapping masking strings',
+                sprintf(
+                    '12%s67',
+                    '******',
+                ),
+                (static function () {
+                    $caster = Caster::create();
+                    $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection([
+                        new EncryptedString('34'),
+                        new EncryptedString('45'),
+                    ]));
+
+                    return $caster;
+                })(),
+                '1234567',
+            ],
+        ];
+    }
+
+    /**
+     * @return array<array{string, string, array<mixed>}>
+     */
+    public static function providerTestSprintfWorks(): array
+    {
+        return [
+            [
+                '"foo"',
+                '%s',
+                ['foo'],
+            ],
+            [
+                '42 43 3.140000',
+                '%s %d %f',
+                [42, 43, 3.14],
+            ],
+            [
+                '"foo" "bar" "baz"',
+                '%s %s %s',
+                ['foo', 'bar', 'baz'],
+            ],
+            [
+                '"foo" "foo"',
+                '%s %1$s',
+                ['foo'],
+            ],
+            [
+                /**
+                 * Perhaps this output may seem strange, but it is covered in the CasterInterface at the `sprintf`
+                 * method. You might have expected the output to be `"000a"`, alas, we have opted out of supporting this
+                 * behavior due to complexity and limited use cases.
+                 *
+                 * 2x double quotes take up 2 characters, which is why it is not `000"a".
+                 */
+                '0"a"',
+                '%04s',
+                ['a'],
+            ],
+            [
+                '[0 => "foo"]',
+                '%s',
+                [['foo']],
+            ],
+            [
+                '\\stdClass',
+                '%s',
+                [new stdClass()],
+            ],
+        ];
+    }
+
+    /**
+     * @return array<array{string, object}>
+     */
+    public static function providerTestMakeNormalizedClassNameWorks(): array
+    {
+        return [
+            [
+                sprintf(
+                    implode('', [
+                        '/',
+                        '^',
+                        'class@anonymous\/in\/.+\/%s:\d+',
+                        '$',
+                        '/',
+                    ]),
+                    preg_quote(basename(__FILE__), '/'),
+                ),
+                new class
+                {
+                },
+            ],
+            [
+                sprintf(
+                    implode('', [
+                        '/',
+                        '^',
+                        '\\\\DateTime@anonymous\/in\/.+\/%s:\d+',
+                        '$',
+                        '/',
+                    ]),
+                    preg_quote(basename(__FILE__), '/'),
+                ),
+                new class ('2022-01-01T00:00:00+00:00') extends DateTime
+                {
+                },
+            ],
+            [
+                sprintf(
+                    implode('', [
+                        '/',
+                        '^',
+                        '\\\\%s@anonymous\/in\/.+\/%s:\d+',
+                        '$',
+                        '/',
+                    ]),
+                    preg_quote(Character::class, '/'),
+                    preg_quote(basename(__FILE__), '/'),
+                ),
+                new class ('-') extends Character
+                {
+                },
+            ],
+        ];
+    }
+
+    public function testBasics(): void
+    {
+        $characterEncoding = CharacterEncoding::getInstance();
+        $caster = new Caster($characterEncoding);
+        $this->assertInstanceOf(Caster::class, $caster);
+        $this->assertSame(
+            CasterInterface::ARRAY_SAMPLE_SIZE_DEFAULT,
+            $caster->getArraySampleSize()->toInteger(),
+        );
+        $this->assertSame($characterEncoding, $caster->getCharacterEncoding());
+        $this->assertCount(0, $caster->getContext());
+        $this->assertCount(0, $caster->getCustomArrayFormatterCollection());
+        $this->assertCount(0, $caster->getCustomEnumFormatterCollection());
+        $this->assertCount(0, $caster->getCustomObjectFormatterCollection());
+        $this->assertCount(0, $caster->getCustomResourceFormatterCollection());
+        $this->assertCount(0, $caster->getCustomStringFormatterCollection());
+        $this->assertInstanceOf(DefaultArrayFormatter::class, $caster->getDefaultArrayFormatter());
+        $this->assertInstanceOf(DefaultObjectFormatter::class, $caster->getDefaultObjectFormatter());
+        $this->assertInstanceOf(DefaultResourceFormatter::class, $caster->getDefaultResourceFormatter());
+        $this->assertInstanceOf(DefaultStringFormatter::class, $caster->getDefaultStringFormatter());
+        $this->assertSame(1, $caster->getDepthCurrent()->toInteger());
+        $this->assertSame(
+            CasterInterface::DEPTH_MAXIMUM_DEFAULT,
+            $caster->getDepthMaximum()->toInteger(),
+        );
+        $this->assertCount(0, $caster->getMaskedEncryptedStringCollection());
+        $this->assertSame(
+            '*',
+            (string)$caster->getMaskingCharacter(),
+        );
+        $this->assertSame(
+            '******',
+            $caster->getMaskingString(),
+        );
+        $this->assertSame(
+            6,
+            $caster->getMaskingStringLength()->toInteger(),
+        );
+        $this->assertMatchesRegularExpression(
+            implode('', [
+                '/',
+                '^',
+                '\*\* RECURSION \*\* \(',
+                    '\\\\stdClass',
+                    ', [0-9a-f]{32}',
+                '\)',
+                '$',
+                '/',
+            ]),
+            $caster->getRecursionMessage(new stdClass()),
+        );
+        $this->assertSame(CasterInterface::SENSITIVE_MESSAGE_DEFAULT, $caster->getSensitiveMessage());
+        $this->assertSame(
+            CasterInterface::STRING_SAMPLE_SIZE_DEFAULT,
+            $caster->getStringSampleSize()->toInteger(),
+        );
+        $this->assertSame(
+            CasterInterface::STRING_QUOTING_CHARACTER_DEFAULT,
+            (string)$caster->getStringQuotingCharacter(),
+        );
+        $this->assertFalse($caster->isPrependingType());
+        $this->assertTrue($caster->isMakingSamples());
+    }
+
+    public function testCloneWorks(): void
+    {
+        $characterEncoding = CharacterEncoding::getInstance();
+        $caster = new Caster($characterEncoding);
+
+        $clone = clone $caster;
+        $this->assertNotSame($caster->getDefaultArrayFormatter(), $clone->getDefaultArrayFormatter());
+        $this->assertNotSame($caster->getDefaultObjectFormatter(), $clone->getDefaultObjectFormatter());
+        $this->assertNotSame($caster->getDefaultResourceFormatter(), $clone->getDefaultResourceFormatter());
+        $this->assertNotSame($caster->getDefaultStringFormatter(), $clone->getDefaultStringFormatter());
+    }
+
+    public function testCastReflectionAttributeToStringWorks(): void
+    {
+        /** @var ReflectionClass<Classf982a9e0c18911edafa10242ac120002> $reflectionClass */
+        $reflectionClass = new ReflectionClass(Classf982a9e0c18911edafa10242ac120002::class);
+
+        /** @var ReflectionAttribute<Attributef982a9e0c18911edafa10242ac120002> $reflectionAttribute */
+        $reflectionAttribute = (
+            $reflectionClass->getAttributes(Attributef982a9e0c18911edafa10242ac120002::class)[0] ?? null
+        );
+
+        $this->assertIsObject($reflectionAttribute);
+        assert(is_object($reflectionAttribute));
+
+        $this->assertSame(
+            sprintf(
+                '\\%s (foo: "lorem", bar: "ipsum")',
+                Attributef982a9e0c18911edafa10242ac120002::class,
+            ),
+            Caster::create()->castReflectionAttributeToString($reflectionAttribute),
+        );
+
+        $this->assertSame(
+            sprintf(
+                '(attribute) \\%s (foo: (string(5)) "lorem", bar: (string(5)) "ipsum")',
+                Attributef982a9e0c18911edafa10242ac120002::class,
+            ),
+            Caster::create()->withIsPrependingType(true)->castReflectionAttributeToString($reflectionAttribute),
+        );
+    }
+
+    public function testCastReflectionClassToStringWorks(): void
+    {
+        /** @var ReflectionClass<self> $reflectionClass */
+        $reflectionClass = new ReflectionClass(self::class);
+
+        $this->assertSame(
+            sprintf(
+                '\\%s',
+                self::class,
+            ),
+            Caster::create()->castReflectionClassToString($reflectionClass),
+        );
+
+        $this->assertSame(
+            sprintf(
+                '(class) \\%s',
+                self::class,
+            ),
+            Caster::create()->withIsPrependingType(true)->castReflectionClassToString($reflectionClass),
+        );
+    }
+
+    public function testCastReflectionMethodToStringWorks(): void
+    {
+        $object = new class
+        {
+            public function lorem(int $foo = 42, string $bar = 'lala', bool $baz = false): void
+            {
+            }
+        };
+
+        $reflectionObject = new ReflectionObject($object);
+
+        $reflectionMethod = $reflectionObject->getMethod('lorem');
+
+        $this->assertMatchesRegularExpression(
+            sprintf(
+                implode('', [
+                    '/^class@anonymous\/in\/.+\/%s:\d+->lorem\(int \$foo = 42, string \$bar = "lala", bool \$baz =',
+                    ' false\): void$/',
+                ]),
+                basename(__FILE__),
+            ),
+            Caster::create()->castReflectionMethodToString($reflectionMethod),
+        );
+
+        $this->assertMatchesRegularExpression(
+            sprintf(
+                implode('', [
+                    '/^class@anonymous\/in\/.+\/%s:\d+->lorem\(int \$foo = \(int\) 42, string \$bar = \(string\(4\)\)',
+                    ' "lala", bool \$baz = \(bool\) false\): void$/',
+                ]),
+                basename(__FILE__),
+            ),
+            Caster::create()->withIsPrependingType(true)->castReflectionMethodToString($reflectionMethod),
+        );
+    }
+
+    public function testCastReflectionPropertyToStringWorks(): void
+    {
+        $reflectionProperty = new ReflectionProperty(EncryptedString::class, 'salt');
+
+        $this->assertSame(
+            sprintf(
+                '\\%s->$salt',
+                EncryptedString::class,
+            ),
+            Caster::create()->castReflectionPropertyToString($reflectionProperty),
+        );
+
+        $this->assertSame(
+            sprintf(
+                'string \\%s->$salt',
+                EncryptedString::class,
+            ),
+            Caster::create()->withIsPrependingType(true)->castReflectionPropertyToString($reflectionProperty),
+        );
+    }
+
+    public function testCastReflectionTypeToStringWorks(): void
+    {
+        $reflectionProperty = new ReflectionProperty(EncryptedString::class, 'salt');
+
+        $this->assertIsObject($reflectionProperty->getType());
+        assert(is_object($reflectionProperty->getType()));
+
+        $this->assertSame(
+            'string',
+            Caster::create()->castReflectionTypeToString($reflectionProperty->getType()),
+        );
+    }
+
+    #[DataProvider('providerTestCastWorks')]
+    public function testCastWorks(string $message, string $expected, mixed $value, Caster $caster): void
+    {
+        $this->assertMatchesRegularExpression(
+            $expected,
+            $caster->cast($value),
+            $message,
+        );
+    }
+
+    public function testCastWorksWithStringSample(): void
+    {
+        $str = str_repeat('a', CasterInterface::STRING_SAMPLE_SIZE_DEFAULT + 1);
+
+        $this->assertSame(
+            '"' . str_repeat('a', CasterInterface::STRING_SAMPLE_SIZE_DEFAULT - 4) . ' ..." (sample)',
+            Caster::create()->withIsMakingSamples(true)->cast($str),
+        );
+    }
+
+    public function testCastWorksWithoutStringSample(): void
+    {
+        $str = str_repeat('a', CasterInterface::STRING_SAMPLE_SIZE_DEFAULT + 1);
+
+        $this->assertSame(
+            '"' . str_repeat('a', CasterInterface::STRING_SAMPLE_SIZE_DEFAULT + 1) . '"',
+            Caster::create()->withIsMakingSamples(false)->cast($str),
+        );
+    }
+
+    public function testCastWorksWithAnonymousClass(): void
+    {
+        $class = new class
+        {
+        };
+
+        $this->assertMatchesRegularExpression(
+            sprintf(
+                implode('', [
+                    '/',
+                    '^',
+                    'class@anonymous\/in\/.+\/%s:\d+',
+                    '$',
+                    '/',
+                ]),
+                preg_quote(basename(__FILE__), '/'),
+            ),
+            Caster::create()->cast($class),
+        );
+    }
+
+    public function testCastWorksWithResource(): void
+    {
+        $this->assertMatchesRegularExpression(
+            '/^`stream` Resource id #\d+$/',
+            Caster::create()->cast(fopen(__FILE__, 'r+')),
+        );
+    }
+
+    public function testCastWorksWithArrayAndWithSampling(): void
+    {
+        $caster = Caster::create();
+        $caster = $caster->withIsMakingSamples(true);
+        $caster = $caster->withArraySampleSize(new UnsignedInteger(3));
+        $caster = $caster->withStringSampleSize(new UnsignedInteger(5));
+        $array = [
+            'foobar',
+            'loremipsum' => 'dolorsit', // phpcs:ignore
+            1,
+            2,
+            3,
+        ];
+
+        $this->assertSame(
+            implode('', [
+                '[',
+                '0 => "f ..." (sample)',
+                ', "l ..." (sample) => "d ..." (sample)',
+                ', 1 => 1, ... and 2 more elements',
+                '] (sample)',
+            ]),
+            $caster->cast($array),
+        );
+    }
+
+    public function testCastWorksWithArrayButWithoutSampling(): void
+    {
+        $caster = Caster::create();
+        $caster = $caster->withIsMakingSamples(true);
+        $caster = $caster->withArraySampleSize(new UnsignedInteger(10));
+        $caster = $caster->withStringSampleSize(new UnsignedInteger(200));
+        $array = [
+            'foobar',
+            'loremipsum' => 'dolorsit', // phpcs:ignore
+            1,
+            2,
+            3,
+        ];
+
+        $this->assertSame(
+            '[0 => "foobar", "loremipsum" => "dolorsit", 1 => 1, 2 => 2, 3 => 3]',
+            $caster->cast($array),
+        );
+    }
+
+    /**
+     * @param array<mixed> $array
+     */
+    #[DataProvider('providerTestCastWorksWithArrayLargerThanSampleSize')]
+    public function testCastWorksWithArrayLargerThanSampleSize(string $message, string $expected, array $array): void
+    {
+        $this->assertSame(
+            $expected,
+            Caster::create()->withIsMakingSamples(true)->cast($array),
+            $message,
+        );
+    }
+
+    public function testCastWorksWithAnAssociativeArray(): void
+    {
+        $array = ['foo' => 1, 'bar' => 2, 'baz' => 3, 'bim' => 4];
+
+        $this->assertSame(
+            '["foo" => 1, "bar" => 2, "baz" => 3, ... and 1 more element] (sample)',
+            Caster::create()->withIsMakingSamples(true)->cast($array),
+        );
+    }
+
+    public function testCastWorksWithAMixedArray(): void
+    {
+        $array = ['foo', 'bar' => 2, 'baz', 'bim' => 4];
+
+        $this->assertSame(
+            '[0 => "foo", "bar" => 2, 1 => "baz", ... and 1 more element] (sample)',
+            Caster::create()->withIsMakingSamples(true)->cast($array),
+        );
+    }
+
+    public function testCastWorksWithMaskedStrings(): void
+    {
+        $caster = Caster::create();
+        $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection([
+            new EncryptedString('bar'),
+            new EncryptedString('bim'),
+        ]));
+
+        $this->assertSame(
+            sprintf(
+                '"foo %s baz %s" (masked)',
+                '******',
+                '******'
+            ),
+            $caster->cast('foo bar baz bim'),
+        );
+    }
+
+    public function testCastWorksWithMaskedStringsAndSimplifying(): void
+    {
+        $caster = Caster::create();
+        $caster = $caster->withIsMakingSamples(true);
+        $caster = $caster->withStringSampleSize(new UnsignedInteger(10));
+        $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection([
+            new EncryptedString('bar'),
+            new EncryptedString('bim'),
+        ]));
+
+        $this->assertSame(
+            '"foo ** ..." (sample) (masked)',
+            $caster->cast('foo bar baz bim'),
+        );
+    }
+
+    public function testCastWillCorrectlyMaskArrayKeys(): void
+    {
+        $caster = Caster::create();
+        $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection([
+            new EncryptedString('bar'),
+            new EncryptedString('bim'),
+        ]));
+        $array = ['foo bar baz bim' => 'bar'];
+
+        // It's the masked length = 19, not the original length. Don't bleed information about masked string
+        $this->assertSame(
+            sprintf(
+                '["foo %s baz %s" (masked) => "%s" (masked)]',
+                '******',
+                '******',
+                '******',
+            ),
+            $caster->cast($array),
+        );
+    }
+
+    /**
+     * @param EncryptedStringCollection<EncryptedString> $encryptedStringCollection
+     */
+    #[DataProvider('providerTestCastOnMaskedStringsWillNotCauseMaskingToBePartOfOtherMaskings')]
+    public function testCastOnMaskedStringsWillNotCauseMaskingToBePartOfOtherMaskings(
+        string $expected,
+        string $input,
+        EncryptedStringCollection $encryptedStringCollection
+    ): void {
+        $caster = Caster::create();
+        $caster = $caster->withMaskedEncryptedStringCollection($encryptedStringCollection);
+
+        $this->assertSame($expected, $caster->cast($input));
+    }
+
+    #[DataProvider('providerTestCastWorksWithTypePrepended')]
+    public function testCastWorksWithTypePrepended(
+        string $message,
+        string $expected,
+        mixed $value,
+        Caster $caster,
+    ): void {
+        $caster = $caster->withIsPrependingType(true);
+
+        $this->assertMatchesRegularExpression(
+            $expected,
+            $caster->cast($value),
+            $message,
+        );
+
+        $casterWithoutIsPrepepndingType = $caster->withIsPrependingType(false);
+
+        $this->assertMatchesRegularExpression(
+            $expected,
+            $casterWithoutIsPrepepndingType->castTyped($value),
+            $message,
+        );
+    }
+
     public function testCastWorksWithCustomFormatters(): void
     {
         $caster = Caster::create();
@@ -1648,9 +2072,8 @@ class CasterTest extends TestCase
 
     /**
      * @param array<mixed> $array
-     *
-     * @dataProvider dataProviderTestCastWorksWithPrependedTypeAndWithArrayLargerThanSampleSize
      */
+    #[DataProvider('providerTestCastWorksWithPrependedTypeAndWithArrayLargerThanSampleSize')]
     public function testCastWorksWithPrependedTypeAndWithArrayLargerThanSampleSize(
         string $message,
         string $expected,
@@ -1661,31 +2084,6 @@ class CasterTest extends TestCase
             Caster::create()->withIsMakingSamples(true)->withIsPrependingType(true)->cast($array),
             $message,
         );
-    }
-
-    /**
-     * @return array<int, array{0: string, 1: string, 2: array<mixed>}>
-     */
-    public function dataProviderTestCastWorksWithPrependedTypeAndWithArrayLargerThanSampleSize(): array
-    {
-        return [
-            [
-                'Singular "element"',
-                implode('', [
-                    '(array(4)) [(int) 0 => (string(3)) "foo", (int) 1 => (int) 42, (int) 2 => (null) null',
-                    ', ... and 1 more element] (sample)',
-                ]),
-                ['foo', 42, null, false],
-            ],
-            [
-                'Plural "elements"',
-                implode('', [
-                    '(array(100)) [(int) 0 => (int) 1, (int) 1 => (int) 1, (int) 2 => (int) 1',
-                    ', ... and 97 more elements] (sample)',
-                ]),
-                array_fill(0, 100, 1),
-            ],
-        ];
     }
 
     public function testCastWorksWithPrependedTypeAndWithAnAssociativeArray(): void
@@ -1779,9 +2177,8 @@ class CasterTest extends TestCase
 
     /**
      * @param array<mixed>|object|string $value
-     *
-     * @dataProvider providerTestCastWorksWithWrapping
      */
+    #[DataProvider('providerTestCastWorksWithWrapping')]
     public function testCastWorksWithWrapping(
         string $message,
         string $expected,
@@ -1791,220 +2188,6 @@ class CasterTest extends TestCase
         $caster = $caster->withIsWrapping(true);
 
         $this->assertSame($expected, $caster->cast($value), $message);
-    }
-
-    /**
-     * @return array<array{string, string, array<mixed>|object|string, Caster}>
-     */
-    public function providerTestCastWorksWithWrapping(): array
-    {
-        return [
-            [
-                'An empty string.',
-                '""',
-                '',
-                Caster::create(),
-            ],
-            [
-                'An array with one element, one-dimensional.',
-                implode("\n", [
-                    '[',
-                    '    0 => "foo"',
-                    ']',
-                ]),
-                ['foo'],
-                Caster::create(),
-            ],
-            [
-                'An array with two elements, one-dimensional.',
-                implode("\n", [
-                    '[',
-                    '    0 => "foo",',
-                    '    1 => "bar"',
-                    ']',
-                ]),
-                ['foo', 'bar'],
-                Caster::create(),
-            ],
-            [
-                'An array with six elements, one-dimensional, but omitting after 2 elements.',
-                implode("\n", [
-                    '[',
-                    '    0 => "a",',
-                    '    1 => "b",',
-                    '    ... and 4 more elements',
-                    '] (sample)',
-                ]),
-                ['a', 'b', 'c', 'd', 'e', 'f'],
-                Caster::create()->withArraySampleSize(new UnsignedInteger(2)),
-            ],
-            [
-                'A muli-dimensional array with just sub-arrays.',
-                implode("\n", [
-                    '[',
-                    '    "foo" => [',
-                    '        "bar" => [',
-                    '            "baz" => 42',
-                    '        ]',
-                    '    ]',
-                    ']',
-                ]),
-                ['foo' => ['bar' => ['baz' => 42]]],
-                Caster::create(),
-            ],
-            (static function (): array {
-                $object = new class
-                {
-                    public int $foo = 42;
-                };
-
-                $caster = Caster::create()->withCustomObjectFormatterCollection(
-                    new ObjectFormatterCollection([
-                        new PublicVariableFormatter(),
-                    ]),
-                );
-
-                return [
-                    'An object with 1 property.',
-                    sprintf(
-                        implode("\n", [
-                            '%s {',
-                            '    $foo = 42',
-                            '}',
-                        ]),
-                        Caster::makeNormalizedClassName(new ReflectionObject($object)),
-                    ),
-                    $object,
-                    $caster,
-                ];
-            })(),
-            (function (): array {
-                $object = new class
-                {
-                    public object $foo;
-
-                    public function __construct()
-                    {
-                        $this->foo = new class
-                        {
-                            public object $bar;
-
-                            public function __construct()
-                            {
-                                $this->bar = new class
-                                {
-                                    public int $baz = 42;
-                                };
-                            }
-                        };
-                    }
-                };
-
-                $caster = Caster::create()->withCustomObjectFormatterCollection(
-                    new ObjectFormatterCollection([
-                        new PublicVariableFormatter(),
-                    ]),
-                );
-
-                assert(property_exists($object, 'foo'));
-
-                $foo = $object->foo;
-
-                assert(is_object($foo));
-                assert(property_exists($foo, 'bar'));
-
-                $bar = $foo->bar;
-
-                assert(is_object($bar));
-
-                return [
-                    'An object with multiple levels of child objects.',
-                    sprintf(
-                        implode("\n", [
-                            '%s {',
-                            '    $foo = %s {',
-                            '        $bar = %s {',
-                            '            $baz = 42',
-                            '        }',
-                            '    }',
-                            '}',
-                        ]),
-                        Caster::makeNormalizedClassName(new ReflectionObject($object)),
-                        Caster::makeNormalizedClassName(new ReflectionObject($foo)),
-                        Caster::makeNormalizedClassName(new ReflectionObject($bar)),
-                    ),
-                    $object,
-                    $caster,
-                ];
-            })(),
-            [
-                'A Closure without arguments.',
-                '\\Closure(): void',
-                static function (): void {
-                },
-                Caster::create()->withCustomObjectFormatterCollection(
-                    new ObjectFormatterCollection([
-                        new ClosureFormatter(),
-                    ]),
-                ),
-            ],
-            [
-                'A Closure with 3 arguments.',
-                implode("\n", [
-                    '\\Closure(',
-                    '    int $a,',
-                    '    float $b,',
-                    '    bool $c',
-                    '): void',
-                ]),
-                static function (int $a, float $b, bool $c): void {
-                },
-                Caster::create()->withCustomObjectFormatterCollection(
-                    new ObjectFormatterCollection([
-                        new ClosureFormatter(),
-                    ]),
-                ),
-            ],
-            (static function (): array {
-                $caster = Caster::create()->withCustomObjectFormatterCollection(
-                    new ObjectFormatterCollection([
-                        new PublicVariableFormatter(),
-                        new ClosureFormatter(),
-                    ]),
-                );
-
-                $object = new class
-                {
-                    public Closure $bar;
-
-                    public function __construct()
-                    {
-                        $this->bar = static function (int $a, float $b, bool $c): void {
-                        };
-                    }
-                };
-
-                return [
-                    'The big one.',
-                    sprintf(
-                        implode("\n", [
-                            '[',
-                            '    "foo" => %s {',
-                            '        $bar = \\Closure(',
-                            '            int $a,',
-                            '            float $b,',
-                            '            bool $c',
-                            '        ): void',
-                            '    }',
-                            ']',
-                        ]),
-                        Caster::makeNormalizedClassName(new ReflectionObject($object)),
-                    ),
-                    ['foo' => $object],
-                    $caster,
-                ];
-            })(),
-        ];
     }
 
     public function testCastWorksWhenArrayIsBeingOmitted(): void
@@ -2098,106 +2281,16 @@ class CasterTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider dataProviderTestEscapeWorks
-     */
+    #[DataProvider('providerTestEscapeWorks')]
     public function testEscapeWorks(string $expected, string $str): void
     {
         $this->assertSame($expected, Caster::create()->escape($str));
     }
 
-    /**
-     * @return array<int, array{0: string, 1: string}>
-     */
-    public function dataProviderTestEscapeWorks(): array
-    {
-        return [
-            ['\\\\', '\\'],
-            ['\\"', '"'],
-            ['\\\\\\"', '\\"'],
-            ['\\\\foo\\"', '\\foo"'],
-        ];
-    }
-
-    /**
-     * @dataProvider dataProviderTestMaskStringWorks
-     */
+    #[DataProvider('providerTestMaskStringWorks')]
     public function testMaskStringWorks(string $message, string $expected, Caster $caster, string $str): void
     {
         $this->assertSame($expected, $caster->maskString($str), $message);
-    }
-
-    /**
-     * @return array<int, array{0: string, 1: string, 2: Caster, 3: string}>
-     */
-    public function dataProviderTestMaskStringWorks(): array
-    {
-        return [
-            [
-                '',
-                '',
-                Caster::create(),
-                '',
-            ],
-            [
-                '',
-                'foo bar baz',
-                Caster::create(),
-                'foo bar baz',
-            ],
-            [
-                '',
-                sprintf(
-                    'foo %s baz',
-                    '******',
-                ),
-                (static function () {
-                    $caster = Caster::create();
-                    $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection([
-                        new EncryptedString('bar'),
-                    ]));
-
-                    return $caster;
-                })(),
-                'foo bar baz',
-            ],
-            [
-                '',
-                sprintf(
-                    '12%s78',
-                    '******',
-                ),
-                (static function () {
-                    $caster = Caster::create();
-                    $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection([
-                        new EncryptedString('3'),
-                        new EncryptedString('34'),
-                        new EncryptedString('345'),
-                        new EncryptedString('3456'),
-                    ]));
-
-                    return $caster;
-                })(),
-                '12345678',
-            ],
-            [
-                'It works with overlapping masking strings',
-                sprintf(
-                    '12%s67',
-                    '******',
-                ),
-                (static function () {
-                    $caster = Caster::create();
-                    $caster = $caster->withMaskedEncryptedStringCollection(new EncryptedStringCollection([
-                        new EncryptedString('34'),
-                        new EncryptedString('45'),
-                    ]));
-
-                    return $caster;
-                })(),
-                '1234567',
-            ],
-        ];
     }
 
     public function testQuoteAndEscapeWorks(): void
@@ -2207,63 +2300,11 @@ class CasterTest extends TestCase
 
     /**
      * @param array<mixed> $values
-     *
-     * @dataProvider dataProviderTestSprintfWorks
      */
+    #[DataProvider('providerTestSprintfWorks')]
     public function testSprintfWorks(string $expected, string $format, array $values): void
     {
         $this->assertSame($expected, Caster::getInstance()->sprintf($format, ...$values));
-    }
-
-    /**
-     * @return array<array{string, string, array<mixed>}>
-     */
-    public function dataProviderTestSprintfWorks(): array
-    {
-        return [
-            [
-                '"foo"',
-                '%s',
-                ['foo'],
-            ],
-            [
-                '42 43 3.140000',
-                '%s %d %f',
-                [42, 43, 3.14],
-            ],
-            [
-                '"foo" "bar" "baz"',
-                '%s %s %s',
-                ['foo', 'bar', 'baz'],
-            ],
-            [
-                '"foo" "foo"',
-                '%s %1$s',
-                ['foo'],
-            ],
-            [
-                /**
-                 * Perhaps this output may seem strange, but it is covered in the CasterInterface at the `sprintf`
-                 * method. You might have expected the output to be `"000a"`, alas, we have opted out of supporting this
-                 * behavior due to complexity and limited use cases.
-                 *
-                 * 2x double quotes take up 2 characters, which is why it is not `000"a".
-                 */
-                '0"a"',
-                '%04s',
-                ['a'],
-            ],
-            [
-                '[0 => "foo"]',
-                '%s',
-                [['foo']],
-            ],
-            [
-                '\\stdClass',
-                '%s',
-                [new stdClass()],
-            ],
-        ];
     }
 
     public function testWithArraySampleSizeWorks(): void
@@ -3013,9 +3054,7 @@ class CasterTest extends TestCase
         $this->fail('Exception was never thrown.');
     }
 
-    /**
-     * @runInSeparateProcess
-     */
+    #[RunInSeparateProcess]
     public function testGetInstanceWorks(): void
     {
         $reflectionProperty = new ReflectionProperty(Caster::class, 'instance');
@@ -3025,9 +3064,7 @@ class CasterTest extends TestCase
         $this->assertSame(Caster::getInstance(), Caster::getInstance());
     }
 
-    /**
-     * @runInSeparateProcess
-     */
+    #[RunInSeparateProcess]
     public function testGetInternalInstanceWorks(): void
     {
         $reflectionProperty = new ReflectionProperty(Caster::class, 'internalInstance');
@@ -3044,70 +3081,13 @@ class CasterTest extends TestCase
         $this->assertInstanceOf(Caster::class, $caster);
     }
 
-    /**
-     * @dataProvider dataProviderTestMakeNormalizedClassNameWorks
-     */
+    #[DataProvider('providerTestMakeNormalizedClassNameWorks')]
     public function testMakeNormalizedClassNameWorks(string $expectedRegex, object $object): void
     {
         $this->assertMatchesRegularExpression(
             $expectedRegex,
             Caster::makeNormalizedClassName(new ReflectionObject($object)),
         );
-    }
-
-    /**
-     * @return array<array{string, object}>
-     */
-    public function dataProviderTestMakeNormalizedClassNameWorks(): array
-    {
-        return [
-            [
-                sprintf(
-                    implode('', [
-                        '/',
-                        '^',
-                        'class@anonymous\/in\/.+\/%s:\d+',
-                        '$',
-                        '/',
-                    ]),
-                    preg_quote(basename(__FILE__), '/'),
-                ),
-                new class
-                {
-                },
-            ],
-            [
-                sprintf(
-                    implode('', [
-                        '/',
-                        '^',
-                        '\\\\DateTime@anonymous\/in\/.+\/%s:\d+',
-                        '$',
-                        '/',
-                    ]),
-                    preg_quote(basename(__FILE__), '/'),
-                ),
-                new class ('2022-01-01T00:00:00+00:00') extends DateTime
-                {
-                },
-            ],
-            [
-                sprintf(
-                    implode('', [
-                        '/',
-                        '^',
-                        '\\\\%s@anonymous\/in\/.+\/%s:\d+',
-                        '$',
-                        '/',
-                    ]),
-                    preg_quote(Character::class, '/'),
-                    preg_quote(basename(__FILE__), '/'),
-                ),
-                new class ('-') extends Character
-                {
-                },
-            ],
-        ];
     }
 
     /**

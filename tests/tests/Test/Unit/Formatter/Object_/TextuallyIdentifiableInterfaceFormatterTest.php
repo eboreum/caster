@@ -8,6 +8,7 @@ use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\Contract\TextuallyIdentifiableInterface;
 use Eboreum\Caster\Formatter\Object_\TextuallyIdentifiableInterfaceFormatter;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
@@ -18,11 +19,7 @@ use function is_string;
 use function preg_quote;
 use function sprintf;
 
-/**
- * {@inheritDoc}
- *
- * @covers \Eboreum\Caster\Formatter\Object_\TextuallyIdentifiableInterfaceFormatter
- */
+#[CoversClass(TextuallyIdentifiableInterfaceFormatter::class)]
 class TextuallyIdentifiableInterfaceFormatterTest extends TestCase
 {
     public function testFormatReturnsNullWhenObjectIsNotQualified(): void

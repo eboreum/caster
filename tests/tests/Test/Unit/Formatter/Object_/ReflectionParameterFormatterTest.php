@@ -12,6 +12,8 @@ use Eboreum\Caster\Exception\RuntimeException;
 use Eboreum\Caster\Formatter\Object_\ReflectionParameterFormatter;
 use Eboreum\Caster\Formatter\Object_\ReflectionTypeFormatter;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use ReflectionFunction;
@@ -31,48 +33,15 @@ use function sprintf;
 
 use const JSON_ERROR_NONE;
 
-/**
- * {@inheritDoc}
- *
- * @covers \Eboreum\Caster\Formatter\Object_\ReflectionParameterFormatter
- */
+#[CoversClass(ReflectionParameterFormatter::class)]
 class ReflectionParameterFormatterTest extends TestCase
 {
     private const TEST_CONSTANT_2330CD52C3D911EDAFA10242AC120002 = 0;
 
-    public function testFormatWorksWithNonReflectionParameter(): void
-    {
-        $caster = Caster::create();
-        $reflectionParameterFormatter = new ReflectionParameterFormatter();
-        $object = new stdClass();
-
-        $this->assertFalse($reflectionParameterFormatter->isHandling($object));
-        $this->assertNull($reflectionParameterFormatter->format($caster, $object));
-    }
-
-    /**
-     * @dataProvider dataProviderTestFormatWorksForFunctionParameters
-     */
-    public function testFormatWorksForFunctionParameters(
-        string $message,
-        string $expectedRegex,
-        Caster $caster,
-        ReflectionParameterFormatter $reflectionParameterFormatter,
-        ReflectionParameter $reflectionParameter,
-    ): void {
-        $this->assertTrue($reflectionParameterFormatter->isHandling($reflectionParameter), $message);
-
-        $formatted = $reflectionParameterFormatter->format($caster, $reflectionParameter);
-
-        $this->assertIsString($formatted);
-        assert(is_string($formatted));
-        $this->assertMatchesRegularExpression($expectedRegex, $formatted, $message);
-    }
-
     /**
      * @return array<array{string, string, Caster, ReflectionParameterFormatter, ReflectionParameter}>
      */
-    public function dataProviderTestFormatWorksForFunctionParameters(): array
+    public static function providerTestFormatWorksForFunctionParameters(): array
     {
         return [
             [
@@ -113,28 +82,9 @@ class ReflectionParameterFormatterTest extends TestCase
     }
 
     /**
-     * @dataProvider dataProviderTestFormatWorksForMethodParameters
-     */
-    public function testFormatWorksForMethodParameters(
-        string $message,
-        string $expectedRegex,
-        Caster $caster,
-        ReflectionParameterFormatter $reflectionParameterFormatter,
-        ReflectionParameter $reflectionParameter,
-    ): void {
-        $this->assertTrue($reflectionParameterFormatter->isHandling($reflectionParameter), $message);
-
-        $formatted = $reflectionParameterFormatter->format($caster, $reflectionParameter);
-
-        $this->assertIsString($formatted);
-        assert(is_string($formatted));
-        $this->assertMatchesRegularExpression($expectedRegex, $formatted, $message);
-    }
-
-    /**
      * @return array<array{string, string, Caster, ReflectionParameterFormatter, ReflectionParameter}>
      */
-    public function dataProviderTestFormatWorksForMethodParameters(): array
+    public static function providerTestFormatWorksForMethodParameters(): array
     {
         return [
             [
@@ -280,6 +230,50 @@ class ReflectionParameterFormatterTest extends TestCase
                 })(),
             ],
         ];
+    }
+
+    public function testFormatWorksWithNonReflectionParameter(): void
+    {
+        $caster = Caster::create();
+        $reflectionParameterFormatter = new ReflectionParameterFormatter();
+        $object = new stdClass();
+
+        $this->assertFalse($reflectionParameterFormatter->isHandling($object));
+        $this->assertNull($reflectionParameterFormatter->format($caster, $object));
+    }
+
+    #[DataProvider('providerTestFormatWorksForFunctionParameters')]
+    public function testFormatWorksForFunctionParameters(
+        string $message,
+        string $expectedRegex,
+        Caster $caster,
+        ReflectionParameterFormatter $reflectionParameterFormatter,
+        ReflectionParameter $reflectionParameter,
+    ): void {
+        $this->assertTrue($reflectionParameterFormatter->isHandling($reflectionParameter), $message);
+
+        $formatted = $reflectionParameterFormatter->format($caster, $reflectionParameter);
+
+        $this->assertIsString($formatted);
+        assert(is_string($formatted));
+        $this->assertMatchesRegularExpression($expectedRegex, $formatted, $message);
+    }
+
+    #[DataProvider('providerTestFormatWorksForMethodParameters')]
+    public function testFormatWorksForMethodParameters(
+        string $message,
+        string $expectedRegex,
+        Caster $caster,
+        ReflectionParameterFormatter $reflectionParameterFormatter,
+        ReflectionParameter $reflectionParameter,
+    ): void {
+        $this->assertTrue($reflectionParameterFormatter->isHandling($reflectionParameter), $message);
+
+        $formatted = $reflectionParameterFormatter->format($caster, $reflectionParameter);
+
+        $this->assertIsString($formatted);
+        assert(is_string($formatted));
+        $this->assertMatchesRegularExpression($expectedRegex, $formatted, $message);
     }
 
     public function testFormatDefaultValueThrowsExceptionWhenNoDefaultValueIsAvailableOnFunction(): void

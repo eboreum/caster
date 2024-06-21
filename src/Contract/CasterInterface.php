@@ -48,7 +48,7 @@ interface CasterInterface extends ImmutableObjectInterface
     /**
      * Must return a new instance every time.
      */
-    public static function create(?CharacterEncodingInterface $characterEncoding = null): static;
+    public static function create(?CharacterEncodingInterface $characterEncoding = null): self;
 
     public function __construct(CharacterEncodingInterface $characterEncoding);
 

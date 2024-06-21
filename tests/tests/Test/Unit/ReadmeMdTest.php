@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Test\Unit\Eboreum\Caster;
 
+use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 
 use function array_map;
@@ -23,9 +24,7 @@ use function preg_quote;
 use function preg_split;
 use function sprintf;
 
-/**
- * @coversNothing
- */
+#[CoversNothing]
 class ReadmeMdTest extends TestCase
 {
     private string $contents;

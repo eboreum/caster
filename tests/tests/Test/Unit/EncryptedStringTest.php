@@ -7,6 +7,8 @@ namespace Test\Unit\Eboreum\Caster;
 use Eboreum\Caster\EncryptedString;
 use Eboreum\Caster\Exception\RuntimeException;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use ReflectionObject;
 
@@ -15,38 +17,13 @@ use function implode;
 use function is_object;
 use function sprintf;
 
-/**
- * {@inheritDoc}
- *
- * @covers \Eboreum\Caster\EncryptedString
- */
+#[CoversClass(EncryptedString::class)]
 class EncryptedStringTest extends TestCase
 {
     /**
-     * @dataProvider dataProviderTestBasics
-     */
-    public function testBasics(
-        string $expectedEncryptionMethod,
-        string $value,
-        ?string $salt,
-        ?string $encryptionMethod,
-    ): void {
-        $encryptedString = new EncryptedString($value, $salt, $encryptionMethod);
-        $this->assertInstanceOf(EncryptedString::class, $encryptedString);
-        $this->assertSame($value, $encryptedString->decrypt());
-        $this->assertSame($expectedEncryptionMethod, $encryptedString->getEncryptionMethod());
-
-        $reflectionObject = new ReflectionObject($encryptedString);
-        $reflectionProperty = $reflectionObject->getProperty('encryptedString');
-        $reflectionProperty->setAccessible(true);
-        $encryptedString = $reflectionProperty->getValue($encryptedString);
-        $this->assertNotSame($value, $encryptedString);
-    }
-
-    /**
      * @return array<int, array{0: string, 1: string, 2: string|null, 3: string|null}>
      */
-    public function dataProviderTestBasics(): array
+    public static function providerTestBasics(): array
     {
         return [
             [
@@ -68,6 +45,25 @@ class EncryptedStringTest extends TestCase
                 'aes-128-cbc',
             ],
         ];
+    }
+
+    #[DataProvider('providerTestBasics')]
+    public function testBasics(
+        string $expectedEncryptionMethod,
+        string $value,
+        ?string $salt,
+        ?string $encryptionMethod,
+    ): void {
+        $encryptedString = new EncryptedString($value, $salt, $encryptionMethod);
+        $this->assertInstanceOf(EncryptedString::class, $encryptedString);
+        $this->assertSame($value, $encryptedString->decrypt());
+        $this->assertSame($expectedEncryptionMethod, $encryptedString->getEncryptionMethod());
+
+        $reflectionObject = new ReflectionObject($encryptedString);
+        $reflectionProperty = $reflectionObject->getProperty('encryptedString');
+        $reflectionProperty->setAccessible(true);
+        $encryptedString = $reflectionProperty->getValue($encryptedString);
+        $this->assertNotSame($value, $encryptedString);
     }
 
     public function testConstructorThrowsExceptionWhenArgumentSaltIsInvalid(): void

@@ -7,14 +7,11 @@ namespace Test\Unit\Eboreum\Caster\Formatter\Object_;
 use DateTimeImmutable;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Formatter\Object_\DateTimeInterfaceFormatter;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
-/**
- * {@inheritDoc}
- *
- * @covers \Eboreum\Caster\Formatter\Object_\DateTimeInterfaceFormatter
- */
+#[CoversClass(DateTimeInterfaceFormatter::class)]
 class DateTimeInterfaceFormatterTest extends TestCase
 {
     public function testFormatReturnsNullWhenObjectIsNotQualified(): void

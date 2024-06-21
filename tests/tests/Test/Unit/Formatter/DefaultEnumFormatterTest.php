@@ -6,6 +6,8 @@ namespace Test\Unit\Eboreum\Caster\Formatter;
 
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Formatter\DefaultEnumFormatter;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 use TestResource\Unit\Eboreum\Caster\Formatter\DefaultEnumFormatterTest\testBasics\IntEnum;
@@ -18,57 +20,13 @@ use function is_string;
 use function preg_quote;
 use function sprintf;
 
-/**
- * {@inheritDoc}
- *
- * @covers \Eboreum\Caster\Formatter\DefaultEnumFormatter
- */
+#[CoversClass(DefaultEnumFormatter::class)]
 class DefaultEnumFormatterTest extends TestCase
 {
     /**
-     * @dataProvider dataProviderTestBasics
-     */
-    public function testBasics(
-        string $message,
-        string $expected,
-        string $expectedWithType,
-        string $expectedWithAppendedSplObjectHash,
-        Caster $caster,
-        object $enum,
-    ): void {
-        $defaultEnumFormatter = new DefaultEnumFormatter();
-
-        $this->assertTrue($defaultEnumFormatter->isHandling($enum), $message);
-
-        $formatted = $defaultEnumFormatter->format($caster, $enum);
-        $this->assertIsString($formatted);
-        assert(is_string($formatted));
-
-        $this->assertMatchesRegularExpression($expected, $formatted, $message);
-
-        $caster = $caster->withIsPrependingType(true);
-        $formatted = $defaultEnumFormatter->format($caster, $enum);
-        $this->assertIsString($formatted);
-        assert(is_string($formatted));
-
-        $this->assertMatchesRegularExpression($expectedWithType, $formatted, $message);
-
-        $this->assertFalse($defaultEnumFormatter->isAppendingSplObjectHash());
-        $caster = $caster->withIsPrependingType(false);
-        $defaultEnumFormatter = $defaultEnumFormatter->withIsAppendingSplObjectHash(true);
-        $this->assertTrue($defaultEnumFormatter->isAppendingSplObjectHash());
-
-        $formatted = $defaultEnumFormatter->format($caster, $enum);
-        $this->assertIsString($formatted);
-        assert(is_string($formatted));
-
-        $this->assertMatchesRegularExpression($expectedWithAppendedSplObjectHash, $formatted, $message);
-    }
-
-    /**
      * @return array<int, array{string, string, string, string, Caster, object}>
      */
-    public function dataProviderTestBasics(): array
+    public static function providerTestBasics(): array
     {
         return [
             [
@@ -195,6 +153,44 @@ class DefaultEnumFormatterTest extends TestCase
                 UntypedEnum::Hearts,
             ],
         ];
+    }
+
+    #[DataProvider('providerTestBasics')]
+    public function testBasics(
+        string $message,
+        string $expected,
+        string $expectedWithType,
+        string $expectedWithAppendedSplObjectHash,
+        Caster $caster,
+        object $enum,
+    ): void {
+        $defaultEnumFormatter = new DefaultEnumFormatter();
+
+        $this->assertTrue($defaultEnumFormatter->isHandling($enum), $message);
+
+        $formatted = $defaultEnumFormatter->format($caster, $enum);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted));
+
+        $this->assertMatchesRegularExpression($expected, $formatted, $message);
+
+        $caster = $caster->withIsPrependingType(true);
+        $formatted = $defaultEnumFormatter->format($caster, $enum);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted));
+
+        $this->assertMatchesRegularExpression($expectedWithType, $formatted, $message);
+
+        $this->assertFalse($defaultEnumFormatter->isAppendingSplObjectHash());
+        $caster = $caster->withIsPrependingType(false);
+        $defaultEnumFormatter = $defaultEnumFormatter->withIsAppendingSplObjectHash(true);
+        $this->assertTrue($defaultEnumFormatter->isAppendingSplObjectHash());
+
+        $formatted = $defaultEnumFormatter->format($caster, $enum);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted));
+
+        $this->assertMatchesRegularExpression($expectedWithAppendedSplObjectHash, $formatted, $message);
     }
 
     public function testFormatReturnsNullWhenANonEnumObjectIsPassed(): void

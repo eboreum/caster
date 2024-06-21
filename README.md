@@ -688,11 +688,12 @@ echo $caster->castTyped('0123456789') . "\n"; // Notice: 3456 are masked because
 ## Test/development requirements
 
 ```json
-"nikic/php-parser": "^4.12",
+"beberlei/assert": "^3.3",
+"nikic/php-parser": "^5.0",
 "phpstan/phpstan": "1.11.5",
-"phpunit/phpunit": "9.5.25",
-"slevomat/coding-standard": "8.6.1",
-"squizlabs/php_codesniffer": "3.7.1"
+"phpunit/phpunit": "11.2.5",
+"slevomat/coding-standard": "8.15.0",
+"squizlabs/php_codesniffer": "3.10.1"
 ```
 
 ## Running tests

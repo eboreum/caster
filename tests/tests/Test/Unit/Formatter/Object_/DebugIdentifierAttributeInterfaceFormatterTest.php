@@ -12,6 +12,7 @@ use Eboreum\Caster\Common\DataType\Integer\PositiveInteger;
 use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\Contract\DebugIdentifierAttributeInterface;
 use Eboreum\Caster\Formatter\Object_\DebugIdentifierAttributeInterfaceFormatter;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use ReflectionObject;
 use stdClass;
@@ -28,11 +29,7 @@ use function is_string;
 use function preg_quote;
 use function sprintf;
 
-/**
- * {@inheritDoc}
- *
- * @covers \Eboreum\Caster\Formatter\Object_\DebugIdentifierAttributeInterfaceFormatter
- */
+#[CoversClass(DebugIdentifierAttributeInterfaceFormatter::class)]
 class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
 {
     public function testFormatReturnsNullWhenObjectIsNotQualified(): void

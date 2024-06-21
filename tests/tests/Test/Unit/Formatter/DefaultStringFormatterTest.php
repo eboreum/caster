@@ -7,6 +7,8 @@ namespace Test\Unit\Eboreum\Caster\Formatter;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Common\DataType\Integer\UnsignedInteger;
 use Eboreum\Caster\Formatter\DefaultStringFormatter;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 use function array_map;
@@ -17,16 +19,116 @@ use function implode;
 use function is_string;
 use function range;
 
-/**
- * {@inheritDoc}
- *
- * @covers \Eboreum\Caster\Formatter\DefaultStringFormatter
- */
+#[CoversClass(DefaultStringFormatter::class)]
 class DefaultStringFormatterTest extends TestCase
 {
     /**
-     * @dataProvider dataProviderTestBasics
+     * @return array<int, array{0: string, 1: string, 2: string, 3: Caster, 4: string}>
      */
+    public static function providerTestBasics(): array
+    {
+        return [
+            [
+                'foo',
+                '/^"foo"$/',
+                '/^"foo"$/',
+                Caster::getInstance(),
+                'foo',
+            ],
+            [
+                'Empty string.',
+                '/^""$/',
+                '/^""$/',
+                Caster::getInstance()->withIsMakingSamples(true),
+                '',
+            ],
+        ];
+    }
+
+    /**
+     * @return array<int, array{0: string, 1: UnsignedInteger, 2: string}>
+     */
+    public static function providerTestFormatWorksWithEllipsis(): array
+    {
+        return [
+            [
+                '"lo ..." (sample)',
+                new UnsignedInteger(6),
+                'lorem ipsum',
+            ],
+            [
+                '"..." (sample)',
+                new UnsignedInteger(2),
+                'lorem ipsum',
+            ],
+            [
+                '"..." (sample)',
+                new UnsignedInteger(0),
+                'lorem ipsum',
+            ],
+        ];
+    }
+
+    /**
+     * @return array<array{string, string, string, string, Caster}>
+     */
+    public static function providerTestFormatWorksWhenWrapping(): array
+    {
+        return [
+            [
+                'An empty string.',
+                '""',
+                '""',
+                '',
+                Caster::create(),
+            ],
+            [
+                'A simple "foo" string.',
+                '"foo"',
+                '"foo"',
+                'foo',
+                Caster::create(),
+            ],
+            [
+                'A string with one line break at the beginning.',
+                "\"\nfoo\"",
+                "\"\n    foo\" (indented)",
+                "\nfoo",
+                Caster::create(),
+            ],
+            [
+                'A string with one line break at the end.',
+                "\"foo\n\"",
+                "\"foo\n    \" (indented)",
+                "foo\n",
+                Caster::create(),
+            ],
+            [
+                'A string with several line breaks, both new like (\n) and carriage return (\r).',
+                "\"a\nb\rc\r\nd\"",
+                "\"a\n    b\n    c\n    d\" (indented)",
+                implode('', [
+                    'a',
+                    "\n",
+                    'b',
+                    "\r",
+                    'c',
+                    "\r\n",
+                    'd',
+                ]),
+                Caster::create(),
+            ],
+            [
+                'A string with line break and sampling is disabled.',
+                "\"a\nb\"",
+                "\"a\n    b\" (indented)",
+                "a\nb",
+                Caster::create()->withIsMakingSamples(false),
+            ],
+        ];
+    }
+
+    #[DataProvider('providerTestBasics')]
     public function testBasics(
         string $message,
         string $expected,
@@ -50,29 +152,6 @@ class DefaultStringFormatterTest extends TestCase
         assert(is_string($formatted)); // Make phpstan happy
 
         $this->assertMatchesRegularExpression($expectedWithType, $formatted, $message);
-    }
-
-    /**
-     * @return array<int, array{0: string, 1: string, 2: string, 3: Caster, 4: string}>
-     */
-    public function dataProviderTestBasics(): array
-    {
-        return [
-            [
-                'foo',
-                '/^"foo"$/',
-                '/^"foo"$/',
-                Caster::getInstance(),
-                'foo',
-            ],
-            [
-                'Empty string.',
-                '/^""$/',
-                '/^""$/',
-                Caster::getInstance()->withIsMakingSamples(true),
-                '',
-            ],
-        ];
     }
 
     public function testConvertASCIIControlCharactersToHexAnnotationWorks(): void
@@ -138,9 +217,7 @@ class DefaultStringFormatterTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider dataProviderTestFormatWorksWithEllipsis
-     */
+    #[DataProvider('providerTestFormatWorksWithEllipsis')]
     public function testFormatWorksCorrectlyWhenApplyingEllipsis(
         string $expected,
         UnsignedInteger $stringSampleSize,
@@ -155,30 +232,6 @@ class DefaultStringFormatterTest extends TestCase
             $expected,
             $defaultStringFormatter->format($caster, $string),
         );
-    }
-
-    /**
-     * @return array<int, array{0: string, 1: UnsignedInteger, 2: string}>
-     */
-    public function dataProviderTestFormatWorksWithEllipsis(): array
-    {
-        return [
-            [
-                '"lo ..." (sample)',
-                new UnsignedInteger(6),
-                'lorem ipsum',
-            ],
-            [
-                '"..." (sample)',
-                new UnsignedInteger(2),
-                'lorem ipsum',
-            ],
-            [
-                '"..." (sample)',
-                new UnsignedInteger(0),
-                'lorem ipsum',
-            ],
-        ];
     }
 
     public function testFormatWorksCorrectlyWhenNotMakingSamples(): void
@@ -308,9 +361,7 @@ class DefaultStringFormatterTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider providerTestFormatWorksWhenWrapping
-     */
+    #[DataProvider('providerTestFormatWorksWhenWrapping')]
     public function testFormatWorksWhenWrapping(
         string $message,
         string $expectedWithoutWrapping,
@@ -332,64 +383,5 @@ class DefaultStringFormatterTest extends TestCase
             $defaultStringFormatter->format($casterWithWrapping, $value),
             $message,
         );
-    }
-
-    /**
-     * @return array<array{string, string, string, string, Caster}>
-     */
-    public function providerTestFormatWorksWhenWrapping(): array
-    {
-        return [
-            [
-                'An empty string.',
-                '""',
-                '""',
-                '',
-                Caster::create(),
-            ],
-            [
-                'A simple "foo" string.',
-                '"foo"',
-                '"foo"',
-                'foo',
-                Caster::create(),
-            ],
-            [
-                'A string with one line break at the beginning.',
-                "\"\nfoo\"",
-                "\"\n    foo\" (indented)",
-                "\nfoo",
-                Caster::create(),
-            ],
-            [
-                'A string with one line break at the end.',
-                "\"foo\n\"",
-                "\"foo\n    \" (indented)",
-                "foo\n",
-                Caster::create(),
-            ],
-            [
-                'A string with several line breaks, both new like (\n) and carriage return (\r).',
-                "\"a\nb\rc\r\nd\"",
-                "\"a\n    b\n    c\n    d\" (indented)",
-                implode('', [
-                    'a',
-                    "\n",
-                    'b',
-                    "\r",
-                    'c',
-                    "\r\n",
-                    'd',
-                ]),
-                Caster::create(),
-            ],
-            [
-                'A string with line break and sampling is disabled.',
-                "\"a\nb\"",
-                "\"a\n    b\" (indented)",
-                "a\nb",
-                Caster::create()->withIsMakingSamples(false),
-            ],
-        ];
     }
 }

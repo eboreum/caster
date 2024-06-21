@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Test\Unit\Eboreum\Caster\Collection;
 
 use ArrayIterator;
+use Assert\Assertion;
 use DateTimeImmutable;
 use Directory;
 use Eboreum\Caster\Abstraction\Collection\AbstractObjectCollection;
@@ -13,6 +14,8 @@ use Eboreum\Caster\Contract\Collection\ElementInterface;
 use Eboreum\Caster\Contract\Collection\ObjectCollectionInterface;
 use Eboreum\Caster\Exception\RuntimeException;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -36,18 +39,82 @@ use function preg_replace;
 use function sprintf;
 use function str_replace;
 
-/**
- * {@inheritDoc}
- *
- * @covers \Eboreum\Caster\Abstraction\Collection\AbstractObjectCollection
- */
+#[CoversClass(AbstractObjectCollection::class)]
 class ObjectCollectionTest extends TestCase
 {
     /**
-     * @param ReflectionClass<ObjectCollectionInterface<ElementInterface>> $reflectionClassCollection
+     * @return array<array{string, ReflectionClass<ObjectCollectionInterface<ElementInterface>>}>
      *
-     * @dataProvider genericDataProviderGetAllObjectCollectionClasses
+     * @throws \RuntimeException
      */
+    public static function providerGetAllObjectCollectionClasses(): array
+    {
+        $cases = [];
+
+        $srcDirectory = dir(sprintf(
+            '%s/src',
+            dirname(TEST_ROOT_PATH),
+        ));
+
+        assert($srcDirectory instanceof Directory); // Make phpstan happy
+
+        $pattern = sprintf(
+            '%s/Collection/*.php',
+            $srcDirectory->path,
+        );
+
+        foreach (rglob($pattern) as $filePath) {
+            $className = mb_substr(
+                $filePath,
+                mb_strlen($srcDirectory->path) + 1,
+            );
+
+            assert(is_string($className)); // Make phpstan happy
+
+            $className = preg_replace(
+                '/\.php$/',
+                '',
+                $className,
+            );
+
+            assert(is_string($className)); // Make phpstan happy
+
+            $className = 'Eboreum\\Caster\\' . str_replace(
+                '/',
+                '\\',
+                $className,
+            );
+
+            assert(is_string($className)); // Make phpstan happy
+
+            if (false === class_exists($className)) {
+                throw new \RuntimeException(sprintf(
+                    'Class name %s does not exist, produced from file path %s',
+                    Caster::getInternalInstance()->cast($className),
+                    Caster::getInternalInstance()->cast($filePath),
+                ));
+            }
+
+            if (is_subclass_of($className, ObjectCollectionInterface::class, true)) {
+                /** @var ReflectionClass<ObjectCollectionInterface<ElementInterface>> $reflectionClass */
+                $reflectionClass = new ReflectionClass($className);
+
+                $cases[] = [
+                    'Class: \\' . $className,
+                    $reflectionClass,
+                ];
+            }
+        }
+
+        Assertion::greaterThan(count($cases), 0);
+
+        return $cases;
+    }
+
+    /**
+     * @param ReflectionClass<ObjectCollectionInterface<ElementInterface>> $reflectionClassCollection
+     */
+    #[DataProvider('providerGetAllObjectCollectionClasses')]
     public function testBasics(string $message, ReflectionClass $reflectionClassCollection): void
     {
         $handledClassNameCollection = $reflectionClassCollection->getName();
@@ -85,9 +152,9 @@ class ObjectCollectionTest extends TestCase
                     '^',
                     '\\\\%s \{',
                         '\$elements = \(array\(3\)\) \[',
-                            '\(int\) 0 => \(object\) \\\\Mock_[a-zA-Z]+_[0-9a-f]{8}',
-                            ', \(int\) 1 => \(object\) \\\\Mock_[a-zA-Z]+_[0-9a-f]{8}',
-                            ', \(int\) 2 => \(object\) \\\\Mock_[a-zA-Z]+_[0-9a-f]{8}',
+                            '\(int\) 0 => \(object\) \\\\MockObject_[a-zA-Z]+_[0-9a-f]{8}',
+                            ', \(int\) 1 => \(object\) \\\\MockObject_[a-zA-Z]+_[0-9a-f]{8}',
+                            ', \(int\) 2 => \(object\) \\\\MockObject_[a-zA-Z]+_[0-9a-f]{8}',
                         '\]',
                     '\}',
                     '$',
@@ -212,75 +279,6 @@ class ObjectCollectionTest extends TestCase
         };
 
         $this->assertSame($elements, $collection->toArray());
-    }
-
-    /**
-     * @return array<array{string, ReflectionClass<ObjectCollectionInterface<ElementInterface>>}>
-     *
-     * @throws \RuntimeException
-     */
-    public function genericDataProviderGetAllObjectCollectionClasses(): array
-    {
-        $cases = [];
-
-        $srcDirectory = dir(sprintf(
-            '%s/src',
-            dirname(TEST_ROOT_PATH),
-        ));
-
-        assert($srcDirectory instanceof Directory); // Make phpstan happy
-
-        $pattern = sprintf(
-            '%s/Collection/*.php',
-            $srcDirectory->path,
-        );
-
-        foreach (rglob($pattern) as $filePath) {
-            $className = mb_substr(
-                $filePath,
-                mb_strlen($srcDirectory->path) + 1,
-            );
-
-            assert(is_string($className)); // Make phpstan happy
-
-            $className = preg_replace(
-                '/\.php$/',
-                '',
-                $className,
-            );
-
-            assert(is_string($className)); // Make phpstan happy
-
-            $className = 'Eboreum\\Caster\\' . str_replace(
-                '/',
-                '\\',
-                $className,
-            );
-
-            assert(is_string($className)); // Make phpstan happy
-
-            if (false === class_exists($className)) {
-                throw new \RuntimeException(sprintf(
-                    'Class name %s does not exist, produced from file path %s',
-                    Caster::getInternalInstance()->cast($className),
-                    Caster::getInternalInstance()->cast($filePath),
-                ));
-            }
-
-            if (is_subclass_of($className, ObjectCollectionInterface::class, true)) {
-                /** @var ReflectionClass<ObjectCollectionInterface<ElementInterface>> $reflectionClass */
-                $reflectionClass = new ReflectionClass($className);
-
-                $cases[] = [
-                    'Class: \\' . $className,
-                    $reflectionClass,
-                ];
-            }
-        }
-
-        $this->assertGreaterThan(0, count($cases));
-
-        return $cases;
     }
 
     /**

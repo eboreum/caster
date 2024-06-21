@@ -6,13 +6,10 @@ namespace Test\Unit\Eboreum\Caster\Collection;
 
 use Eboreum\Caster\Collection\Formatter\ObjectFormatterCollection;
 use Eboreum\Caster\Contract\Formatter\ObjectFormatterInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * {@inheritDoc}
- *
- * @covers \Eboreum\Caster\Collection\Formatter\ObjectFormatterCollection
- */
+#[CoversClass(ObjectFormatterCollection::class)]
 class ObjectFormatterCollectionTest extends TestCase
 {
     public function testGetHandledClassNameWorks(): void

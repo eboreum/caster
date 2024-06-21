@@ -5,14 +5,11 @@ declare(strict_types=1);
 namespace Test\Unit\Eboreum\Caster\Caster;
 
 use Eboreum\Caster\Caster\Context;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
-/**
- * {@inheritDoc}
- *
- * @covers \Eboreum\Caster\Caster\Context
- */
+#[CoversClass(Context::class)]
 class ContextTest extends TestCase
 {
     public function testBasics(): void

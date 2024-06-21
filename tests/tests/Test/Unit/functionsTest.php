@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Test\Unit\Eboreum\Caster;
 
+use PHPUnit\Framework\Attributes\CoversFunction;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 use TestResource\Unit\Eboreum\Caster\functionsTest\test_is_enum_works\FooEnum;
@@ -13,12 +14,8 @@ use function Eboreum\Caster\functions\is_enum;
 use function Eboreum\Caster\functions\rglob;
 use function in_array;
 
-/**
- * {@inheritDoc}
- *
- * @covers \Eboreum\Caster\functions\is_enum
- * @covers \Eboreum\Caster\functions\rglob
- */
+#[CoversFunction('Eboreum\Caster\functions\is_enum')]
+#[CoversFunction('Eboreum\Caster\functions\rglob')]
 class functionsTest extends TestCase // phpcs:ignore
 {
     public function test_rglob_works(): void // phpcs:ignore

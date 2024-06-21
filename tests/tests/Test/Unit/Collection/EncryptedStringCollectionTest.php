@@ -6,13 +6,10 @@ namespace Test\Unit\Eboreum\Caster\Collection;
 
 use Eboreum\Caster\Collection\EncryptedStringCollection;
 use Eboreum\Caster\EncryptedString;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * {@inheritDoc}
- *
- * @covers \Eboreum\Caster\Collection\EncryptedStringCollection
- */
+#[CoversClass(EncryptedStringCollection::class)]
 class EncryptedStringCollectionTest extends TestCase
 {
     public function testGetHandledClassNameWorks(): void

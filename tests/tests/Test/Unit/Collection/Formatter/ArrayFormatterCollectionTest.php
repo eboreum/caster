@@ -6,13 +6,10 @@ namespace Test\Unit\Eboreum\Caster\Collection;
 
 use Eboreum\Caster\Collection\Formatter\ArrayFormatterCollection;
 use Eboreum\Caster\Contract\Formatter\ArrayFormatterInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * {@inheritDoc}
- *
- * @covers \Eboreum\Caster\Collection\Formatter\ArrayFormatterCollection
- */
+#[CoversClass(ArrayFormatterCollection::class)]
 class ArrayFormatterCollectionTest extends TestCase
 {
     public function testGetHandledClassNameWorks(): void

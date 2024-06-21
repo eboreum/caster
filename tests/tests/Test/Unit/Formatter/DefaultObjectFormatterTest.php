@@ -5,25 +5,38 @@ declare(strict_types=1);
 namespace Test\Unit\Eboreum\Caster\Formatter;
 
 use DateTimeImmutable;
+use Eboreum\Caster\Abstraction\Formatter\AbstractObjectTypeFormatter;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Formatter\DefaultObjectFormatter;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
 use function assert;
 use function is_string;
 
-/**
- * {@inheritDoc}
- *
- * @covers \Eboreum\Caster\Abstraction\Formatter\AbstractObjectTypeFormatter
- * @covers \Eboreum\Caster\Formatter\DefaultObjectFormatter
- */
+#[CoversClass(AbstractObjectTypeFormatter::class)]
+#[CoversClass(DefaultObjectFormatter::class)]
 class DefaultObjectFormatterTest extends TestCase
 {
     /**
-     * @dataProvider dataProviderTestBasics
+     * @return array<int, array{0: string, 1: string, 2: string, 3: Caster, 4: stdClass}>
      */
+    public static function providerTestBasics(): array
+    {
+        return [
+            [
+                'stdClass',
+                '/^\\\\stdClass$/',
+                '/^\\\\stdClass \([0-9a-f]+\)$/',
+                Caster::getInstance(),
+                new stdClass(),
+            ],
+        ];
+    }
+
+    #[DataProvider('providerTestBasics')]
     public function testBasics(
         string $message,
         string $expected,
@@ -49,22 +62,6 @@ class DefaultObjectFormatterTest extends TestCase
         $this->assertIsString($formatted);
         assert(is_string($formatted)); // Make phpstan happy
         $this->assertMatchesRegularExpression($expectedWithAppendedSplObjectHash, $formatted, $message);
-    }
-
-    /**
-     * @return array<int, array{0: string, 1: string, 2: string, 3: Caster, 4: stdClass}>
-     */
-    public function dataProviderTestBasics(): array
-    {
-        return [
-            [
-                'stdClass',
-                '/^\\\\stdClass$/',
-                '/^\\\\stdClass \([0-9a-f]+\)$/',
-                Caster::getInstance(),
-                new stdClass(),
-            ],
-        ];
     }
 
     public function testWithIsAppendingSplObjectHashWorks(): void

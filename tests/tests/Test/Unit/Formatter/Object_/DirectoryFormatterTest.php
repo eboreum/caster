@@ -7,6 +7,7 @@ namespace Test\Unit\Eboreum\Caster\Formatter\Object_;
 use Directory;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Formatter\Object_\DirectoryFormatter;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
@@ -14,11 +15,7 @@ use function assert;
 use function dir;
 use function is_string;
 
-/**
- * {@inheritDoc}
- *
- * @covers \Eboreum\Caster\Formatter\Object_\DirectoryFormatter
- */
+#[CoversClass(DirectoryFormatter::class)]
 class DirectoryFormatterTest extends TestCase
 {
     public function testFormatReturnsNullWhenObjectIsNotQualified(): void

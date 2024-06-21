@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Test\Unit\Eboreum\Caster\Formatter;
 
+use Eboreum\Caster\Abstraction\Formatter\AbstractResourceFormatter;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Common\DataType\Resource_;
 use Eboreum\Caster\Formatter\DefaultResourceFormatter;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 use function assert;
@@ -14,17 +17,33 @@ use function fopen;
 use function is_resource;
 use function is_string;
 
-/**
- * {@inheritDoc}
- *
- * @covers \Eboreum\Caster\Abstraction\Formatter\AbstractResourceFormatter
- * @covers \Eboreum\Caster\Formatter\DefaultResourceFormatter
- */
+#[CoversClass(AbstractResourceFormatter::class)]
+#[CoversClass(DefaultResourceFormatter::class)]
 class DefaultResourceFormatterTest extends TestCase
 {
     /**
-     * @dataProvider dataProviderTestBasics
+     * @return array<int, array{0: string, 1: string, 2: string, 3: Caster, 4: Resource_}>
      */
+    public static function providerTestBasics(): array
+    {
+        return [
+            [
+                'fopen',
+                '/^`stream` Resource id #\d+$/',
+                '/^`stream` Resource id #\d+$/',
+                Caster::getInstance(),
+                (static function () {
+                    $resource = fopen(__FILE__, 'r+');
+
+                    assert(is_resource($resource)); // Make phpstan happy
+
+                    return new Resource_($resource);
+                })(),
+            ],
+        ];
+    }
+
+    #[DataProvider('providerTestBasics')]
     public function testBasics(
         string $message,
         string $expected,
@@ -48,27 +67,5 @@ class DefaultResourceFormatterTest extends TestCase
         assert(is_string($formatted)); // Make phpstan happy
 
         $this->assertMatchesRegularExpression($expectedWithType, $formatted, $message);
-    }
-
-    /**
-     * @return array<int, array{0: string, 1: string, 2: string, 3: Caster, 4: Resource_}>
-     */
-    public function dataProviderTestBasics(): array
-    {
-        return [
-            [
-                'fopen',
-                '/^`stream` Resource id #\d+$/',
-                '/^`stream` Resource id #\d+$/',
-                Caster::getInstance(),
-                (static function () {
-                    $resource = fopen(__FILE__, 'r+');
-
-                    assert(is_resource($resource)); // Make phpstan happy
-
-                    return new Resource_($resource);
-                })(),
-            ],
-        ];
     }
 }

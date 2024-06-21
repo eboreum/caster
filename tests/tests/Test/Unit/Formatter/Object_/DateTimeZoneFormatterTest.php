@@ -7,14 +7,11 @@ namespace Test\Unit\Eboreum\Caster\Formatter\Object_;
 use DateTimeZone;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Formatter\Object_\DateTimeZoneFormatter;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
-/**
- * {@inheritDoc}
- *
- * @covers \Eboreum\Caster\Formatter\Object_\DateTimeZoneFormatter
- */
+#[CoversClass(DateTimeZoneFormatter::class)]
 class DateTimeZoneFormatterTest extends TestCase
 {
     public function testFormatReturnsNullWhenObjectIsNotQualified(): void

@@ -7,6 +7,8 @@ namespace Test\Unit\Eboreum\Caster;
 use PhpParser\Comment;
 use PhpParser\Node;
 use PhpParser\ParserFactory;
+use PhpParser\PhpVersion;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 
 use function array_merge;
@@ -33,9 +35,8 @@ use function sprintf;
  * {@inheritDoc}
  *
  * Did we leave bogus comments, names, file paths, etc. lying around in the project?
- *
- * @coversNothing
  */
+#[CoversNothing]
 class BogusScannerTest extends TestCase
 {
     public function testAllExampleScriptsWork(): void
@@ -88,7 +89,7 @@ class BogusScannerTest extends TestCase
             '/(^|\W)XXX(\W|$)/i',
         ];
 
-        $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
+        $parser = (new ParserFactory())->createForVersion(PhpVersion::fromString('8.3'));
 
         foreach ($filePaths as $filePath) {
             if (false === is_file($filePath)) {

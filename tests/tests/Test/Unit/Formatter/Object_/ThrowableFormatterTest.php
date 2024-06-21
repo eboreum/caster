@@ -11,6 +11,7 @@ use Eboreum\Caster\Common\DataType\Integer\UnsignedInteger;
 use Eboreum\Caster\Formatter\Object_\ThrowableFormatter;
 use Exception;
 use LogicException;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use stdClass;
@@ -21,11 +22,7 @@ use function is_string;
 use function preg_quote;
 use function sprintf;
 
-/**
- * {@inheritDoc}
- *
- * @covers \Eboreum\Caster\Formatter\Object_\ThrowableFormatter
- */
+#[CoversClass(ThrowableFormatter::class)]
 class ThrowableFormatterTest extends TestCase
 {
     public function testFormatWorksWithNonThrowables(): void

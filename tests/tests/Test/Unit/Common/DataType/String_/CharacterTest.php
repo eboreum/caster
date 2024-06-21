@@ -9,6 +9,8 @@ use Eboreum\Caster\CharacterEncoding;
 use Eboreum\Caster\Common\DataType\String_\Character;
 use Eboreum\Caster\Exception\RuntimeException;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 use function assert;
@@ -18,13 +20,42 @@ use function mb_internal_encoding;
 use function preg_quote;
 use function sprintf;
 
-/**
- * {@inheritDoc}
- *
- * @covers \Eboreum\Caster\Common\DataType\String_\Character
- */
+#[CoversClass(Character::class)]
 class CharacterTest extends TestCase
 {
+    /**
+     * @return array<int, array{0: string, 1: string, 2: string, 3: string, 4: CharacterEncoding|null}>
+     */
+    public static function providerTestConstructorThrowsExceptionWhenArgumentCharacterIsInvalid(): array
+    {
+        return [
+            [
+                'Empty string',
+                '(string(0)) ""',
+                '(null) null',
+                '',
+                null,
+            ],
+            [
+                'More than 1 character',
+                '(string(2)) "ab"',
+                '(null) null',
+                'ab',
+                null,
+            ],
+            [
+                'UTF-8 vs. ISO-8859-1',
+                '(string(1)) "æ"',
+                sprintf(
+                    '(object) \\%s',
+                    CharacterEncoding::class,
+                ),
+                'æ',
+                new CharacterEncoding('ISO-8859-1'),
+            ],
+        ];
+    }
+
     public function testBasics(): void
     {
         $characterA = new Character('#');
@@ -76,9 +107,7 @@ class CharacterTest extends TestCase
         $this->assertFalse($characterD->isSame($characterA));
     }
 
-    /**
-     * @dataProvider dataProviderTestConstructorThrowsExceptionWhenArgumentCharacterIsInvalid
-     */
+    #[DataProvider('providerTestConstructorThrowsExceptionWhenArgumentCharacterIsInvalid')]
     public function testConstructorThrowsExceptionWhenArgumentCharacterIsInvalid(
         string $message,
         string $expectedFailureCastString1,
@@ -140,38 +169,5 @@ class CharacterTest extends TestCase
         }
 
         $this->fail('Exception was never thrown.');
-    }
-
-    /**
-     * @return array<int, array{0: string, 1: string, 2: string, 3: string, 4: CharacterEncoding|null}>
-     */
-    public function dataProviderTestConstructorThrowsExceptionWhenArgumentCharacterIsInvalid(): array
-    {
-        return [
-            [
-                'Empty string',
-                '(string(0)) ""',
-                '(null) null',
-                '',
-                null,
-            ],
-            [
-                'More than 1 character',
-                '(string(2)) "ab"',
-                '(null) null',
-                'ab',
-                null,
-            ],
-            [
-                'UTF-8 vs. ISO-8859-1',
-                '(string(1)) "æ"',
-                sprintf(
-                    '(object) \\%s',
-                    CharacterEncoding::class,
-                ),
-                'æ',
-                new CharacterEncoding('ISO-8859-1'),
-            ],
-        ];
     }
 }

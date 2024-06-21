@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Test\Unit\Eboreum\Caster\Formatter\Object_;
 
+use Closure;
 use DateTimeInterface;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Formatter\Object_\ReflectionTypeFormatter;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use ReflectionFunction;
 use ReflectionParameter;
@@ -24,46 +27,13 @@ use function is_string;
 use function preg_quote;
 use function sprintf;
 
-/**
- * {@inheritDoc}
- *
- * @covers \Eboreum\Caster\Formatter\Object_\ReflectionTypeFormatter
- */
+#[CoversClass(ReflectionTypeFormatter::class)]
 class ReflectionTypeFormatterTest extends TestCase
 {
-    public function testFormatWorksWithNonReflectionType(): void
-    {
-        $caster = Caster::create();
-        $reflectionTypeFormatter = new ReflectionTypeFormatter();
-        $object = new stdClass();
-
-        $this->assertFalse($reflectionTypeFormatter->isHandling($object));
-        $this->assertNull($reflectionTypeFormatter->format($caster, $object));
-    }
-
     /**
-     * @dataProvider dataProviderTestFormatWorksWithReflectionType
+     * @return array<array{string, string, Caster, ReflectionTypeFormatter, Closure(self):ReflectionType}>
      */
-    public function testFormatWorksWithReflectionType(
-        string $message,
-        string $expectedRegex,
-        Caster $caster,
-        ReflectionTypeFormatter $reflectionTypeFormatter,
-        ReflectionType $reflectionType,
-    ): void {
-        $this->assertTrue($reflectionTypeFormatter->isHandling($reflectionType), $message);
-
-        $formatted = $reflectionTypeFormatter->format($caster, $reflectionType);
-
-        $this->assertIsString($formatted);
-        assert(is_string($formatted));
-        $this->assertMatchesRegularExpression($expectedRegex, $formatted, $message);
-    }
-
-    /**
-     * @return array<array{string, string, Caster, ReflectionTypeFormatter, ReflectionType}>
-     */
-    public function dataProviderTestFormatWorksWithReflectionType(): array
+    public static function providerTestFormatWorksWithReflectionType(): array
     {
         return [
             [
@@ -71,39 +41,39 @@ class ReflectionTypeFormatterTest extends TestCase
                 '/^int$/',
                 Caster::create(),
                 new ReflectionTypeFormatter(),
-                (function (): ReflectionType {
+                static function (self $self): ReflectionType {
                     $reflectionParameter = new ReflectionParameter('strpos', 'offset');
 
                     $reflectionType = $reflectionParameter->getType();
 
-                    $this->assertIsObject($reflectionType);
+                    $self->assertIsObject($reflectionType);
                     assert(is_object($reflectionType));
 
                     return $reflectionType;
-                })(),
+                },
             ],
             [
                 'A primitive type, "string".',
                 '/^string$/',
                 Caster::create(),
                 new ReflectionTypeFormatter(),
-                (function (): ReflectionType {
+                static function (self $self): ReflectionType {
                     $reflectionParameter = new ReflectionParameter('strpos', 'haystack');
 
                     $reflectionType = $reflectionParameter->getType();
 
-                    $this->assertIsObject($reflectionType);
+                    $self->assertIsObject($reflectionType);
                     assert(is_object($reflectionType));
 
                     return $reflectionType;
-                })(),
+                },
             ],
             [
                 'A nullable – using question mark syntax – primitive type.',
                 '/^\?int$/',
                 Caster::create(),
                 new ReflectionTypeFormatter(),
-                (function (): ReflectionType {
+                static function (self $self): ReflectionType {
                     $function = static function (?int $foo): void {
                     };
                     $reflectionFunction = new ReflectionFunction($function);
@@ -111,23 +81,23 @@ class ReflectionTypeFormatterTest extends TestCase
                     /** @var ReflectionParameter|null $reflectionParameter */
                     $reflectionParameter = $reflectionFunction->getParameters()[0] ?? null;
 
-                    $this->assertIsObject($reflectionParameter);
+                    $self->assertIsObject($reflectionParameter);
                     assert(is_object($reflectionParameter));
 
                     $reflectionType = $reflectionParameter->getType();
 
-                    $this->assertIsObject($reflectionType);
+                    $self->assertIsObject($reflectionType);
                     assert(is_object($reflectionType));
 
                     return $reflectionType;
-                })(),
+                },
             ],
             [
                 'A nullable – using "|null" syntax – primitive type. It gets converted to question mark syntax.',
                 '/^\?int$/',
                 Caster::create(),
                 new ReflectionTypeFormatter(),
-                (function (): ReflectionType {
+                static function (self $self): ReflectionType {
                     $function = static function (int|null $foo): void {
                     };
                     $reflectionFunction = new ReflectionFunction($function);
@@ -135,16 +105,16 @@ class ReflectionTypeFormatterTest extends TestCase
                     /** @var ReflectionParameter|null $reflectionParameter */
                     $reflectionParameter = $reflectionFunction->getParameters()[0] ?? null;
 
-                    $this->assertIsObject($reflectionParameter);
+                    $self->assertIsObject($reflectionParameter);
                     assert(is_object($reflectionParameter));
 
                     $reflectionType = $reflectionParameter->getType();
 
-                    $this->assertIsObject($reflectionType);
+                    $self->assertIsObject($reflectionType);
                     assert(is_object($reflectionType));
 
                     return $reflectionType;
-                })(),
+                },
             ],
             [
                 'A nullable – using question mark syntax – class reference.',
@@ -154,16 +124,16 @@ class ReflectionTypeFormatterTest extends TestCase
                 ),
                 Caster::create(),
                 new ReflectionTypeFormatter(),
-                (function (): ReflectionType {
+                static function (self $self): ReflectionType {
                     $reflectionProperty = new ReflectionProperty(Caster::class, 'instance');
 
                     $reflectionType = $reflectionProperty->getType();
 
-                    $this->assertIsObject($reflectionType);
+                    $self->assertIsObject($reflectionType);
                     assert(is_object($reflectionType));
 
                     return $reflectionType;
-                })(),
+                },
             ],
             [
                 'A nullable – using "|null" syntax – class reference. It gets converted to question mark syntax.',
@@ -173,7 +143,7 @@ class ReflectionTypeFormatterTest extends TestCase
                 ),
                 Caster::create(),
                 new ReflectionTypeFormatter(),
-                (function (): ReflectionType {
+                static function (self $self): ReflectionType {
                     $function = static function (Caster|null $caster): void {
                     };
                     $reflectionFunction = new ReflectionFunction($function);
@@ -181,23 +151,23 @@ class ReflectionTypeFormatterTest extends TestCase
                     /** @var ReflectionParameter|null $reflectionParameter */
                     $reflectionParameter = $reflectionFunction->getParameters()[0] ?? null;
 
-                    $this->assertIsObject($reflectionParameter);
+                    $self->assertIsObject($reflectionParameter);
                     assert(is_object($reflectionParameter));
 
                     $reflectionType = $reflectionParameter->getType();
 
-                    $this->assertIsObject($reflectionType);
+                    $self->assertIsObject($reflectionType);
                     assert(is_object($reflectionType));
 
                     return $reflectionType;
-                })(),
+                },
             ],
             [
                 'An intersection type.',
                 '/^\\\\SplFileObject&\\\\SplFileInfo$/',
                 Caster::create(),
                 new ReflectionTypeFormatter(),
-                (function (): ReflectionType {
+                static function (self $self): ReflectionType {
                     $function = static function (SplFileObject&SplFileInfo $foo): void {
                     };
                     $reflectionFunction = new ReflectionFunction($function);
@@ -205,23 +175,23 @@ class ReflectionTypeFormatterTest extends TestCase
                     /** @var ReflectionParameter|null $reflectionParameter */
                     $reflectionParameter = $reflectionFunction->getParameters()[0] ?? null;
 
-                    $this->assertIsObject($reflectionParameter);
+                    $self->assertIsObject($reflectionParameter);
                     assert(is_object($reflectionParameter));
 
                     $reflectionType = $reflectionParameter->getType();
 
-                    $this->assertIsObject($reflectionType);
+                    $self->assertIsObject($reflectionType);
                     assert(is_object($reflectionType));
 
                     return $reflectionType;
-                })(),
+                },
             ],
             [
                 'A union type.',
                 '/^\\\\SplFileObject\|int$/',
                 Caster::create(),
                 new ReflectionTypeFormatter(),
-                (function (): ReflectionType {
+                static function (self $self): ReflectionType {
                     $function = static function (SplFileObject|int $foo): void {
                     };
                     $reflectionFunction = new ReflectionFunction($function);
@@ -229,23 +199,23 @@ class ReflectionTypeFormatterTest extends TestCase
                     /** @var ReflectionParameter|null $reflectionParameter */
                     $reflectionParameter = $reflectionFunction->getParameters()[0] ?? null;
 
-                    $this->assertIsObject($reflectionParameter);
+                    $self->assertIsObject($reflectionParameter);
                     assert(is_object($reflectionParameter));
 
                     $reflectionType = $reflectionParameter->getType();
 
-                    $this->assertIsObject($reflectionType);
+                    $self->assertIsObject($reflectionType);
                     assert(is_object($reflectionType));
 
                     return $reflectionType;
-                })(),
+                },
             ],
             [
                 'The bottom fallback.',
                 '/^foo$/',
                 Caster::create(),
                 new ReflectionTypeFormatter(),
-                (static function (): ReflectionType {
+                static function (): ReflectionType {
                     return new class extends ReflectionType
                     {
                         public function __toString(): string
@@ -258,9 +228,41 @@ class ReflectionTypeFormatterTest extends TestCase
                             return true;
                         }
                     };
-                })(),
+                },
             ],
         ];
+    }
+
+    public function testFormatWorksWithNonReflectionType(): void
+    {
+        $caster = Caster::create();
+        $reflectionTypeFormatter = new ReflectionTypeFormatter();
+        $object = new stdClass();
+
+        $this->assertFalse($reflectionTypeFormatter->isHandling($object));
+        $this->assertNull($reflectionTypeFormatter->format($caster, $object));
+    }
+
+    /**
+     * @param Closure(self):ReflectionType $reflectionTypeFactory
+     */
+    #[DataProvider('providerTestFormatWorksWithReflectionType')]
+    public function testFormatWorksWithReflectionType(
+        string $message,
+        string $expectedRegex,
+        Caster $caster,
+        ReflectionTypeFormatter $reflectionTypeFormatter,
+        Closure $reflectionTypeFactory,
+    ): void {
+        $reflectionType = $reflectionTypeFactory($this);
+
+        $this->assertTrue($reflectionTypeFormatter->isHandling($reflectionType), $message);
+
+        $formatted = $reflectionTypeFormatter->format($caster, $reflectionType);
+
+        $this->assertIsString($formatted);
+        assert(is_string($formatted));
+        $this->assertMatchesRegularExpression($expectedRegex, $formatted, $message);
     }
 
     public function testIsClassishReferenceWorks(): void

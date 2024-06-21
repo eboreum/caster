@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Test\Unit\Eboreum\Caster;
 
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Throwable;
@@ -20,14 +22,10 @@ use function ob_get_contents;
 use function ob_start;
 use function sprintf;
 
-/**
- * @coversNothing
- */
+#[CoversNothing]
 class AllExampleScriptsWorkTest extends TestCase
 {
-    /**
-     * @runInSeparateProcess
-     */
+    #[RunInSeparateProcess]
     public function testAllExampleScriptsWork(): void
     {
         $globbedFilePaths = glob(TEST_ROOT_PATH . '/../script/misc/readme/example-*.php');

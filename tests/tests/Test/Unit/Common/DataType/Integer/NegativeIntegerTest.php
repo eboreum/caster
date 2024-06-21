@@ -7,6 +7,8 @@ namespace Test\Unit\Eboreum\Caster\Common\DataType\Integer;
 use Eboreum\Caster\Common\DataType\Integer\NegativeInteger;
 use Eboreum\Caster\Exception\RuntimeException;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 use function assert;
@@ -18,16 +20,26 @@ use function sprintf;
 
 use const PHP_INT_MIN;
 
-/**
- * {@inheritDoc}
- *
- * @covers \Eboreum\Caster\Common\DataType\Integer\NegativeInteger
- */
+#[CoversClass(NegativeInteger::class)]
 class NegativeIntegerTest extends TestCase
 {
     /**
-     * @dataProvider dataProviderTestBasics
+     * @return array<int, array{0: int}>
      */
+    public static function providerTestBasics(): array
+    {
+        return [
+            [
+                -1,
+            ],
+            [
+                -42,
+            ],
+            [PHP_INT_MIN],
+        ];
+    }
+
+    #[DataProvider('providerTestBasics')]
     public function testBasics(int $integer): void
     {
         $negativeIntegerA = new NegativeInteger($integer);
@@ -43,22 +55,6 @@ class NegativeIntegerTest extends TestCase
         $negativeIntegerC = new NegativeInteger(-2);
 
         $this->assertFalse($negativeIntegerA->isSame($negativeIntegerC));
-    }
-
-    /**
-     * @return array<int, array{0: int}>
-     */
-    public function dataProviderTestBasics(): array
-    {
-        return [
-            [
-                -1,
-            ],
-            [
-                -42,
-            ],
-            [PHP_INT_MIN],
-        ];
     }
 
     public function testConstructorThrowsExceptionWhenArgumentIntegerIsOutOfBounds(): void

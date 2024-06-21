@@ -114,13 +114,13 @@ class Caster implements CasterInterface
         return self::$internalInstance;
     }
 
-    public static function create(?CharacterEncodingInterface $characterEncoding = null): static
+    public static function create(?CharacterEncodingInterface $characterEncoding = null): self
     {
         if (null === $characterEncoding) {
             $characterEncoding = CharacterEncoding::getInstance();
         }
 
-        return new static($characterEncoding);
+        return new self($characterEncoding);
     }
 
     /**

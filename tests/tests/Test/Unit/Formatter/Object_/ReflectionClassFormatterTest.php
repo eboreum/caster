@@ -6,6 +6,7 @@ namespace Test\Unit\Eboreum\Caster\Formatter\Object_;
 
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Formatter\Object_\ReflectionClassFormatter;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use stdClass;
@@ -15,11 +16,7 @@ use TestResource\Unit\Eboreum\Caster\Formatter\Object_\ReflectionAttributeFormat
 
 use function sprintf;
 
-/**
- * {@inheritDoc}
- *
- * @covers \Eboreum\Caster\Formatter\Object_\ReflectionClassFormatter
- */
+#[CoversClass(ReflectionClassFormatter::class)]
 class ReflectionClassFormatterTest extends TestCase
 {
     public function testFormatWorksWithNonReflectionClass(): void

@@ -7,6 +7,7 @@ namespace Test\Unit\Eboreum\Caster\Formatter\Object_;
 use DateTimeImmutable;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Formatter\Object_\DateIntervalFormatter;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
@@ -14,11 +15,7 @@ use function assert;
 use function implode;
 use function is_string;
 
-/**
- * {@inheritDoc}
- *
- * @covers \Eboreum\Caster\Formatter\Object_\DateIntervalFormatter
- */
+#[CoversClass(DateIntervalFormatter::class)]
 class DateIntervalFormatterTest extends TestCase
 {
     public function testFormatReturnsNullWhenObjectIsNotQualified(): void

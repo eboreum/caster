@@ -7,6 +7,8 @@ namespace Test\Unit\Eboreum\Caster;
 use Eboreum\Caster\CharacterEncoding;
 use Eboreum\Caster\Exception\RuntimeException;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 
 use function assert;
@@ -14,11 +16,7 @@ use function implode;
 use function is_object;
 use function mb_internal_encoding;
 
-/**
- * {@inheritDoc}
- *
- * @covers \Eboreum\Caster\CharacterEncoding
- */
+#[CoversClass(CharacterEncoding::class)]
 class CharacterEncodingTest extends TestCase
 {
     public function testBasics(): void
@@ -83,9 +81,7 @@ class CharacterEncodingTest extends TestCase
         $this->assertTrue((new CharacterEncoding('UTF-8'))->isSame(new CharacterEncoding('UTF-8')));
     }
 
-    /**
-     * @runInSeparateProcess
-     */
+    #[RunInSeparateProcess]
     public function testGetInstanceWorks(): void
     {
         $this->assertSame(CharacterEncoding::getInstance(), CharacterEncoding::getInstance());

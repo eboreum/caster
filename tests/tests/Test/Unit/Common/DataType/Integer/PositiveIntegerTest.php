@@ -7,6 +7,8 @@ namespace Test\Unit\Eboreum\Caster\Common\DataType\Integer;
 use Eboreum\Caster\Common\DataType\Integer\PositiveInteger;
 use Eboreum\Caster\Exception\RuntimeException;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 use function assert;
@@ -18,16 +20,22 @@ use function sprintf;
 
 use const PHP_INT_MAX;
 
-/**
- * {@inheritDoc}
- *
- * @covers \Eboreum\Caster\Common\DataType\Integer\PositiveInteger
- */
+#[CoversClass(PositiveInteger::class)]
 class PositiveIntegerTest extends TestCase
 {
     /**
-     * @dataProvider dataProviderTestBasics
+     * @return array<int, array{0: int}>
      */
+    public static function providerTestBasics(): array
+    {
+        return [
+            [1],
+            [42],
+            [PHP_INT_MAX],
+        ];
+    }
+
+    #[DataProvider('providerTestBasics')]
     public function testBasics(int $integer): void
     {
         $positiveIntegerA = new PositiveInteger($integer);
@@ -43,18 +51,6 @@ class PositiveIntegerTest extends TestCase
         $positiveIntegerC = new PositiveInteger(2);
 
         $this->assertFalse($positiveIntegerA->isSame($positiveIntegerC));
-    }
-
-    /**
-     * @return array<int, array{0: int}>
-     */
-    public function dataProviderTestBasics(): array
-    {
-        return [
-            [1],
-            [42],
-            [PHP_INT_MAX],
-        ];
     }
 
     public function testConstructorThrowsExceptionWhenArgumentIntegerIsOutOfBounds(): void

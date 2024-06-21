@@ -4,59 +4,28 @@ declare(strict_types=1);
 
 namespace Test\Unit\Eboreum\Caster\Formatter;
 
+use Closure;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Collection\Formatter\ObjectFormatterCollection;
 use Eboreum\Caster\Common\DataType\Integer\PositiveInteger;
 use Eboreum\Caster\Common\DataType\Integer\UnsignedInteger;
 use Eboreum\Caster\Formatter\DefaultArrayFormatter;
 use Eboreum\Caster\Formatter\Object_\ClosureFormatter;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 use function assert;
 use function implode;
 use function is_string;
 
-/**
- * {@inheritDoc}
- *
- * @covers \Eboreum\Caster\Formatter\DefaultArrayFormatter
- */
+#[CoversClass(DefaultArrayFormatter::class)]
 class DefaultArrayFormatterTest extends TestCase
 {
     /**
-     * @param array<string|array<mixed>> $array
-     *
-     * @dataProvider dataProviderTestBasics
+     * @return array<int, array{string, string, string, Caster|Caster|Closure(self):Caster, array<mixed>}>
      */
-    public function testBasics(
-        string $message,
-        string $expected,
-        string $expectedWithType,
-        Caster $caster,
-        array $array,
-    ): void {
-        $defaultArrayFormatter = new DefaultArrayFormatter();
-
-        $this->assertTrue($defaultArrayFormatter->isHandling($array), $message);
-
-        $formatted = $defaultArrayFormatter->format($caster, $array);
-        $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
-
-        $this->assertMatchesRegularExpression($expected, $formatted, $message);
-
-        $caster = $caster->withIsPrependingType(true);
-        $formatted = $defaultArrayFormatter->format($caster, $array);
-        $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
-
-        $this->assertMatchesRegularExpression($expectedWithType, $formatted, $message);
-    }
-
-    /**
-     * @return array<int, array{string, string, string, Caster, array<mixed>}>
-     */
-    public function dataProviderTestBasics(): array
+    public static function providerTestBasics(): array
     {
         return [
             [
@@ -258,25 +227,20 @@ class DefaultArrayFormatterTest extends TestCase
                     '$',
                     '/',
                 ]),
-                (function (): Caster {
-                    $formatter = $this->createMock(ClosureFormatter::class);
+                static function (self $self): Caster {
+                    $formatter = $self->createMock(ClosureFormatter::class);
 
                     $formatter
-                        ->expects($this->atLeastOnce())
+                        ->expects($self->atLeastOnce())
                         ->method('format')
                         ->willReturn('\\Closure');
-
-                    $formatter
-                        ->expects($this->atLeastOnce())
-                        ->method('isHandling')
-                        ->willReturn(true);
 
                     return Caster::getInstance()
                         ->withIsWrapping(true)
                         ->withCustomObjectFormatterCollection(
                             new ObjectFormatterCollection([$formatter]),
                         );
-                })(),
+                },
                 [
                     'foo' => static function (): int {
                         return 42;
@@ -284,6 +248,40 @@ class DefaultArrayFormatterTest extends TestCase
                 ],
             ],
         ];
+    }
+
+    /**
+     * @param Caster|Closure(self):Caster $caster
+     * @param array<string|array<mixed>> $array
+     */
+    #[DataProvider('providerTestBasics')]
+    public function testBasics(
+        string $message,
+        string $expected,
+        string $expectedWithType,
+        Caster|Closure $caster,
+        array $array,
+    ): void {
+        if ($caster instanceof Closure) {
+            $caster = $caster($this);
+        }
+
+        $defaultArrayFormatter = new DefaultArrayFormatter();
+
+        $this->assertTrue($defaultArrayFormatter->isHandling($array), $message);
+
+        $formatted = $defaultArrayFormatter->format($caster, $array);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted)); // Make phpstan happy
+
+        $this->assertMatchesRegularExpression($expected, $formatted, $message);
+
+        $caster = $caster->withIsPrependingType(true);
+        $formatted = $defaultArrayFormatter->format($caster, $array);
+        $this->assertIsString($formatted);
+        assert(is_string($formatted)); // Make phpstan happy
+
+        $this->assertMatchesRegularExpression($expectedWithType, $formatted, $message);
     }
 
     public function testFormatWorksWhenArraySampleSizeIsZero(): void

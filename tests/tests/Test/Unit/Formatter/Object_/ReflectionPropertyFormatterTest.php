@@ -9,6 +9,8 @@ use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\Formatter\Object_\ReflectionPropertyFormatter;
 use Eboreum\Caster\Formatter\Object_\ReflectionTypeFormatter;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use ReflectionObject;
@@ -20,52 +22,16 @@ use function is_string;
 use function preg_quote;
 use function sprintf;
 
-/**
- * {@inheritDoc}
- *
- * @covers \Eboreum\Caster\Formatter\Object_\ReflectionPropertyFormatter
- */
+#[CoversClass(ReflectionPropertyFormatter::class)]
 class ReflectionPropertyFormatterTest extends TestCase
 {
     // @phpstan-ignore-next-line
     private static $test1b5d80f8c3e711edafa10242ac120002; // phpcs:ignore
 
-    // @phpstan-ignore-next-line
-    private $testdb97c7b2c3e611edafa10242ac120002; // phpcs:ignore
-
-    public function testFormatWorksWithNonReflectionProperty(): void
-    {
-        $caster = Caster::create();
-        $reflectionPropertyFormatter = new ReflectionPropertyFormatter();
-        $object = new stdClass();
-
-        $this->assertFalse($reflectionPropertyFormatter->isHandling($object));
-        $this->assertNull($reflectionPropertyFormatter->format($caster, $object));
-    }
-
-    /**
-     * @dataProvider dataProviderTestFormatWorksWithReflectionProperty
-     */
-    public function testFormatWorksWithReflectionProperty(
-        string $message,
-        string $expectedRegex,
-        Caster $caster,
-        ReflectionPropertyFormatter $reflectionPropertyFormatter,
-        ReflectionProperty $reflectionProperty,
-    ): void {
-        $this->assertTrue($reflectionPropertyFormatter->isHandling($reflectionProperty), $message);
-
-        $formatted = $reflectionPropertyFormatter->format($caster, $reflectionProperty);
-
-        $this->assertIsString($formatted);
-        assert(is_string($formatted));
-        $this->assertMatchesRegularExpression($expectedRegex, $formatted, $message);
-    }
-
     /**
      * @return array<array{string, string, Caster, ReflectionPropertyFormatter, ReflectionProperty}>
      */
-    public function dataProviderTestFormatWorksWithReflectionProperty(): array
+    public static function providerTestFormatWorksWithReflectionProperty(): array
     {
         return [
             [
@@ -148,6 +114,36 @@ class ReflectionPropertyFormatterTest extends TestCase
                 ];
             })(),
         ];
+    }
+
+    // @phpstan-ignore-next-line
+    private $testdb97c7b2c3e611edafa10242ac120002; // phpcs:ignore
+
+    public function testFormatWorksWithNonReflectionProperty(): void
+    {
+        $caster = Caster::create();
+        $reflectionPropertyFormatter = new ReflectionPropertyFormatter();
+        $object = new stdClass();
+
+        $this->assertFalse($reflectionPropertyFormatter->isHandling($object));
+        $this->assertNull($reflectionPropertyFormatter->format($caster, $object));
+    }
+
+    #[DataProvider('providerTestFormatWorksWithReflectionProperty')]
+    public function testFormatWorksWithReflectionProperty(
+        string $message,
+        string $expectedRegex,
+        Caster $caster,
+        ReflectionPropertyFormatter $reflectionPropertyFormatter,
+        ReflectionProperty $reflectionProperty,
+    ): void {
+        $this->assertTrue($reflectionPropertyFormatter->isHandling($reflectionProperty), $message);
+
+        $formatted = $reflectionPropertyFormatter->format($caster, $reflectionProperty);
+
+        $this->assertIsString($formatted);
+        assert(is_string($formatted));
+        $this->assertMatchesRegularExpression($expectedRegex, $formatted, $message);
     }
 
     public function testWithIsWrappingInClassNameWorks(): void

@@ -8,6 +8,7 @@ use Eboreum\Caster\Attribute\SensitiveProperty;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\Formatter\Object_\PublicVariableFormatter;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use ReflectionObject;
 use stdClass;
@@ -20,11 +21,7 @@ use function is_string;
 use function preg_quote;
 use function sprintf;
 
-/**
- * {@inheritDoc}
- *
- * @covers \Eboreum\Caster\Formatter\Object_\PublicVariableFormatter
- */
+#[CoversClass(PublicVariableFormatter::class)]
 class PublicVariableFormatterTest extends TestCase
 {
     public function testIsSkippedWhenObjectHasNoPublicVariables(): void

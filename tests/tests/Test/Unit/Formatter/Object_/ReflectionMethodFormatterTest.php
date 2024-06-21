@@ -10,6 +10,8 @@ use Eboreum\Caster\EncryptedString;
 use Eboreum\Caster\Formatter\Object_\ReflectionMethodFormatter;
 use Eboreum\Caster\Formatter\Object_\ReflectionParameterFormatter;
 use Eboreum\Caster\Formatter\Object_\ReflectionTypeFormatter;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
@@ -25,87 +27,13 @@ use function sprintf;
 
 use const JSON_ERROR_DEPTH;
 
-/**
- * {@inheritDoc}
- *
- * @covers \Eboreum\Caster\Formatter\Object_\ReflectionMethodFormatter
- */
+#[CoversClass(ReflectionMethodFormatter::class)]
 class ReflectionMethodFormatterTest extends TestCase
 {
-    public function testFormatWorksWithNonReflectionMethod(): void
-    {
-        $caster = Caster::create();
-        $reflectionMethodFormatter = new ReflectionMethodFormatter();
-        $object = new stdClass();
-
-        $this->assertFalse($reflectionMethodFormatter->isHandling($object));
-        $this->assertNull($reflectionMethodFormatter->format($caster, $object));
-    }
-
-    public function testFormatWorksWithReflectionMethodWithoutArguments(): void
-    {
-        $caster = Caster::create();
-        $reflectionMethodFormatter = new ReflectionMethodFormatter();
-        $reflectionMethod = new ReflectionMethod(self::class, __FUNCTION__);
-
-        $this->assertTrue($reflectionMethodFormatter->isHandling($reflectionMethod));
-        $this->assertSame(
-            sprintf(
-                '\\ReflectionMethod (\\%s->%s(): void)',
-                self::class,
-                __FUNCTION__,
-            ),
-            $reflectionMethodFormatter->format($caster, $reflectionMethod)
-        );
-        $this->assertSame(
-            sprintf(
-                '\\ReflectionMethod (\\%s->%s: void)',
-                self::class,
-                __FUNCTION__,
-            ),
-            $reflectionMethodFormatter->withIsRenderingParameters(false)->format($caster, $reflectionMethod)
-        );
-        $this->assertSame(
-            sprintf(
-                '\\ReflectionMethod (\\%s->%s())',
-                self::class,
-                __FUNCTION__,
-            ),
-            $reflectionMethodFormatter->withIsRenderingReturnType(false)->format($caster, $reflectionMethod)
-        );
-        $this->assertSame(
-            sprintf(
-                '\\%s->%s(): void',
-                self::class,
-                __FUNCTION__,
-            ),
-            $reflectionMethodFormatter->withIsWrappingInClassName(false)->format($caster, $reflectionMethod)
-        );
-    }
-
-    /**
-     * @dataProvider dataProviderTestFormatWorksWithReflectionMethodWithArguments
-     */
-    public function testFormatWorksWithReflectionMethodWithArguments(
-        string $message,
-        string $expectedRegex,
-        Caster $caster,
-        ReflectionMethodFormatter $reflectionMethodFormatter,
-        ReflectionMethod $reflectionMethod,
-    ): void {
-        $this->assertTrue($reflectionMethodFormatter->isHandling($reflectionMethod), $message);
-
-        $formatted = $reflectionMethodFormatter->format($caster, $reflectionMethod);
-
-        $this->assertIsString($formatted);
-        assert(is_string($formatted));
-        $this->assertMatchesRegularExpression($expectedRegex, $formatted, $message);
-    }
-
     /**
      * @return array<array{string, string, Caster, ReflectionMethodFormatter, ReflectionMethod}>
      */
-    public function dataProviderTestFormatWorksWithReflectionMethodWithArguments(): array
+    public static function providerTestFormatWorksWithReflectionMethodWithArguments(): array
     {
         return [
             [
@@ -435,6 +363,74 @@ class ReflectionMethodFormatterTest extends TestCase
                 })(),
             ],
         ];
+    }
+
+    public function testFormatWorksWithNonReflectionMethod(): void
+    {
+        $caster = Caster::create();
+        $reflectionMethodFormatter = new ReflectionMethodFormatter();
+        $object = new stdClass();
+
+        $this->assertFalse($reflectionMethodFormatter->isHandling($object));
+        $this->assertNull($reflectionMethodFormatter->format($caster, $object));
+    }
+
+    public function testFormatWorksWithReflectionMethodWithoutArguments(): void
+    {
+        $caster = Caster::create();
+        $reflectionMethodFormatter = new ReflectionMethodFormatter();
+        $reflectionMethod = new ReflectionMethod(self::class, __FUNCTION__);
+
+        $this->assertTrue($reflectionMethodFormatter->isHandling($reflectionMethod));
+        $this->assertSame(
+            sprintf(
+                '\\ReflectionMethod (\\%s->%s(): void)',
+                self::class,
+                __FUNCTION__,
+            ),
+            $reflectionMethodFormatter->format($caster, $reflectionMethod)
+        );
+        $this->assertSame(
+            sprintf(
+                '\\ReflectionMethod (\\%s->%s: void)',
+                self::class,
+                __FUNCTION__,
+            ),
+            $reflectionMethodFormatter->withIsRenderingParameters(false)->format($caster, $reflectionMethod)
+        );
+        $this->assertSame(
+            sprintf(
+                '\\ReflectionMethod (\\%s->%s())',
+                self::class,
+                __FUNCTION__,
+            ),
+            $reflectionMethodFormatter->withIsRenderingReturnType(false)->format($caster, $reflectionMethod)
+        );
+        $this->assertSame(
+            sprintf(
+                '\\%s->%s(): void',
+                self::class,
+                __FUNCTION__,
+            ),
+            $reflectionMethodFormatter->withIsWrappingInClassName(false)->format($caster, $reflectionMethod)
+        );
+    }
+
+    #[DataProvider('providerTestFormatWorksWithReflectionMethodWithArguments')]
+    public function testFormatWorksWithReflectionMethodWithArguments(
+        string $message,
+        string $expectedRegex,
+        Caster $caster,
+        ReflectionMethodFormatter $reflectionMethodFormatter,
+        ReflectionMethod $reflectionMethod,
+    ): void {
+        $this->assertTrue($reflectionMethodFormatter->isHandling($reflectionMethod), $message);
+
+        $formatted = $reflectionMethodFormatter->format($caster, $reflectionMethod);
+
+        $this->assertIsString($formatted);
+        assert(is_string($formatted));
+        $this->assertMatchesRegularExpression($expectedRegex, $formatted, $message);
     }
 
     public function testFormatWorksWhenWrapping(): void

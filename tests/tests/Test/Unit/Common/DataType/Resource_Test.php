@@ -7,39 +7,21 @@ namespace Test\Unit\Eboreum\Caster\Common\DataType;
 use Closure;
 use Eboreum\Caster\Common\DataType\Resource_;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 use function fclose;
 use function fopen;
 use function implode;
 
-/**
- * {@inheritDoc}
- *
- * @covers \Eboreum\Caster\Common\DataType\Resource_
- */
+#[CoversClass(Resource_::class)]
 class Resource_Test extends TestCase // phpcs:ignore
 {
     /**
-     * @param resource $resource
-     *
-     * @dataProvider dataProviderTestBasics
-     */
-    public function testBasics($resource, ?Closure $takeDownCallback): void
-    {
-        $resourceObject = new Resource_($resource);
-
-        $this->assertSame($resource, $resourceObject->getResource());
-
-        if ($takeDownCallback) {
-            $takeDownCallback($resourceObject);
-        }
-    }
-
-    /**
      * @return array<int, array{0: mixed, 1: callable|null}>
      */
-    public function dataProviderTestBasics(): array
+    public static function providerTestBasics(): array
     {
         return [
             [
@@ -49,6 +31,21 @@ class Resource_Test extends TestCase // phpcs:ignore
                 },
             ],
         ];
+    }
+
+    /**
+     * @param resource $resource
+     */
+    #[DataProvider('providerTestBasics')]
+    public function testBasics($resource, ?Closure $takeDownCallback): void
+    {
+        $resourceObject = new Resource_($resource);
+
+        $this->assertSame($resource, $resourceObject->getResource());
+
+        if ($takeDownCallback) {
+            $takeDownCallback($resourceObject);
+        }
     }
 
     public function testConstructorThrowsExceptionWhenArgumentResourceIsInvalid(): void

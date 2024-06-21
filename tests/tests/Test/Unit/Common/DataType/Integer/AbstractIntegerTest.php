@@ -9,17 +9,14 @@ use Eboreum\Caster\Common\DataType\Integer\NegativeInteger;
 use Eboreum\Caster\Common\DataType\Integer\UnsignedInteger;
 use Eboreum\Caster\Exception\RuntimeException;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
 use function assert;
 use function is_object;
 use function sprintf;
 
-/**
- * {@inheritDoc}
- *
- * @covers Eboreum\Caster\Common\DataType\Integer\AbstractInteger
- */
+#[CoversClass(AbstractInteger::class)]
 class AbstractIntegerTest extends TestCase
 {
     public function testGetMaximumLimitWorks(): void

@@ -7,6 +7,7 @@ namespace Test\Unit\Eboreum\Caster\Formatter\Object_;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\Formatter\Object_\ReflectionAttributeFormatter;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use ReflectionAttribute;
 use ReflectionClass;
@@ -25,11 +26,7 @@ use function implode;
 use function is_object;
 use function sprintf;
 
-/**
- * {@inheritDoc}
- *
- * @covers \Eboreum\Caster\Formatter\Object_\ReflectionAttributeFormatter
- */
+#[CoversClass(ReflectionAttributeFormatter::class)]
 class ReflectionAttributeFormatterTest extends TestCase
 {
     public function testFormatWorksWithNonReflectionAttributes(): void

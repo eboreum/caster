@@ -6,6 +6,7 @@ namespace Test\Unit\Eboreum\Caster\Formatter\Object_;
 
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Formatter\Object_\SplFileInfoFormatter;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use SplFileInfo;
 use stdClass;
@@ -13,11 +14,7 @@ use stdClass;
 use function assert;
 use function is_string;
 
-/**
- * {@inheritDoc}
- *
- * @covers \Eboreum\Caster\Formatter\Object_\SplFileInfoFormatter
- */
+#[CoversClass(SplFileInfoFormatter::class)]
 class SplFileInfoFormatterTest extends TestCase
 {
     public function testFormatReturnsNullWhenObjectIsNotQualified(): void
