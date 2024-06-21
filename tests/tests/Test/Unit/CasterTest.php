@@ -67,6 +67,7 @@ use TestResource\Unit\Eboreum\Caster\CasterTest\testCastWorks\StringEnum;
 use TestResource\Unit\Eboreum\Caster\Formatter\Object_\ReflectionAttributeFormatterTest\testFormatWorksWithAReflectionAttributeWitNamedArguments\Attributef982a9e0c18911edafa10242ac120002;
 use TestResource\Unit\Eboreum\Caster\Formatter\Object_\ReflectionAttributeFormatterTest\testFormatWorksWithAReflectionAttributeWitNamedArguments\Classf982a9e0c18911edafa10242ac120002;
 use Throwable;
+use UnitEnum;
 
 use function array_fill;
 use function array_key_exists;
@@ -1411,6 +1412,8 @@ class CasterTest extends TestCase
                 public function isHandling(object $enum): bool
                 {
                     if (is_enum($enum)) {
+                        assert($enum instanceof UnitEnum);
+
                         $reflectionEnum = new ReflectionEnum($enum);
                         $reflectionType = $reflectionEnum->getBackingType();
 

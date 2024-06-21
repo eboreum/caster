@@ -159,6 +159,7 @@ class DebugIdentifierAttributeInterfaceFormatter extends AbstractObjectFormatter
                     $name = $reflectionProperty->getName();
 
                     if (array_key_exists($name, $propertyNameToReflectionProperties)) {
+                        /** @var int<-1,max> $indexPrevious */
                         $indexPrevious = count($propertyNameToReflectionProperties[$name]) - 1;
 
                         if ($indexPrevious >= 0) {

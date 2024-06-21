@@ -8,7 +8,9 @@ use Eboreum\Caster\Abstraction\Formatter\AbstractObjectFormatter;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\CasterInterface;
 use ReflectionEnum;
+use UnitEnum;
 
+use function assert;
 use function Eboreum\Caster\functions\is_enum;
 use function spl_object_hash;
 use function sprintf;
@@ -21,7 +23,9 @@ class DefaultEnumFormatter extends AbstractObjectFormatter
             return null;
         }
 
-        $name = $enum->name; // @phpstan-ignore-line PHPStan doesn't understand this is guaranteed an enum
+        assert($enum instanceof UnitEnum);
+
+        $name = $enum->name;
         $str = sprintf(
             '%s {$name = %s}',
             Caster::makeNormalizedClassName(new ReflectionEnum($enum)),

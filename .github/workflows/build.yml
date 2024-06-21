@@ -80,7 +80,7 @@ jobs:
           minColorRange: 0
 
       - name: "PHP ${{ matrix.php-version }}: Run PHPStan"
-        run: vendor/bin/phpstan
+        run: vendor/bin/phpstan.phar
 
       - name: "PHP ${{ matrix.php-version }}: Register PHPStan Level value in $GITHUB_ENV"
         run: echo "PHPSTAN_LEVEL=$(.github/make-phpstan-level-badge-value.php)" >> $GITHUB_ENV
@@ -126,7 +126,7 @@ jobs:
         run: cd tests && ../vendor/bin/phpunit
 
       - name: "PHP ${{ matrix.php-version }}: Run PHPStan"
-        run: vendor/bin/phpstan
+        run: vendor/bin/phpstan.phar
 
       - name: "PHP ${{ matrix.php-version }}: Run phpcs"
         run: vendor/bin/phpcs -n -q
@@ -157,7 +157,7 @@ jobs:
         run: cd tests && ../vendor/bin/phpunit
 
       - name: "PHP ${{ matrix.php-version }}: Run PHPStan"
-        run: vendor/bin/phpstan
+        run: vendor/bin/phpstan.phar
 
       - name: "PHP ${{ matrix.php-version }}: Run phpcs"
         run: vendor/bin/phpcs -n -q

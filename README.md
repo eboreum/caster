@@ -689,7 +689,7 @@ echo $caster->castTyped('0123456789') . "\n"; // Notice: 3456 are masked because
 
 ```json
 "nikic/php-parser": "^4.12",
-"phpstan/phpstan": "1.8.10",
+"phpstan/phpstan": "1.11.5",
 "phpunit/phpunit": "9.5.25",
 "slevomat/coding-standard": "8.6.1",
 "squizlabs/php_codesniffer": "3.7.1"

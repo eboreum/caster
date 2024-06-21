@@ -7,6 +7,3 @@ parameters:
     bootstrapFiles:
         - tests/phpunit.bootstrap.php
     ignoreErrors:
-        -
-            path: src/Formatter/Object_/ReflectionMethodFormatter.php
-            message: '#Parameter \#2 \$callback of function array_walk expects callable\(string\|null, \(int\|string\)\): mixed, Closure\(string\): void given\.#'

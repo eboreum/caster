@@ -67,9 +67,12 @@ class ReflectionMethodFormatter extends AbstractObjectFormatter implements Wrapp
             }
 
             if ($caster->isWrapping()) {
-                array_walk($parametersAsStrings, static function (string &$parametersAsString) use ($caster): void {
-                    $parametersAsString = $caster->getWrappingIndentationCharacters() . $parametersAsString;
-                });
+                array_walk(
+                    $parametersAsStrings,
+                    static function (?string &$parametersAsString) use ($caster): void {
+                        $parametersAsString = $caster->getWrappingIndentationCharacters() . $parametersAsString;
+                    },
+                );
 
                 $str .= sprintf(
                     "(\n%s\n)",
