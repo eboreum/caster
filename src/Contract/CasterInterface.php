@@ -24,6 +24,10 @@ use Eboreum\Caster\Formatter\DefaultArrayFormatter;
 use Eboreum\Caster\Formatter\DefaultObjectFormatter;
 use Eboreum\Caster\Formatter\DefaultResourceFormatter;
 use Eboreum\Caster\Formatter\DefaultStringFormatter;
+use ReflectionAttribute;
+use ReflectionClass;
+use ReflectionMethod;
+use ReflectionProperty;
 
 /**
  * @inheritDoc
@@ -60,6 +64,42 @@ interface CasterInterface extends ImmutableObjectInterface
      * `castTyped(...)` instead.
      */
     public function cast(mixed $value): string;
+
+    /**
+     * Convenience method for casting a ReflectionAttribute to a string, rendering full class namespace and potential
+     * arguments.
+     *
+     * @see https://www.php.net/manual/en/class.reflectionattribute.php
+     *
+     * @param ReflectionAttribute<object> $reflectionAttribute
+     */
+    public function castReflectionAttributeToString(ReflectionAttribute $reflectionAttribute): string;
+
+    /**
+     * Convenience method for casting a ReflectionClass to a string, rendering full class namespace and an optional type
+     * prefix (class, enum, interface, trait).
+     *
+     * @see https://www.php.net/manual/en/class.reflectionclass.php
+     *
+     * @param ReflectionClass<object> $reflectionClass
+     */
+    public function castReflectionClassToString(ReflectionClass $reflectionClass): string;
+
+    /**
+     * Convenience method for casting a ReflectionMethod to a string, rendering full class name space, method name, and
+     * all of the method's parameters.
+     *
+     * @see https://www.php.net/manual/en/class.reflectionmethod.php
+     */
+    public function castReflectionMethodToString(ReflectionMethod $reflectionMethod): string;
+
+    /**
+     * Convenience method for casting a ReflectionProperty to a string, rendering full class name space, property name,
+     * and optionally the property's type.
+     *
+     * @see https://www.php.net/manual/en/class.reflectionproperty.php
+     */
+    public function castReflectionPropertyToString(ReflectionProperty $reflectionProperty): string;
 
     /**
      * A convenience/proxy method for CasterInterface->withIsPrependingType(true)->cast(...).
