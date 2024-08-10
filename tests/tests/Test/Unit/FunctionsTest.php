@@ -8,7 +8,7 @@ use Eboreum\Caster\Functions;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use stdClass;
-use TestResource\Unit\Eboreum\Caster\functionsTest\testIsEnumWorks\FooEnum;
+use TestResource\Unit\Eboreum\Caster\FunctionsTest\testIsEnumWorks\FooEnum;
 
 use function dirname;
 use function in_array;
