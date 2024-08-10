@@ -13,7 +13,7 @@ use TestResource\Unit\Eboreum\Caster\functionsTest\testIsEnumWorks\FooEnum;
 use function dirname;
 use function in_array;
 
-#[CoversClass('Eboreum\Caster\Functions')]
+#[CoversClass(Functions::class)]
 class FunctionsTest extends TestCase
 {
     public function testRglobWorks(): void
