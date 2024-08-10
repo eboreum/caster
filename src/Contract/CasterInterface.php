@@ -58,19 +58,11 @@ interface CasterInterface extends ImmutableObjectInterface
      *
      * To prepend information about the data type, first call `withIsPrependingType(true)` or simply call
      * `castTyped(...)` instead.
-     *
-     * NOTICE: We do "phpcs:ignore" below, because we cannot change the interface now as it may cause backwards
-     * compatibility issues if introducing the "mixed" type now.
      */
     public function cast(mixed $value): string;
 
     /**
      * A convenience/proxy method for CasterInterface->withIsPrependingType(true)->cast(...).
-     *
-     * NOTICE: We do "phpcs:ignore" below, because we cannot change the interface now as it may cause backwards
-     * compatibility issues if introducing the "mixed" type now.
-     *
-     * NEXT: Next major version, the "$value" parameter should receive the native type "mixed".
      */
     public function castTyped(mixed $value): string;
 
