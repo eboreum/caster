@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TestResource\Unit\Eboreum\Caster\Formatter\Object_\ReflectionAttributeFormatterTest\testFormatWorksWithAReflectionAttributeWithoutArguments;
+namespace TestResource\Unit\Eboreum\Caster\Formatter\Object_\ReflectionAttributeFormatterTest\testFormatWorksWithAReflectionAttributeWithoutArguments; // phpcs:ignore
 
 use Attribute;
 

@@ -921,7 +921,8 @@ class Caster implements CasterInterface
         bool $isConvertingASCIIControlCharactersToHexAnnotationInStrings,
     ): static {
         $clone = clone $this;
-        $clone->isConvertingASCIIControlCharactersToHexAnnotationInStrings = $isConvertingASCIIControlCharactersToHexAnnotationInStrings;
+        $clone->isConvertingASCIIControlCharactersToHexAnnotationInStrings
+            = $isConvertingASCIIControlCharactersToHexAnnotationInStrings;
 
         return $clone;
     }

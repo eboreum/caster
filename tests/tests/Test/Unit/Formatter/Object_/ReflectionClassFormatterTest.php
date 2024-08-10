@@ -10,9 +10,11 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use stdClass;
+// phpcs:disable
 use TestResource\Unit\Eboreum\Caster\Formatter\Object_\ReflectionAttributeFormatterTest\testFormatWorksWithReflectionClassArgumentWhenItContainsAnEnumReference\Enum06bcf69ec18d11edafa10242ac120002;
 use TestResource\Unit\Eboreum\Caster\Formatter\Object_\ReflectionAttributeFormatterTest\testFormatWorksWithReflectionClassArgumentWhenItContainsAnInterfaceReference\Interface06bcfa5ec18d11edafa10242ac120002;
-use TestResource\Unit\Eboreum\Caster\Formatter\Object_\ReflectionAttributeFormatterTest\testFormatWorksWithReflectionClassArgumentWhenItContainsATraitReference\Trait06bcf914c18d11edafa10242ac120002;
+// phpcs:enable
+use TestResource\Unit\Eboreum\Caster\Formatter\Object_\ReflectionAttributeFormatterTest\testFormatWorksWithReflectionClassArgumentWhenItContainsATraitReference\Trait06bcf914c18d11edafa10242ac120002; // phpcs:ignore
 
 use function sprintf;
 

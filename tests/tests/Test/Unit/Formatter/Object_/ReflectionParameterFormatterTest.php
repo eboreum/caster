@@ -505,13 +505,15 @@ class ReflectionParameterFormatterTest extends TestCase
         );
     }
 
-    private function resourceMethodForTestFormatWorksForMethodParameters18525b4ec3d911edafa10242ac120002( // @phpstan-ignore-line
+    // @phpstan-ignore-next-line
+    private function resourceMethodForTestFormatWorksForMethodParameters18525b4ec3d911edafa10242ac120002(
         int $foo = JSON_ERROR_NONE,
     ): int {
         return $foo;
     }
 
-    private function resourceMethodForTestFormatWorksForMethodParameters2330cd52c3d911edafa10242ac120002( // @phpstan-ignore-line
+    // @phpstan-ignore-next-line
+    private function resourceMethodForTestFormatWorksForMethodParameters2330cd52c3d911edafa10242ac120002(
         int $foo = self::TEST_CONSTANT_2330CD52C3D911EDAFA10242AC120002,
     ): int {
         return $foo;

@@ -250,7 +250,8 @@ class DefaultStringFormatterTest extends TestCase
     public function testFormatWorksWhenConvertingASCIIControlCharactersToHexAnnotation(): void
     {
         $casterWithoutConversion = Caster::create()->withIsMakingSamples(false);
-        $casterWithConversion = $casterWithoutConversion->withIsConvertingASCIIControlCharactersToHexAnnotationInStrings(true);
+        $casterWithConversion = $casterWithoutConversion
+            ->withIsConvertingASCIIControlCharactersToHexAnnotationInStrings(true);
         $defaultStringFormatter = new DefaultStringFormatter();
 
         $value = implode(

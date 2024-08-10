@@ -68,8 +68,10 @@ use RuntimeException;
 use SplFileObject;
 use stdClass;
 use TestResource\Unit\Eboreum\Caster\CasterTest\testCastWorks\StringEnum;
+// phpcs:disable
 use TestResource\Unit\Eboreum\Caster\Formatter\Object_\ReflectionAttributeFormatterTest\testFormatWorksWithAReflectionAttributeWitNamedArguments\Attributef982a9e0c18911edafa10242ac120002;
 use TestResource\Unit\Eboreum\Caster\Formatter\Object_\ReflectionAttributeFormatterTest\testFormatWorksWithAReflectionAttributeWitNamedArguments\Classf982a9e0c18911edafa10242ac120002;
+// phpcs:enable
 use Throwable;
 use UnitEnum;
 
