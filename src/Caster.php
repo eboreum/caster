@@ -316,10 +316,7 @@ class Caster implements CasterInterface
         $this->customStringFormatterCollection = clone $this->customStringFormatterCollection;
     }
 
-    /**
-     * @param mixed $value
-     */
-    public function cast($value): string // phpcs:ignore
+    public function cast(mixed $value): string
     {
         $return = null;
 
@@ -688,10 +685,7 @@ class Caster implements CasterInterface
         return $formatted;
     }
 
-    /**
-     * @param mixed $value
-     */
-    public function castTyped($value): string // phpcs:ignore
+    public function castTyped(mixed $value): string
     {
         return $this->withIsPrependingType(true)->cast($value);
     }

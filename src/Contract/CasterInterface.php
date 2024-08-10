@@ -61,14 +61,8 @@ interface CasterInterface extends ImmutableObjectInterface
      *
      * NOTICE: We do "phpcs:ignore" below, because we cannot change the interface now as it may cause backwards
      * compatibility issues if introducing the "mixed" type now.
-     *
-     * NEXT: Next major version, the "$value" parameter should receive the native type "mixed".
-     *
-     * @param mixed $value Accepts any data type.
      */
-    public function cast( // phpcs:ignore
-        $value
-    ): string;
+    public function cast(mixed $value): string;
 
     /**
      * A convenience/proxy method for CasterInterface->withIsPrependingType(true)->cast(...).
@@ -77,12 +71,8 @@ interface CasterInterface extends ImmutableObjectInterface
      * compatibility issues if introducing the "mixed" type now.
      *
      * NEXT: Next major version, the "$value" parameter should receive the native type "mixed".
-     *
-     * @param mixed $value Accepts any data type.
      */
-    public function castTyped( // phpcs:ignore
-        $value
-    ): string;
+    public function castTyped(mixed $value): string;
 
     /**
      * Must escape backslashes and the quoting character with additional baskslashes.
