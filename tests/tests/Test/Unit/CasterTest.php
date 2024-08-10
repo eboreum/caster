@@ -477,7 +477,10 @@ class CasterTest extends TestCase
                 Caster::create(),
             ],
             [
-                'A string being indented due to wrapping.',
+                implode(' ', [
+                    'A string being indented due to wrapping and line breaks being in effect (i.e. ASCII control',
+                    ' characters are left untouched).',
+                ]),
                 sprintf(
                     '/^%s$/',
                     preg_quote(
@@ -498,6 +501,28 @@ class CasterTest extends TestCase
                 ),
                 [[["a\nb\r\nc\rd"]]],
                 Caster::create()->withIsWrapping(true),
+            ],
+            [
+                'A string NOT being indented with wrapping enabled, but due to ASCII control characters being changed.',
+                sprintf(
+                    '/^%s$/',
+                    preg_quote(
+                        implode("\n", [
+                            '[',
+                            '    0 => [',
+                            '        0 => [',
+                            '            0 => "a\\x0ab\\x0d\\x0ac\\x0dd"',
+                            '        ]',
+                            '    ]',
+                            ']',
+                        ]),
+                        '/',
+                    ),
+                ),
+                [[["a\nb\r\nc\rd"]]],
+                Caster::create()
+                    ->withIsWrapping(true)
+                    ->withIsConvertingASCIIControlCharactersToHexAnnotationInStrings(true),
             ],
         ];
     }
