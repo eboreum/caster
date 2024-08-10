@@ -35,9 +35,6 @@
         }
     },
     "autoload": {
-        "files": [
-            "src/functions.php"
-        ],
         "psr-4": {
             "Eboreum\\Caster\\": "src"
         }
