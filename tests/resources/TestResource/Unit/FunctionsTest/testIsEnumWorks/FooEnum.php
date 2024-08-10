@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TestResource\Unit\Eboreum\Caster\functionsTest\testIsEnumWorks;
+namespace TestResource\Unit\Eboreum\Caster\FunctionsTest\testIsEnumWorks;
 
 enum FooEnum: string
 {
