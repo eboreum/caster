@@ -36,7 +36,7 @@ interface CasterInterface extends ImmutableObjectInterface
     public const ARRAY_SAMPLE_SIZE_DEFAULT = 3;
     public const DEPTH_MAXIMUM_DEFAULT = 3;
     public const SAMPLE_ELLIPSIS_DEFAULT = '...';
-    public const SENSITIVE_MESSAGE_DEFAULT = '** SENSITIVE **';
+    public const SENSITIVE_MESSAGE_DEFAULT = '** REDACTED **';
     public const STRING_QUOTING_CHARACTER_DEFAULT = '"';
     public const STRING_SAMPLE_SIZE_DEFAULT = 1000;
 
