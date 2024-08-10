@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Test\Unit\Eboreum\Caster\Collection;
+namespace Test\Unit\Eboreum\Caster\Collection\Formatter;
 
 use Eboreum\Caster\Collection\Formatter\EnumFormatterCollection;
 use Eboreum\Caster\Contract\Formatter\EnumFormatterInterface;
