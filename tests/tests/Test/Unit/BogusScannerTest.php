@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Test\Unit\Eboreum\Caster;
 
+use Eboreum\Caster\Functions;
 use PhpParser\Comment;
 use PhpParser\Node;
 use PhpParser\ParserFactory;
@@ -15,7 +16,6 @@ use function array_merge;
 use function assert;
 use function count;
 use function dirname;
-use function Eboreum\Caster\functions\rglob;
 use function escapeshellarg;
 use function file_get_contents;
 use function get_object_vars;
@@ -44,10 +44,10 @@ class BogusScannerTest extends TestCase
         $errorMessages = [];
 
         $filePaths = array_merge(
-            rglob(dirname(TEST_ROOT_PATH) . '/src/*.php'),
-            rglob(dirname(TEST_ROOT_PATH) . '/script/misc/readme/*.php'),
-            rglob(TEST_ROOT_PATH . '/resources'),
-            rglob(TEST_ROOT_PATH . '/tests/*Test.php'),
+            Functions::rglob(dirname(TEST_ROOT_PATH) . '/src/*.php'),
+            Functions::rglob(dirname(TEST_ROOT_PATH) . '/script/misc/readme/*.php'),
+            Functions::rglob(TEST_ROOT_PATH . '/resources'),
+            Functions::rglob(TEST_ROOT_PATH . '/tests/*Test.php'),
         );
 
         $contents = file_get_contents(dirname(TEST_ROOT_PATH) . '/composer.json');

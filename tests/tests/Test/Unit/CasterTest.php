@@ -50,6 +50,7 @@ use Eboreum\Caster\Formatter\Object_\PublicVariableFormatter;
 use Eboreum\Caster\Formatter\Object_\SplFileInfoFormatter;
 use Eboreum\Caster\Formatter\Object_\TextuallyIdentifiableInterfaceFormatter;
 use Eboreum\Caster\Formatter\Object_\ThrowableFormatter;
+use Eboreum\Caster\Functions;
 use Exception;
 use FooBar_9f8a3c814a1d42dda2672abede7ce454;
 use LogicException;
@@ -78,7 +79,6 @@ use function assert;
 use function basename;
 use function class_alias;
 use function dir;
-use function Eboreum\Caster\functions\is_enum;
 use function fopen;
 use function get_resource_type;
 use function implode;
@@ -1823,7 +1823,7 @@ class CasterTest extends TestCase
                         return null;
                     }
 
-                    assert(is_enum($enum)); // Make phpstan happy
+                    assert(Functions::isEnum($enum)); // Make phpstan happy
 
                     return sprintf(
                         '\\%s {$name = %s, $value = %s}',
@@ -1835,7 +1835,7 @@ class CasterTest extends TestCase
 
                 public function isHandling(object $enum): bool
                 {
-                    if (is_enum($enum)) {
+                    if (Functions::isEnum($enum)) {
                         assert($enum instanceof UnitEnum);
 
                         $reflectionEnum = new ReflectionEnum($enum);
@@ -2439,7 +2439,7 @@ class CasterTest extends TestCase
 
             public function isHandling(object $enum): bool
             {
-                return is_enum($enum);
+                return Functions::isEnum($enum);
             }
         },
         ]);

@@ -54,7 +54,6 @@ use function array_values;
 use function array_walk;
 use function assert;
 use function count;
-use function Eboreum\Caster\functions\is_enum;
 use function implode;
 use function is_array;
 use function is_bool;
@@ -395,7 +394,7 @@ class Caster implements CasterInterface
 
         if (is_object($value)) {
             $caster = $this;
-            $isEnum = is_enum($value);
+            $isEnum = Functions::isEnum($value);
             $typePrefixText = ($isEnum ? 'enum' : 'object');
 
             if ($caster->getContext()->hasVisitedObject($value)) {

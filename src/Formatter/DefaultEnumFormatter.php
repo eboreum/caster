@@ -7,11 +7,11 @@ namespace Eboreum\Caster\Formatter;
 use Eboreum\Caster\Abstraction\Formatter\AbstractObjectFormatter;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\CasterInterface;
+use Eboreum\Caster\Functions;
 use ReflectionEnum;
 use UnitEnum;
 
 use function assert;
-use function Eboreum\Caster\functions\is_enum;
 use function spl_object_hash;
 use function sprintf;
 
@@ -19,7 +19,7 @@ class DefaultEnumFormatter extends AbstractObjectFormatter
 {
     public function format(CasterInterface $caster, object $enum): ?string
     {
-        if (false === is_enum($enum)) {
+        if (false === $this->isHandling($enum)) {
             return null;
         }
 
@@ -44,6 +44,6 @@ class DefaultEnumFormatter extends AbstractObjectFormatter
 
     public function isHandling(object $enum): bool
     {
-        return is_enum($enum);
+        return Functions::isEnum($enum);
     }
 }

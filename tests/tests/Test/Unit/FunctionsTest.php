@@ -37,17 +37,17 @@ class FunctionsTest extends TestCase
 
     public function testIsEnumWorks(): void
     {
-        $this->assertFalse(Functions::is_enum(null));
-        $this->assertFalse(Functions::is_enum(true));
-        $this->assertFalse(Functions::is_enum(42));
-        $this->assertFalse(Functions::is_enum(3.14));
-        $this->assertFalse(Functions::is_enum('foo'));
-        $this->assertFalse(Functions::is_enum([]));
-        $this->assertFalse(Functions::is_enum(new stdClass()));
-        $this->assertTrue(Functions::is_enum(FooEnum::Lorem));
-        $this->assertTrue(Functions::is_enum(FooEnum::Ipsum));
-        $this->assertTrue(Functions::is_enum(FooEnum::from('Lorem')));
-        $this->assertFalse(Functions::is_enum(FooEnum::tryFrom('foo')));
-        $this->assertFalse(Functions::is_enum(FooEnum::class));
+        $this->assertFalse(Functions::isEnum(null));
+        $this->assertFalse(Functions::isEnum(true));
+        $this->assertFalse(Functions::isEnum(42));
+        $this->assertFalse(Functions::isEnum(3.14));
+        $this->assertFalse(Functions::isEnum('foo'));
+        $this->assertFalse(Functions::isEnum([]));
+        $this->assertFalse(Functions::isEnum(new stdClass()));
+        $this->assertTrue(Functions::isEnum(FooEnum::Lorem));
+        $this->assertTrue(Functions::isEnum(FooEnum::Ipsum));
+        $this->assertTrue(Functions::isEnum(FooEnum::from('Lorem')));
+        $this->assertFalse(Functions::isEnum(FooEnum::tryFrom('foo')));
+        $this->assertFalse(Functions::isEnum(FooEnum::class));
     }
 }

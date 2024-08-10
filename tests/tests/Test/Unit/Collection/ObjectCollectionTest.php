@@ -13,6 +13,7 @@ use Eboreum\Caster\Caster;
 use Eboreum\Caster\Contract\Collection\ElementInterface;
 use Eboreum\Caster\Contract\Collection\ObjectCollectionInterface;
 use Eboreum\Caster\Exception\RuntimeException;
+use Eboreum\Caster\Functions;
 use Exception;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -27,7 +28,6 @@ use function class_exists;
 use function count;
 use function dir;
 use function dirname;
-use function Eboreum\Caster\functions\rglob;
 use function implode;
 use function interface_exists;
 use function is_string;
@@ -63,7 +63,7 @@ class ObjectCollectionTest extends TestCase
             $srcDirectory->path,
         );
 
-        foreach (rglob($pattern) as $filePath) {
+        foreach (Functions::rglob($pattern) as $filePath) {
             $className = mb_substr(
                 $filePath,
                 mb_strlen($srcDirectory->path) + 1,

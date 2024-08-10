@@ -56,7 +56,7 @@ final class Functions
     /**
      * The missing PHP 8.1 function. Same functionality as is_object, is_array, is_null, etc. but for (actual) enums.
      */
-    public static function is_enum(mixed $value): bool
+    public static function isEnum(mixed $value): bool
     {
         return is_object($value) && enum_exists($value::class);
     }
