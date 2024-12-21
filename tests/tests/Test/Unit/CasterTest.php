@@ -51,6 +51,7 @@ use Eboreum\Caster\Formatter\Object_\SplFileInfoFormatter;
 use Eboreum\Caster\Formatter\Object_\TextuallyIdentifiableInterfaceFormatter;
 use Eboreum\Caster\Formatter\Object_\ThrowableFormatter;
 use Eboreum\Caster\Functions;
+use Eboreum\Caster\SensitiveValue;
 use Exception;
 use FooBar_9f8a3c814a1d42dda2672abede7ce454;
 use LogicException;
@@ -1628,6 +1629,35 @@ class CasterTest extends TestCase
                 preg_quote(basename(__FILE__), '/'),
             ),
             Caster::create()->cast($class),
+        );
+    }
+
+    public function testCastWorksWithInstanceOfSensitiveValue(): void
+    {
+        $caster = Caster::create();
+
+        $this->assertSame($caster->getSensitiveMessage(), $caster->cast(SensitiveValue::getInstance()));
+
+        $array = [
+            'foo',
+            SensitiveValue::getInstance(),
+            'bar',
+        ];
+
+        $this->assertSame(
+            sprintf(
+                '[0 => "foo", 1 => %s, 2 => "bar"]',
+                CasterInterface::SENSITIVE_MESSAGE_DEFAULT,
+            ),
+            $caster->cast($array),
+        );
+
+        $this->assertSame(
+            sprintf(
+                '(array(3)) [(int) 0 => (string(3)) "foo", (int) 1 => %s, (int) 2 => (string(3)) "bar"]',
+                CasterInterface::SENSITIVE_MESSAGE_DEFAULT,
+            ),
+            $caster->castTyped($array),
         );
     }
 
