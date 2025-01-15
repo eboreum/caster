@@ -390,6 +390,10 @@ class Caster implements CasterInterface
         }
 
         if (is_object($value)) {
+            if ($value instanceof SensitiveValue) {
+                return $this->getSensitiveMessage();
+            }
+
             $caster = $this;
             $isEnum = Functions::isEnum($value);
             $typePrefixText = ($isEnum ? 'enum' : 'object');
