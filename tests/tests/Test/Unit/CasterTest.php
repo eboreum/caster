@@ -2529,9 +2529,8 @@ class CasterTest extends TestCase
         $casterA = Caster::create();
         $objectFormatterCollectionA = $casterA->getCustomObjectFormatterCollection();
 
-        $objectFormatterCollectionB = new ObjectFormatterCollection([
-        new class extends AbstractObjectFormatter
-            {
+        $formatter = new class extends AbstractObjectFormatter
+        {
             public function format(CasterInterface $caster, object $object): ?string
             {
                 return null;
@@ -2541,8 +2540,9 @@ class CasterTest extends TestCase
             {
                 return true;
             }
-        },
-        ]);
+        };
+
+        $objectFormatterCollectionB = new ObjectFormatterCollection([$formatter]);
         $casterB = $casterA->withCustomObjectFormatterCollection($objectFormatterCollectionB);
 
         $this->assertNotSame($casterA, $casterB);

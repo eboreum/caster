@@ -102,11 +102,14 @@ class Caster implements CasterInterface
         if (null === self::$internalInstance) {
             self::$internalInstance = self::getInstance();
 
+            /** @var array<ObjectFormatterInterface> $formatters */
+            $formatters = [
+                new DebugIdentifierAttributeInterfaceFormatter(),
+                new TextuallyIdentifiableInterfaceFormatter(),
+            ];
+
             self::$internalInstance = self::$internalInstance->withCustomObjectFormatterCollection(
-                new ObjectFormatterCollection([
-                    new DebugIdentifierAttributeInterfaceFormatter(),
-                    new TextuallyIdentifiableInterfaceFormatter(),
-                ]),
+                new ObjectFormatterCollection($formatters),
             );
         }
 
