@@ -3131,10 +3131,15 @@ class CasterTest extends TestCase
         $this->assertNotSame(Caster::getInstance(), Caster::getInternalInstance());
     }
 
+    #[RunInSeparateProcess]
     public function testCreateWorks(): void
     {
-        $caster = Caster::create();
-        $this->assertInstanceOf(Caster::class, $caster);
+        $casterA = Caster::create();
+        $casterB = Caster::create();
+
+        $this->assertSame(Caster::class, $casterA::class);
+        $this->assertSame(Caster::class, $casterB::class);
+        $this->assertNotSame($casterA, $casterB);
     }
 
     #[DataProvider('providerTestMakeNormalizedClassNameWorks')]
