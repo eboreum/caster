@@ -42,6 +42,7 @@
     "autoload-dev": {
         "psr-4": {
             "TestResource\\Unit\\Eboreum\\Caster\\": "tests/resources/TestResource/Unit",
+            "Test\\Integration\\Eboreum\\Caster\\": "tests/tests/Test/Integration",
             "Test\\Unit\\Eboreum\\Caster\\": "tests/tests/Test/Unit"
         }
     }

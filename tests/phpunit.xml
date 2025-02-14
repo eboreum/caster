@@ -8,6 +8,9 @@
     requireCoverageMetadata="true"
     >
     <testsuites>
+        <testsuite name="Integration test suite">
+            <directory>./tests/Test/Integration</directory>
+        </testsuite>
         <testsuite name="Unit test suite">
             <directory>./tests/Test/Unit</directory>
         </testsuite>
