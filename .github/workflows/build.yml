@@ -24,6 +24,9 @@ jobs:
           extensions: mbstring, simplexml, dom
           coverage: xdebug
 
+      - name: "PHP ${{ matrix.php-version }}: Verify Composer '--strict-psr'"
+        run: composer dump-autoload -o --dry-run --strict-psr
+
       - name: "PHP ${{ matrix.php-version }}: Get composer cache directory"
         id: composer-cache
         run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
