@@ -50,7 +50,6 @@ use function array_filter;
 use function array_map;
 use function array_merge;
 use function array_unique;
-use function array_values;
 use function array_walk;
 use function assert;
 use function count;
@@ -480,8 +479,6 @@ class Caster implements CasterInterface
 
                 assert(is_array($lines));
 
-                $lines = array_values($lines);
-
                 if ($this->getDepthCurrent()->toInteger() > 1) {
                     array_walk($lines, static function (string &$line, int $index) use ($caster): void {
                         if (0 === $index) {
@@ -551,8 +548,6 @@ class Caster implements CasterInterface
                 $lines = preg_split('/(\r?\n|\r)/', $return);
 
                 assert(is_array($lines));
-
-                $lines = array_values($lines);
 
                 if ($this->getDepthCurrent()->toInteger() > 1) {
                     array_walk($lines, static function (string &$line, int $index) use ($caster): void {
@@ -764,7 +759,6 @@ class Caster implements CasterInterface
                 assert(is_array($split)); // Make phpstan happy
 
                 if (count($split) > 1) {
-                    $split = array_values($split);
                     $max = count($split) - 1;
                     $segments = [];
                     $maskingString = $this->getMaskingString();

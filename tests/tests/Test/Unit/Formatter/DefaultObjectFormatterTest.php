@@ -13,9 +13,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
-use function assert;
-use function is_string;
-
 #[CoversClass(AbstractObjectTypeFormatter::class)]
 #[CoversClass(DefaultObjectFormatter::class)]
 class DefaultObjectFormatterTest extends TestCase
@@ -50,7 +47,6 @@ class DefaultObjectFormatterTest extends TestCase
 
         $formatted = $defaultObjectFormatter->format($caster, $object);
         $this->assertIsString($formatted);
-        assert(is_string($formatted));
 
         $this->assertFalse($defaultObjectFormatter->isAppendingSplObjectHash());
         $this->assertMatchesRegularExpression($expected, $formatted, $message);
@@ -60,7 +56,6 @@ class DefaultObjectFormatterTest extends TestCase
 
         $formatted = $defaultObjectFormatter->format($caster, $object);
         $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
         $this->assertMatchesRegularExpression($expectedWithAppendedSplObjectHash, $formatted, $message);
     }
 
@@ -80,19 +75,16 @@ class DefaultObjectFormatterTest extends TestCase
         $this->assertFalse($defaultObjectFormatterA->isAppendingSplObjectHash());
         $formatted = $defaultObjectFormatterA->format($caster, $object);
         $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
         $this->assertMatchesRegularExpression('/^\\\\DateTimeImmutable$/', $formatted);
 
         $this->assertFalse($defaultObjectFormatterB->isAppendingSplObjectHash());
         $formatted = $defaultObjectFormatterB->format($caster, $object);
         $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
         $this->assertMatchesRegularExpression('/^\\\\DateTimeImmutable$/', $formatted);
 
         $this->assertTrue($defaultObjectFormatterC->isAppendingSplObjectHash());
         $formatted = $defaultObjectFormatterC->format($caster, $object);
         $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
         $this->assertMatchesRegularExpression('/^\\\\DateTimeImmutable \([0-9a-f]+\)$/', $formatted);
     }
 }

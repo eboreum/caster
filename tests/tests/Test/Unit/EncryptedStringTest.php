@@ -12,9 +12,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use ReflectionObject;
 
-use function assert;
 use function implode;
-use function is_object;
 use function sprintf;
 
 #[CoversClass(EncryptedString::class)]
@@ -89,7 +87,6 @@ class EncryptedStringTest extends TestCase
 
             $currentException = $currentException->getPrevious();
             $this->assertIsObject($currentException);
-            assert(is_object($currentException)); // Make phpstan happy
             $this->assertSame(RuntimeException::class, $currentException::class);
             $this->assertSame(
                 'Argument $salt must not be an empty string, but it is. Found: (string(0)) ""',
@@ -128,7 +125,6 @@ class EncryptedStringTest extends TestCase
 
             $currentException = $currentException->getPrevious();
             $this->assertIsObject($currentException);
-            assert(is_object($currentException)); // Make phpstan happy
             $this->assertSame(RuntimeException::class, $currentException::class);
             $this->assertMatchesRegularExpression(
                 implode('', [
@@ -190,7 +186,6 @@ class EncryptedStringTest extends TestCase
 
             $currentException = $currentException->getPrevious();
             $this->assertIsObject($currentException);
-            assert(is_object($currentException)); // Make phpstan happy
             $this->assertSame(RuntimeException::class, $currentException::class);
             $this->assertMatchesRegularExpression(
                 implode('', [

@@ -11,9 +11,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-use function assert;
 use function implode;
-use function is_object;
 use function json_encode;
 use function preg_quote;
 use function sprintf;
@@ -82,7 +80,6 @@ class NegativeIntegerTest extends TestCase
 
             $exceptionCurrent = $exceptionCurrent->getPrevious();
             $this->assertIsObject($exceptionCurrent);
-            assert(is_object($exceptionCurrent)); // Make phpstan happy
             $this->assertSame(RuntimeException::class, $exceptionCurrent::class);
             $this->assertMatchesRegularExpression(
                 sprintf(
@@ -110,7 +107,7 @@ class NegativeIntegerTest extends TestCase
 
     public function testGetMaximumLimitWorks(): void
     {
-        $this->assertIsInt(NegativeInteger::getMaximumLimit());
+        $this->assertSame(-1, NegativeInteger::getMaximumLimit());
     }
 
     public function testGetMinimumLimitWorks(): void

@@ -69,8 +69,6 @@ class ObjectCollectionTest extends TestCase
                 mb_strlen($srcDirectory->path) + 1,
             );
 
-            assert(is_string($className)); // Make phpstan happy
-
             $className = preg_replace(
                 '/\.php$/',
                 '',
@@ -84,8 +82,6 @@ class ObjectCollectionTest extends TestCase
                 '\\',
                 $className,
             );
-
-            assert(is_string($className)); // Make phpstan happy
 
             if (false === class_exists($className)) {
                 throw new \RuntimeException(sprintf(
@@ -121,7 +117,6 @@ class ObjectCollectionTest extends TestCase
 
         $handledClassName = $handledClassNameCollection::getHandledClassName();
 
-        assert(is_string($handledClassName)); // Make phpstan happy
         assert(class_exists($handledClassName) || interface_exists($handledClassName)); // Make phpstan happy
 
         $reflectionClassHandledClass = new ReflectionClass($handledClassName);
@@ -189,6 +184,7 @@ class ObjectCollectionTest extends TestCase
         ];
 
         try {
+            // @phpstan-ignore-next-line
             new class ($elements) extends AbstractObjectCollection
             {
                 public static function getHandledClassName(): string

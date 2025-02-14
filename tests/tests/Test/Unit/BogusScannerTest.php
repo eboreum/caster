@@ -64,6 +64,8 @@ class BogusScannerTest extends TestCase
             assert(is_array($composerJsonArray['authors'])); // Make phpstan happy
 
             foreach ($composerJsonArray['authors'] as $author) {
+                assert(is_array($author));
+
                 if ($author['homepage'] ?? false) {
                     assert(is_string($author['homepage'])); // Make phpstan happy
 
@@ -145,7 +147,7 @@ class BogusScannerTest extends TestCase
                             $matches,
                         );
 
-                        if ($matches && ($matches[0] ?? false)) {
+                        if ($matches[0]) {
                             $matchCount = count($matches[0]);
                             $errorMessages[] = sprintf(
                                 'Found %d %s of the disallowed text (as a regular expression) %s %s in file: %s:%d',

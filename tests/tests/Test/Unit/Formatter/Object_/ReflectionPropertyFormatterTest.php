@@ -16,8 +16,6 @@ use ReflectionObject;
 use ReflectionProperty;
 use stdClass;
 
-use function assert;
-use function is_string;
 use function preg_quote;
 use function sprintf;
 
@@ -141,7 +139,6 @@ class ReflectionPropertyFormatterTest extends TestCase
         $formatted = $reflectionPropertyFormatter->format($caster, $reflectionProperty);
 
         $this->assertIsString($formatted);
-        assert(is_string($formatted));
         $this->assertMatchesRegularExpression($expectedRegex, $formatted, $message);
     }
 

@@ -172,6 +172,7 @@ use Eboreum\Caster\Caster as EboreumCaster;
 use Eboreum\Caster\CharacterEncoding;
 use Eboreum\Caster\Collection\Formatter\ArrayFormatterCollection;
 use Eboreum\Caster\Contract\CasterInterface;
+use Eboreum\Caster\Contract\Formatter\ArrayFormatterInterface;
 
 use function assert;
 use function dirname;
@@ -187,22 +188,23 @@ class Caster extends EboreumCaster
         if (null === self::$instance) {
             self::$instance = new self(CharacterEncoding::getInstance());
 
-            $instance = self::$instance->withCustomArrayFormatterCollection(new ArrayFormatterCollection([
-            new class extends AbstractArrayFormatter
-                {
-                public function format(CasterInterface $caster, array $array): ?string
-                {
-                    return 'I am an array!';
-                }
+            /** @var array<ArrayFormatterInterface> $formatters */
+            $formatters = [
+                new class extends AbstractArrayFormatter
+                    {
+                    public function format(CasterInterface $caster, array $array): string
+                    {
+                        return 'I am an array!';
+                    }
 
-                public function isHandling(array $array): bool
-                {
-                    return true;
-                }
-            },
-            ]));
+                    public function isHandling(array $array): bool
+                    {
+                        return true;
+                    }
+                },
+            ];
 
-            assert($instance instanceof Caster);
+            $instance = self::$instance->withCustomArrayFormatterCollection(new ArrayFormatterCollection($formatters));
 
             self::$instance = $instance;
 
@@ -347,9 +349,10 @@ use Eboreum\Caster\Abstraction\Formatter\AbstractArrayFormatter;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Collection\Formatter\ArrayFormatterCollection;
 use Eboreum\Caster\Contract\CasterInterface;
+use Eboreum\Caster\Contract\Formatter\ArrayFormatterInterface;
 
-$caster = Caster::create();
-$caster = $caster->withCustomArrayFormatterCollection(new ArrayFormatterCollection([
+/** @var array<ArrayFormatterInterface> $formatters */
+$formatters = [
     new class extends AbstractArrayFormatter
     {
         public function format(CasterInterface $caster, array $array): ?string
@@ -385,7 +388,10 @@ $caster = $caster->withCustomArrayFormatterCollection(new ArrayFormatterCollecti
             return true;
         }
     },
-]));
+];
+
+$caster = Caster::create();
+$caster = $caster->withCustomArrayFormatterCollection(new ArrayFormatterCollection($formatters));
 
 echo $caster->cast(['foo']) . "\n";
 
@@ -430,10 +436,10 @@ use Eboreum\Caster\Abstraction\Formatter\AbstractObjectFormatter;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Collection\Formatter\ObjectFormatterCollection;
 use Eboreum\Caster\Contract\CasterInterface;
+use Eboreum\Caster\Contract\Formatter\ObjectFormatterInterface;
 
-$caster = Caster::create();
-
-$caster = $caster->withCustomObjectFormatterCollection(new ObjectFormatterCollection([
+/** @var array<ObjectFormatterInterface> $formatters */
+$formatters = [
     new class extends AbstractObjectFormatter
     {
         public function format(CasterInterface $caster, object $object): ?string
@@ -481,7 +487,10 @@ $caster = $caster->withCustomObjectFormatterCollection(new ObjectFormatterCollec
             return ($object instanceof Throwable);
         }
     },
-]));
+];
+
+$caster = Caster::create();
+$caster = $caster->withCustomObjectFormatterCollection(new ObjectFormatterCollection($formatters));
 
 echo $caster->cast(new stdClass()) . "\n";
 
@@ -496,7 +505,7 @@ echo $caster->cast(new RuntimeException('test', 1)) . "\n";
 ```php
 \stdClass
 \DateTimeImmutable (2019-01-01T00:00:00+00:00)
-\RuntimeException {$code = 1, $file = ".../example-custom-object-formatter.php", $line = 68, $message = "test"}
+\RuntimeException {$code = 1, $file = ".../example-custom-object-formatter.php", $line = 71, $message = "test"}
 
 ```
 
@@ -515,10 +524,10 @@ use Eboreum\Caster\Caster;
 use Eboreum\Caster\Collection\Formatter\ResourceFormatterCollection;
 use Eboreum\Caster\Common\DataType\Resource_;
 use Eboreum\Caster\Contract\CasterInterface;
+use Eboreum\Caster\Contract\Formatter\ResourceFormatterInterface;
 
-$caster = Caster::create();
-
-$caster = $caster->withCustomResourceFormatterCollection(new ResourceFormatterCollection([
+/** @var array<ResourceFormatterInterface> $formatters */
+$formatters = [
     new class extends AbstractResourceFormatter
     {
         public function format(CasterInterface $caster, Resource_ $resource): ?string
@@ -567,7 +576,10 @@ $caster = $caster->withCustomResourceFormatterCollection(new ResourceFormatterCo
             return null; // Pass on to next formatter or lastly DefaultResourceFormatter
         }
     },
-]));
+];
+
+$caster = Caster::create();
+$caster = $caster->withCustomResourceFormatterCollection(new ResourceFormatterCollection($formatters));
 
 echo $caster->cast(fopen(__FILE__, 'r+')) . "\n";
 
@@ -594,9 +606,10 @@ use Eboreum\Caster\Abstraction\Formatter\AbstractStringFormatter;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Collection\Formatter\StringFormatterCollection;
 use Eboreum\Caster\Contract\CasterInterface;
+use Eboreum\Caster\Contract\Formatter\StringFormatterInterface;
 
-$caster = Caster::create();
-$caster = $caster->withCustomStringFormatterCollection(new StringFormatterCollection([
+/** @var array<StringFormatterInterface> $formatters */
+$formatters = [
     new class extends AbstractStringFormatter
     {
         public function format(CasterInterface $caster, string $string): ?string
@@ -617,7 +630,10 @@ $caster = $caster->withCustomStringFormatterCollection(new StringFormatterCollec
             return true;
         }
     },
-]));
+];
+
+$caster = Caster::create();
+$caster = $caster->withCustomStringFormatterCollection(new StringFormatterCollection($formatters));
 
 echo $caster->cast('What do we like?') . "\n";
 
@@ -690,7 +706,7 @@ echo $caster->castTyped('0123456789') . "\n"; // Notice: 3456 are masked because
 ```json
 "beberlei/assert": "^3.3",
 "nikic/php-parser": "^5.0",
-"phpstan/phpstan": "1.11.5",
+"phpstan/phpstan": "^2.1.5",
 "phpunit/phpunit": "11.2.5",
 "slevomat/coding-standard": "8.15.0",
 "squizlabs/php_codesniffer": "3.10.1"

@@ -23,10 +23,7 @@ use SensitiveParameter;
 use SplFileObject;
 use stdClass;
 
-use function assert;
 use function implode;
-use function is_object;
-use function is_string;
 use function preg_quote;
 use function sprintf;
 
@@ -254,7 +251,6 @@ class ReflectionParameterFormatterTest extends TestCase
         $formatted = $reflectionParameterFormatter->format($caster, $reflectionParameter);
 
         $this->assertIsString($formatted);
-        assert(is_string($formatted));
         $this->assertMatchesRegularExpression($expectedRegex, $formatted, $message);
     }
 
@@ -271,7 +267,6 @@ class ReflectionParameterFormatterTest extends TestCase
         $formatted = $reflectionParameterFormatter->format($caster, $reflectionParameter);
 
         $this->assertIsString($formatted);
-        assert(is_string($formatted));
         $this->assertMatchesRegularExpression($expectedRegex, $formatted, $message);
     }
 
@@ -296,7 +291,6 @@ class ReflectionParameterFormatterTest extends TestCase
 
             $currentException = $currentException->getPrevious();
             $this->assertIsObject($currentException);
-            assert(is_object($currentException));
             $this->assertSame(RuntimeException::class, $currentException::class);
             $this->assertSame(
                 'Parameter $haystack does not have a default value',
@@ -320,7 +314,6 @@ class ReflectionParameterFormatterTest extends TestCase
         $reflectionParameter = $reflectionMethod->getParameters()[0] ?? null;
 
         $this->assertIsObject($reflectionParameter);
-        assert(is_object($reflectionParameter));
 
         try {
             $reflectionParameterFormatter->formatDefaultValue($caster, $reflectionParameter);
@@ -337,7 +330,6 @@ class ReflectionParameterFormatterTest extends TestCase
 
             $currentException = $currentException->getPrevious();
             $this->assertIsObject($currentException);
-            assert(is_object($currentException));
             $this->assertSame(RuntimeException::class, $currentException::class);
             $this->assertSame(
                 'Parameter $flags does not have a default value',
@@ -361,7 +353,6 @@ class ReflectionParameterFormatterTest extends TestCase
         $reflectionParameter = $reflectionMethod->getParameters()[0] ?? null;
 
         $this->assertIsObject($reflectionParameter);
-        assert(is_object($reflectionParameter));
 
         try {
             $reflectionParameterFormatter->formatDefaultValue($caster, $reflectionParameter);
@@ -381,7 +372,6 @@ class ReflectionParameterFormatterTest extends TestCase
 
             $currentException = $currentException->getPrevious();
             $this->assertIsObject($currentException);
-            assert(is_object($currentException));
             $this->assertSame(RuntimeException::class, $currentException::class);
             $this->assertSame(
                 'Parameter $encryptionMethod does not have a default value',
@@ -442,7 +432,6 @@ class ReflectionParameterFormatterTest extends TestCase
 
             $currentException = $currentException->getPrevious();
             $this->assertIsObject($currentException);
-            assert(is_object($currentException));
             $this->assertSame(RuntimeException::class, $currentException::class);
             $this->assertMatchesRegularExpression(
                 implode('', [

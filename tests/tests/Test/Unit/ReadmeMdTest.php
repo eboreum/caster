@@ -13,7 +13,6 @@ use function assert;
 use function dirname;
 use function file_get_contents;
 use function implode;
-use function is_array;
 use function is_file;
 use function is_string;
 use function ob_end_clean;
@@ -63,7 +62,6 @@ class ReadmeMdTest extends TestCase
         $split = preg_split('/([\\\\\/])/', PROJECT_ROOT_DIRECTORY_PATH);
 
         $this->assertIsArray($split);
-        assert(is_array($split)); // Make phpstan happy
 
         if ('' === ($split[0] ?? null)) {
             array_shift($split);

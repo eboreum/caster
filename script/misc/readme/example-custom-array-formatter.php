@@ -6,11 +6,12 @@ use Eboreum\Caster\Abstraction\Formatter\AbstractArrayFormatter;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Collection\Formatter\ArrayFormatterCollection;
 use Eboreum\Caster\Contract\CasterInterface;
+use Eboreum\Caster\Contract\Formatter\ArrayFormatterInterface;
 
 require_once dirname(__DIR__, 2) . '/bootstrap.php'; // README.md.remove
 
-$caster = Caster::create();
-$caster = $caster->withCustomArrayFormatterCollection(new ArrayFormatterCollection([
+/** @var array<ArrayFormatterInterface> $formatters */
+$formatters = [
     new class extends AbstractArrayFormatter
     {
         public function format(CasterInterface $caster, array $array): ?string
@@ -46,7 +47,10 @@ $caster = $caster->withCustomArrayFormatterCollection(new ArrayFormatterCollecti
             return true;
         }
     },
-]));
+];
+
+$caster = Caster::create();
+$caster = $caster->withCustomArrayFormatterCollection(new ArrayFormatterCollection($formatters));
 
 echo $caster->cast(['foo']) . "\n";
 

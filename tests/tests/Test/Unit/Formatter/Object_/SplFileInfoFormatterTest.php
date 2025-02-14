@@ -11,9 +11,6 @@ use PHPUnit\Framework\TestCase;
 use SplFileInfo;
 use stdClass;
 
-use function assert;
-use function is_string;
-
 #[CoversClass(SplFileInfoFormatter::class)]
 class SplFileInfoFormatterTest extends TestCase
 {
@@ -37,7 +34,6 @@ class SplFileInfoFormatterTest extends TestCase
         $this->assertTrue($splFileInfoFormatter->isHandling($object));
         $formatted = $splFileInfoFormatter->format($caster, $object);
         $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
         $this->assertMatchesRegularExpression(
             '/^\\\\SplFileInfo \(".+"\)$/',
             $formatted,

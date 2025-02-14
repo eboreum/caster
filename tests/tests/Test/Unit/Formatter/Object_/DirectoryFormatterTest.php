@@ -13,7 +13,6 @@ use stdClass;
 
 use function assert;
 use function dir;
-use function is_string;
 
 #[CoversClass(DirectoryFormatter::class)]
 class DirectoryFormatterTest extends TestCase
@@ -40,7 +39,6 @@ class DirectoryFormatterTest extends TestCase
         $this->assertTrue($directoryFormatter->isHandling($object));
         $formatted = $directoryFormatter->format($caster, $object);
         $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
         $this->assertMatchesRegularExpression('/^\\\\Directory \{\$path = "(.+)"\}$/', $formatted);
     }
 }

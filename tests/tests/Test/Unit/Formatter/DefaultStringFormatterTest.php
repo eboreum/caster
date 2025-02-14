@@ -13,10 +13,8 @@ use PHPUnit\Framework\TestCase;
 
 use function array_map;
 use function array_merge;
-use function assert;
 use function chr;
 use function implode;
-use function is_string;
 use function range;
 
 #[CoversClass(DefaultStringFormatter::class)]
@@ -142,14 +140,12 @@ class DefaultStringFormatterTest extends TestCase
 
         $formatted = $defaultStringFormatter->format($caster, $string);
         $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
 
         $this->assertMatchesRegularExpression($expected, $formatted, $message);
 
         $caster = $caster->withIsPrependingType(true);
         $formatted = $defaultStringFormatter->format($caster, $string);
         $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
 
         $this->assertMatchesRegularExpression($expectedWithType, $formatted, $message);
     }

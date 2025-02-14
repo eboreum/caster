@@ -11,9 +11,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
-use function assert;
 use function implode;
-use function is_string;
 
 #[CoversClass(DateIntervalFormatter::class)]
 class DateIntervalFormatterTest extends TestCase
@@ -42,7 +40,6 @@ class DateIntervalFormatterTest extends TestCase
         $formatted = $dateIntervalFormatter->format($caster, $object);
 
         $this->assertIsString($formatted);
-        assert(is_string($formatted));
         $this->assertMatchesRegularExpression(
             implode('', [
                 '/',

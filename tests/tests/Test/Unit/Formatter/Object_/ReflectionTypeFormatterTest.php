@@ -21,9 +21,6 @@ use stdClass;
 use TestResource\Unit\Eboreum\Caster\Formatter\Object_\ReflectionAttributeFormatterTest\testFormatWorksWithReflectionClassArgumentWhenItContainsAnEnumReference\Enum06bcf69ec18d11edafa10242ac120002; // phpcs:ignore
 use TestResource\Unit\Eboreum\Caster\Formatter\Object_\ReflectionAttributeFormatterTest\testFormatWorksWithReflectionClassArgumentWhenItContainsATraitReference\Trait06bcf914c18d11edafa10242ac120002; // phpcs:ignore
 
-use function assert;
-use function is_object;
-use function is_string;
 use function preg_quote;
 use function sprintf;
 
@@ -47,7 +44,6 @@ class ReflectionTypeFormatterTest extends TestCase
                     $reflectionType = $reflectionParameter->getType();
 
                     $self->assertIsObject($reflectionType);
-                    assert(is_object($reflectionType));
 
                     return $reflectionType;
                 },
@@ -63,7 +59,6 @@ class ReflectionTypeFormatterTest extends TestCase
                     $reflectionType = $reflectionParameter->getType();
 
                     $self->assertIsObject($reflectionType);
-                    assert(is_object($reflectionType));
 
                     return $reflectionType;
                 },
@@ -82,12 +77,10 @@ class ReflectionTypeFormatterTest extends TestCase
                     $reflectionParameter = $reflectionFunction->getParameters()[0] ?? null;
 
                     $self->assertIsObject($reflectionParameter);
-                    assert(is_object($reflectionParameter));
 
                     $reflectionType = $reflectionParameter->getType();
 
                     $self->assertIsObject($reflectionType);
-                    assert(is_object($reflectionType));
 
                     return $reflectionType;
                 },
@@ -106,12 +99,10 @@ class ReflectionTypeFormatterTest extends TestCase
                     $reflectionParameter = $reflectionFunction->getParameters()[0] ?? null;
 
                     $self->assertIsObject($reflectionParameter);
-                    assert(is_object($reflectionParameter));
 
                     $reflectionType = $reflectionParameter->getType();
 
                     $self->assertIsObject($reflectionType);
-                    assert(is_object($reflectionType));
 
                     return $reflectionType;
                 },
@@ -130,7 +121,6 @@ class ReflectionTypeFormatterTest extends TestCase
                     $reflectionType = $reflectionProperty->getType();
 
                     $self->assertIsObject($reflectionType);
-                    assert(is_object($reflectionType));
 
                     return $reflectionType;
                 },
@@ -152,12 +142,10 @@ class ReflectionTypeFormatterTest extends TestCase
                     $reflectionParameter = $reflectionFunction->getParameters()[0] ?? null;
 
                     $self->assertIsObject($reflectionParameter);
-                    assert(is_object($reflectionParameter));
 
                     $reflectionType = $reflectionParameter->getType();
 
                     $self->assertIsObject($reflectionType);
-                    assert(is_object($reflectionType));
 
                     return $reflectionType;
                 },
@@ -176,12 +164,10 @@ class ReflectionTypeFormatterTest extends TestCase
                     $reflectionParameter = $reflectionFunction->getParameters()[0] ?? null;
 
                     $self->assertIsObject($reflectionParameter);
-                    assert(is_object($reflectionParameter));
 
                     $reflectionType = $reflectionParameter->getType();
 
                     $self->assertIsObject($reflectionType);
-                    assert(is_object($reflectionType));
 
                     return $reflectionType;
                 },
@@ -200,12 +186,10 @@ class ReflectionTypeFormatterTest extends TestCase
                     $reflectionParameter = $reflectionFunction->getParameters()[0] ?? null;
 
                     $self->assertIsObject($reflectionParameter);
-                    assert(is_object($reflectionParameter));
 
                     $reflectionType = $reflectionParameter->getType();
 
                     $self->assertIsObject($reflectionType);
-                    assert(is_object($reflectionType));
 
                     return $reflectionType;
                 },
@@ -261,7 +245,6 @@ class ReflectionTypeFormatterTest extends TestCase
         $formatted = $reflectionTypeFormatter->format($caster, $reflectionType);
 
         $this->assertIsString($formatted);
-        assert(is_string($formatted));
         $this->assertMatchesRegularExpression($expectedRegex, $formatted, $message);
     }
 

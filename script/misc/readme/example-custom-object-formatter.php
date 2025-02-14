@@ -6,12 +6,12 @@ use Eboreum\Caster\Abstraction\Formatter\AbstractObjectFormatter;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Collection\Formatter\ObjectFormatterCollection;
 use Eboreum\Caster\Contract\CasterInterface;
+use Eboreum\Caster\Contract\Formatter\ObjectFormatterInterface;
 
 require_once dirname(__DIR__, 2) . '/bootstrap.php'; // README.md.remove
 
-$caster = Caster::create();
-
-$caster = $caster->withCustomObjectFormatterCollection(new ObjectFormatterCollection([
+/** @var array<ObjectFormatterInterface> $formatters */
+$formatters = [
     new class extends AbstractObjectFormatter
     {
         public function format(CasterInterface $caster, object $object): ?string
@@ -59,7 +59,10 @@ $caster = $caster->withCustomObjectFormatterCollection(new ObjectFormatterCollec
             return ($object instanceof Throwable);
         }
     },
-]));
+];
+
+$caster = Caster::create();
+$caster = $caster->withCustomObjectFormatterCollection(new ObjectFormatterCollection($formatters));
 
 echo $caster->cast(new stdClass()) . "\n";
 

@@ -12,9 +12,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-use function assert;
 use function implode;
-use function is_object;
 use function json_encode;
 use function preg_quote;
 use function sprintf;
@@ -80,7 +78,6 @@ class UnsignedIntegerTest extends TestCase
 
             $exceptionCurrent = $exceptionCurrent->getPrevious();
             $this->assertIsObject($exceptionCurrent);
-            assert(is_object($exceptionCurrent)); // Make phpstan happy
             $this->assertSame(RuntimeException::class, $exceptionCurrent::class);
             $this->assertMatchesRegularExpression(
                 sprintf(
@@ -113,6 +110,6 @@ class UnsignedIntegerTest extends TestCase
 
     public function testGetMinimumLimitWorks(): void
     {
-        $this->assertIsInt(UnsignedInteger::getMinimumLimit());
+        $this->assertSame(0, UnsignedInteger::getMinimumLimit());
     }
 }

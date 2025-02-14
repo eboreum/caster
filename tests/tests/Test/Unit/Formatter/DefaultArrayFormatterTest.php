@@ -9,15 +9,14 @@ use Eboreum\Caster\Caster;
 use Eboreum\Caster\Collection\Formatter\ObjectFormatterCollection;
 use Eboreum\Caster\Common\DataType\Integer\PositiveInteger;
 use Eboreum\Caster\Common\DataType\Integer\UnsignedInteger;
+use Eboreum\Caster\Contract\Formatter\ObjectFormatterInterface;
 use Eboreum\Caster\Formatter\DefaultArrayFormatter;
 use Eboreum\Caster\Formatter\Object_\ClosureFormatter;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-use function assert;
 use function implode;
-use function is_string;
 
 #[CoversClass(DefaultArrayFormatter::class)]
 class DefaultArrayFormatterTest extends TestCase
@@ -235,11 +234,12 @@ class DefaultArrayFormatterTest extends TestCase
                         ->method('format')
                         ->willReturn('\\Closure');
 
+                    /** @var array<ObjectFormatterInterface> $formatters */
+                    $formatters = [$formatter];
+
                     return Caster::getInstance()
                         ->withIsWrapping(true)
-                        ->withCustomObjectFormatterCollection(
-                            new ObjectFormatterCollection([$formatter]),
-                        );
+                        ->withCustomObjectFormatterCollection(new ObjectFormatterCollection($formatters));
                 },
                 [
                     'foo' => static function (): int {
@@ -272,14 +272,12 @@ class DefaultArrayFormatterTest extends TestCase
 
         $formatted = $defaultArrayFormatter->format($caster, $array);
         $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
 
         $this->assertMatchesRegularExpression($expected, $formatted, $message);
 
         $caster = $caster->withIsPrependingType(true);
         $formatted = $defaultArrayFormatter->format($caster, $array);
         $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
 
         $this->assertMatchesRegularExpression($expectedWithType, $formatted, $message);
     }

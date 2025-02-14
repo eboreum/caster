@@ -9,6 +9,7 @@ use Eboreum\Caster\Caster as EboreumCaster;
 use Eboreum\Caster\CharacterEncoding;
 use Eboreum\Caster\Collection\Formatter\ArrayFormatterCollection;
 use Eboreum\Caster\Contract\CasterInterface;
+use Eboreum\Caster\Contract\Formatter\ArrayFormatterInterface;
 
 use function assert;
 use function dirname;
@@ -26,22 +27,23 @@ class Caster extends EboreumCaster
         if (null === self::$instance) {
             self::$instance = new self(CharacterEncoding::getInstance());
 
-            $instance = self::$instance->withCustomArrayFormatterCollection(new ArrayFormatterCollection([
-            new class extends AbstractArrayFormatter
-                {
-                public function format(CasterInterface $caster, array $array): ?string
-                {
-                    return 'I am an array!';
-                }
+            /** @var array<ArrayFormatterInterface> $formatters */
+            $formatters = [
+                new class extends AbstractArrayFormatter
+                    {
+                    public function format(CasterInterface $caster, array $array): string
+                    {
+                        return 'I am an array!';
+                    }
 
-                public function isHandling(array $array): bool
-                {
-                    return true;
-                }
-            },
-            ]));
+                    public function isHandling(array $array): bool
+                    {
+                        return true;
+                    }
+                },
+            ];
 
-            assert($instance instanceof Caster);
+            $instance = self::$instance->withCustomArrayFormatterCollection(new ArrayFormatterCollection($formatters));
 
             self::$instance = $instance;
 

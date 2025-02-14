@@ -13,9 +13,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-use function assert;
 use function implode;
-use function is_object;
 use function mb_internal_encoding;
 use function preg_quote;
 use function sprintf;
@@ -142,7 +140,6 @@ class CharacterTest extends TestCase
 
             $currentException = $currentException->getPrevious();
             $this->assertIsObject($currentException);
-            assert(is_object($currentException)); // Make phpstan happy
             $this->assertSame(RuntimeException::class, $currentException::class, $message);
             $this->assertMatchesRegularExpression(
                 sprintf(

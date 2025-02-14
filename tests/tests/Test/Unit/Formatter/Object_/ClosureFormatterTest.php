@@ -17,9 +17,7 @@ use PHPUnit\Framework\TestCase;
 use stdClass;
 use Traversable;
 
-use function assert;
 use function implode;
-use function is_string;
 use function rand;
 use function sprintf;
 
@@ -66,6 +64,7 @@ class ClosureFormatterTest extends TestCase
                     ' type.',
                 ]),
                 '\\Closure(int $a = self::A_CONSTANT)',
+                // @phpstan-ignore-next-line
                 static function (int $a = self::A_CONSTANT) {}, // phpcs:ignore
                 $caster,
             ],
@@ -78,6 +77,7 @@ class ClosureFormatterTest extends TestCase
                     '\\Closure(int $a = \\%s::A_CONSTANT)',
                     self::class,
                 ),
+                // @phpstan-ignore-next-line
                 static function (int $a = ClosureFormatterTest::A_CONSTANT) {}, // phpcs:ignore
                 $caster,
             ],
@@ -256,7 +256,6 @@ class ClosureFormatterTest extends TestCase
         $this->assertTrue($closureFormatter->isHandling($closure), $message);
         $formatted = $closureFormatter->format($caster, $closure);
         $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
         $this->assertSame($expected, $formatted, $message);
     }
 }

@@ -7,12 +7,12 @@ use Eboreum\Caster\Caster;
 use Eboreum\Caster\Collection\Formatter\ResourceFormatterCollection;
 use Eboreum\Caster\Common\DataType\Resource_;
 use Eboreum\Caster\Contract\CasterInterface;
+use Eboreum\Caster\Contract\Formatter\ResourceFormatterInterface;
 
 require_once dirname(__DIR__, 2) . '/bootstrap.php'; // README.md.remove
 
-$caster = Caster::create();
-
-$caster = $caster->withCustomResourceFormatterCollection(new ResourceFormatterCollection([
+/** @var array<ResourceFormatterInterface> $formatters */
+$formatters = [
     new class extends AbstractResourceFormatter
     {
         public function format(CasterInterface $caster, Resource_ $resource): ?string
@@ -61,6 +61,9 @@ $caster = $caster->withCustomResourceFormatterCollection(new ResourceFormatterCo
             return null; // Pass on to next formatter or lastly DefaultResourceFormatter
         }
     },
-]));
+];
+
+$caster = Caster::create();
+$caster = $caster->withCustomResourceFormatterCollection(new ResourceFormatterCollection($formatters));
 
 echo $caster->cast(fopen(__FILE__, 'r+')) . "\n";

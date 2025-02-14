@@ -11,6 +11,7 @@ use Eboreum\Caster\Collection\Formatter\ObjectFormatterCollection;
 use Eboreum\Caster\Common\DataType\Integer\PositiveInteger;
 use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\Contract\DebugIdentifierAttributeInterface;
+use Eboreum\Caster\Contract\Formatter\ObjectFormatterInterface;
 use Eboreum\Caster\Formatter\Object_\DebugIdentifierAttributeInterfaceFormatter;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -22,10 +23,8 @@ use TestResource\Unit\Eboreum\Caster\Formatter\Object_\DebugIdentifierAttributeI
 use TestResource\Unit\Eboreum\Caster\Formatter\Object_\DebugIdentifierAttributeInterfaceFormatterTest\testFormatWorksWithSeveralLevelsOfClassesAndSeveralSameNamePropertiesWithVaryingVisibilities; // phpcs:ignore
 
 use function array_keys;
-use function assert;
 use function basename;
 use function implode;
-use function is_string;
 use function preg_quote;
 use function sprintf;
 
@@ -60,7 +59,6 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
 
         $formatted = $debugIdentifierAttributeInterfaceFormatter->format($caster, $object);
         $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
 
         $this->assertTrue($debugIdentifierAttributeInterfaceFormatter->isHandling($object));
         $this->assertMatchesRegularExpression(
@@ -99,7 +97,6 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
 
         $formatted = $debugIdentifierAttributeInterfaceFormatter->format($caster, $object);
         $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
 
         $this->assertTrue($debugIdentifierAttributeInterfaceFormatter->isHandling($object));
         $this->assertMatchesRegularExpression(
@@ -139,7 +136,6 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
 
         $formatted = $debugIdentifierAttributeInterfaceFormatter->format($caster, $object);
         $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
 
         $this->assertTrue($debugIdentifierAttributeInterfaceFormatter->isHandling($object));
         $this->assertMatchesRegularExpression(
@@ -194,7 +190,6 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
 
         $formatted = $debugIdentifierAttributeInterfaceFormatter->format($caster, $object);
         $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
 
         $this->assertMatchesRegularExpression(
             sprintf(
@@ -467,7 +462,6 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
 
         $formatted = $debugIdentifierAttributeInterfaceFormatter->format($caster, $object);
         $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
 
         $this->assertMatchesRegularExpression(
             sprintf(
@@ -549,7 +543,6 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
 
         $formatted = $debugIdentifierAttributeInterfaceFormatter->format($caster, $object);
         $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
 
         $this->assertMatchesRegularExpression(
             sprintf(
@@ -578,7 +571,6 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
 
         $formatted = $debugIdentifierAttributeInterfaceFormatter->format($caster, $object);
         $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
 
         $this->assertMatchesRegularExpression(
             sprintf(
@@ -613,7 +605,6 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
 
         $formatted = $debugIdentifierAttributeInterfaceFormatter->format($caster, $object);
         $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
 
         $this->assertMatchesRegularExpression(
             sprintf(
@@ -634,14 +625,13 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
     {
         $debugIdentifierAttributeInterfaceFormatter = new DebugIdentifierAttributeInterfaceFormatter();
 
+        /** @var array<ObjectFormatterInterface> $formatters */
+        $formatters = [$debugIdentifierAttributeInterfaceFormatter];
+
         $caster = Caster::create()
             ->withIsWrapping(true)
             ->withDepthCurrent(new PositiveInteger(2))
-            ->withCustomObjectFormatterCollection(
-                new ObjectFormatterCollection(
-                    [$debugIdentifierAttributeInterfaceFormatter],
-                ),
-            );
+            ->withCustomObjectFormatterCollection(new ObjectFormatterCollection($formatters));
 
         $object = new class implements DebugIdentifierAttributeInterface
         {
@@ -654,7 +644,6 @@ class DebugIdentifierAttributeInterfaceFormatterTest extends TestCase
 
         $formatted = $debugIdentifierAttributeInterfaceFormatter->format($caster, $object);
         $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
 
         $this->assertSame(
             sprintf(

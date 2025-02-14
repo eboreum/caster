@@ -8,6 +8,7 @@ use Eboreum\Caster\Caster;
 use Eboreum\Caster\Collection\Formatter\ObjectFormatterCollection;
 use Eboreum\Caster\Common\DataType\Integer\PositiveInteger;
 use Eboreum\Caster\Common\DataType\Integer\UnsignedInteger;
+use Eboreum\Caster\Contract\Formatter\ObjectFormatterInterface;
 use Eboreum\Caster\Formatter\Object_\ThrowableFormatter;
 use Exception;
 use LogicException;
@@ -16,9 +17,7 @@ use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use stdClass;
 
-use function assert;
 use function implode;
-use function is_string;
 use function preg_quote;
 use function sprintf;
 
@@ -46,7 +45,6 @@ class ThrowableFormatterTest extends TestCase
         $this->assertTrue($throwableFormatter->isHandling($object));
         $formatted = $throwableFormatter->format($caster, $object);
         $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
         $this->assertMatchesRegularExpression(
             implode('', [
                 '/',
@@ -70,9 +68,12 @@ class ThrowableFormatterTest extends TestCase
         $caster = Caster::create();
         $caster = $caster->withDepthMaximum(new PositiveInteger(2));
         $throwableFormatter = new ThrowableFormatter();
-        $caster = $caster->withCustomObjectFormatterCollection(
-            new ObjectFormatterCollection([$throwableFormatter]),
-        );
+
+        /** @var array<ObjectFormatterInterface> $formatters */
+        $formatters = [$throwableFormatter];
+
+        $caster = $caster->withCustomObjectFormatterCollection(new ObjectFormatterCollection($formatters));
+
         $third = new LogicException('baz', 2);
         $second = new RuntimeException('bar', 1, $third);
         $object = new Exception('foo', 0, $second);
@@ -85,7 +86,6 @@ class ThrowableFormatterTest extends TestCase
         $this->assertTrue($throwableFormatter->isHandling($object));
         $formatted = $throwableFormatter->format($caster, $object);
         $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
         $this->assertMatchesRegularExpression(
             implode('', [
                 '/',
@@ -122,9 +122,11 @@ class ThrowableFormatterTest extends TestCase
         $caster = $caster->withDepthMaximum(new PositiveInteger(1));
         $throwableFormatter = new ThrowableFormatter();
         $throwableFormatter = $throwableFormatter->withDepthMaximum(new PositiveInteger(1));
-        $caster = $caster->withCustomObjectFormatterCollection(
-            new ObjectFormatterCollection([$throwableFormatter]),
-        );
+
+        /** @var array<ObjectFormatterInterface> $formatters */
+        $formatters = [$throwableFormatter];
+
+        $caster = $caster->withCustomObjectFormatterCollection(new ObjectFormatterCollection($formatters));
 
         $third = new LogicException('baz', 2);
         $second = new RuntimeException('bar', 1, $third);
@@ -139,7 +141,6 @@ class ThrowableFormatterTest extends TestCase
 
         $formatted = $throwableFormatter->format($caster, $object);
         $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
         $this->assertMatchesRegularExpression(
             implode('', [
                 '/',
@@ -173,7 +174,6 @@ class ThrowableFormatterTest extends TestCase
         $formatted = $throwableFormatter->format($caster, $throwable);
 
         $this->assertIsString($formatted);
-        assert(is_string($formatted));
 
         $this->assertMatchesRegularExpression(
             sprintf(
@@ -207,7 +207,6 @@ class ThrowableFormatterTest extends TestCase
         $formatted = $throwableFormatter->format($caster, $throwable);
 
         $this->assertIsString($formatted);
-        assert(is_string($formatted));
 
         $this->assertMatchesRegularExpression(
             sprintf(
@@ -243,7 +242,6 @@ class ThrowableFormatterTest extends TestCase
         $formatted  = $throwableFormatter->format($caster, $throwable);
 
         $this->assertIsString($formatted);
-        assert(is_string($formatted));
 
         $this->assertMatchesRegularExpression(
             sprintf(

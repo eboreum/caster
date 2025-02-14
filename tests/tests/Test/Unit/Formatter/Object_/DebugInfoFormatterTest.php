@@ -9,10 +9,8 @@ use Eboreum\Caster\Formatter\Object_\DebugInfoFormatter;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-use function assert;
 use function basename;
 use function implode;
-use function is_string;
 use function preg_quote;
 use function sprintf;
 
@@ -51,7 +49,6 @@ class DebugInfoFormatterTest extends TestCase
         $this->assertTrue($debugInfoFormatter->isHandling($object));
         $formatted = $debugInfoFormatter->format($caster, $object);
         $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
         $this->assertMatchesRegularExpression(
             sprintf(
                 implode('', [

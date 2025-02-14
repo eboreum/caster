@@ -138,8 +138,6 @@ foreach ($split as $i => &$line) {
         assert(is_array($includeSplit));
 
         foreach ($includeSplit as $j => &$includeLine) {
-            assert(is_string($includeLine));
-
             if (preg_match('/^(.+);\s*\/\/\s*README.md.remove\s*$/', trim($includeLine))) {
                 $includeLine = null;
 

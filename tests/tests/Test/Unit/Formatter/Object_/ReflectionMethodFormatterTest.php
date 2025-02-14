@@ -17,10 +17,8 @@ use ReflectionMethod;
 use ReflectionObject;
 use stdClass;
 
-use function assert;
 use function basename;
 use function implode;
-use function is_string;
 use function preg_quote;
 use function sprintf;
 
@@ -306,7 +304,7 @@ class ReflectionMethodFormatterTest extends TestCase
                 (static function (): ReflectionMethod {
                     $object = new class
                     {
-                        public function lorem(): float|int|string
+                        public function lorem(): float|int|string // @phpstan-ignore-line
                         {
                             return 42;
                         }
@@ -328,7 +326,7 @@ class ReflectionMethodFormatterTest extends TestCase
                 (static function (): ReflectionMethod {
                     $object = new class
                     {
-                        public function lorem(): ?int
+                        public function lorem(): ?int // @phpstan-ignore-line
                         {
                             return 42;
                         }
@@ -350,7 +348,7 @@ class ReflectionMethodFormatterTest extends TestCase
                 (static function (): ReflectionMethod {
                     $object = new class
                     {
-                        public function lorem(): int|null
+                        public function lorem(): int|null // @phpstan-ignore-line
                         {
                             return 42;
                         }
@@ -428,7 +426,6 @@ class ReflectionMethodFormatterTest extends TestCase
         $formatted = $reflectionMethodFormatter->format($caster, $reflectionMethod);
 
         $this->assertIsString($formatted);
-        assert(is_string($formatted));
         $this->assertMatchesRegularExpression($expectedRegex, $formatted, $message);
     }
 

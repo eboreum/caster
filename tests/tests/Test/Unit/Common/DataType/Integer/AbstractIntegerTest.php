@@ -12,8 +12,6 @@ use Exception;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-use function assert;
-use function is_object;
 use function sprintf;
 
 #[CoversClass(AbstractInteger::class)]
@@ -46,7 +44,6 @@ class AbstractIntegerTest extends TestCase
 
             $currentException = $currentException->getPrevious();
             $this->assertIsObject($currentException);
-            assert(is_object($currentException)); // Make phpstan happy
             $this->assertSame(RuntimeException::class, $currentException::class);
             $this->assertSame(
                 'Argument $integer must be >= the minimum limit of 0, but it is not. Found: (int) -1',
@@ -79,7 +76,6 @@ class AbstractIntegerTest extends TestCase
 
             $currentException = $currentException->getPrevious();
             $this->assertIsObject($currentException);
-            assert(is_object($currentException)); // Make phpstan happy
             $this->assertSame(RuntimeException::class, $currentException::class);
             $this->assertSame(
                 'Argument $integer must be <= the maximum limit of -1, but it is not. Found: (int) 1',

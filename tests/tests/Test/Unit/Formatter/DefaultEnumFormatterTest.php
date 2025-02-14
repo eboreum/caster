@@ -14,9 +14,7 @@ use TestResource\Unit\Eboreum\Caster\Formatter\DefaultEnumFormatterTest\testBasi
 use TestResource\Unit\Eboreum\Caster\Formatter\DefaultEnumFormatterTest\testBasics\StringEnum;
 use TestResource\Unit\Eboreum\Caster\Formatter\DefaultEnumFormatterTest\testBasics\UntypedEnum;
 
-use function assert;
 use function implode;
-use function is_string;
 use function preg_quote;
 use function sprintf;
 
@@ -170,14 +168,12 @@ class DefaultEnumFormatterTest extends TestCase
 
         $formatted = $defaultEnumFormatter->format($caster, $enum);
         $this->assertIsString($formatted);
-        assert(is_string($formatted));
 
         $this->assertMatchesRegularExpression($expected, $formatted, $message);
 
         $caster = $caster->withIsPrependingType(true);
         $formatted = $defaultEnumFormatter->format($caster, $enum);
         $this->assertIsString($formatted);
-        assert(is_string($formatted));
 
         $this->assertMatchesRegularExpression($expectedWithType, $formatted, $message);
 
@@ -188,7 +184,6 @@ class DefaultEnumFormatterTest extends TestCase
 
         $formatted = $defaultEnumFormatter->format($caster, $enum);
         $this->assertIsString($formatted);
-        assert(is_string($formatted));
 
         $this->assertMatchesRegularExpression($expectedWithAppendedSplObjectHash, $formatted, $message);
     }
@@ -221,7 +216,6 @@ class DefaultEnumFormatterTest extends TestCase
         $this->assertFalse($defaultEnumFormatterA->isAppendingSplObjectHash());
         $formatted = $defaultEnumFormatterA->format($caster, $enum);
         $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
         $this->assertMatchesRegularExpression(
             sprintf(
                 implode('', [
@@ -239,7 +233,6 @@ class DefaultEnumFormatterTest extends TestCase
         $this->assertFalse($defaultEnumFormatterB->isAppendingSplObjectHash());
         $formatted = $defaultEnumFormatterB->format($caster, $enum);
         $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
         $this->assertMatchesRegularExpression(
             sprintf(
                 implode('', [
@@ -257,7 +250,6 @@ class DefaultEnumFormatterTest extends TestCase
         $this->assertTrue($defaultEnumFormatterC->isAppendingSplObjectHash());
         $formatted = $defaultEnumFormatterC->format($caster, $enum);
         $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
         $this->assertMatchesRegularExpression(
             sprintf(
                 implode('', [

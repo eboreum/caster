@@ -15,7 +15,6 @@ use PHPUnit\Framework\TestCase;
 use function assert;
 use function fopen;
 use function is_resource;
-use function is_string;
 
 #[CoversClass(AbstractResourceFormatter::class)]
 #[CoversClass(DefaultResourceFormatter::class)]
@@ -57,14 +56,12 @@ class DefaultResourceFormatterTest extends TestCase
 
         $formatted = $defaultResourceFormatter->format($caster, $resource);
         $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
 
         $this->assertMatchesRegularExpression($expected, $formatted, $message);
 
         $caster = $caster->withIsPrependingType(true);
         $formatted = $defaultResourceFormatter->format($caster, $resource);
         $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
 
         $this->assertMatchesRegularExpression($expectedWithType, $formatted, $message);
     }

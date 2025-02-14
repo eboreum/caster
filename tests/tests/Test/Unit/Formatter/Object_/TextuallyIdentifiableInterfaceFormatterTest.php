@@ -12,10 +12,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
-use function assert;
 use function basename;
 use function implode;
-use function is_string;
 use function preg_quote;
 use function sprintf;
 
@@ -58,7 +56,6 @@ class TextuallyIdentifiableInterfaceFormatterTest extends TestCase
         $this->assertTrue($textuallyIdentifiableInterfaceFormatter->isHandling($object));
         $formatted = $textuallyIdentifiableInterfaceFormatter->format($caster, $object);
         $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
         $this->assertMatchesRegularExpression(
             sprintf(
                 implode('', [

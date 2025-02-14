@@ -7,7 +7,6 @@ namespace Eboreum\Caster\Formatter;
 use Eboreum\Caster\Abstraction\Formatter\AbstractStringFormatter;
 use Eboreum\Caster\Contract\CasterInterface;
 
-use function array_values;
 use function array_walk;
 use function assert;
 use function implode;
@@ -28,7 +27,7 @@ class DefaultStringFormatter extends AbstractStringFormatter
         $string = preg_replace_callback(
             '/[\x00-\x1f\x7f]/',
             static function (array $matches): string {
-                return sprintf('\\x%02x', ord((string) ($matches[0] ?? '')));
+                return sprintf('\\x%02x', ord($matches[0]));
             },
             $string,
         );
@@ -131,8 +130,6 @@ class DefaultStringFormatter extends AbstractStringFormatter
         $lines = preg_split('/(\r?\n|\r)/', $string);
 
         assert(is_array($lines));
-
-        $lines = array_values($lines);
 
         array_walk($lines, static function (string &$line, int $index) use ($caster): void {
             if (0 === $index) {

@@ -38,7 +38,7 @@ class AssertionTest extends TestCase
         Assertion::assertIsString('');
         Assertion::assertIsString('foo');
 
-        $this->assertTrue(true);
+        $this->assertTrue(true); // @phpstan-ignore-line
     }
 
     #[DataProvider('providerTestAssertIsStringThrowsExceptionWhenValueIsNotAString')]

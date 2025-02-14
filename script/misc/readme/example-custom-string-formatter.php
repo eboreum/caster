@@ -6,11 +6,12 @@ use Eboreum\Caster\Abstraction\Formatter\AbstractStringFormatter;
 use Eboreum\Caster\Caster;
 use Eboreum\Caster\Collection\Formatter\StringFormatterCollection;
 use Eboreum\Caster\Contract\CasterInterface;
+use Eboreum\Caster\Contract\Formatter\StringFormatterInterface;
 
 require_once dirname(__DIR__, 2) . '/bootstrap.php'; // README.md.remove
 
-$caster = Caster::create();
-$caster = $caster->withCustomStringFormatterCollection(new StringFormatterCollection([
+/** @var array<StringFormatterInterface> $formatters */
+$formatters = [
     new class extends AbstractStringFormatter
     {
         public function format(CasterInterface $caster, string $string): ?string
@@ -31,7 +32,10 @@ $caster = $caster->withCustomStringFormatterCollection(new StringFormatterCollec
             return true;
         }
     },
-]));
+];
+
+$caster = Caster::create();
+$caster = $caster->withCustomStringFormatterCollection(new StringFormatterCollection($formatters));
 
 echo $caster->cast('What do we like?') . "\n";
 

@@ -23,9 +23,7 @@ use TestResource\Unit\Eboreum\Caster\Formatter\Object_\ReflectionAttributeFormat
 // phpcs:enable
 use TestResource\Unit\Eboreum\Caster\Formatter\Object_\ReflectionAttributeFormatterTest\testFormatWorksWithASensitiveNamedArgument\Attribute5773ba9c73ed11eeb9620242ac120002; // phpcs:ignore
 
-use function assert;
 use function implode;
-use function is_object;
 use function sprintf;
 
 #[CoversClass(ReflectionAttributeFormatter::class)]
@@ -53,7 +51,6 @@ class ReflectionAttributeFormatterTest extends TestCase
         );
 
         $this->assertIsObject($reflectionAttribute);
-        assert(is_object($reflectionAttribute));
 
         $this->assertTrue($reflectionAttributeFormatter->isHandling($reflectionAttribute));
         $this->assertSame(
@@ -84,7 +81,6 @@ class ReflectionAttributeFormatterTest extends TestCase
         );
 
         $this->assertIsObject($reflectionAttribute);
-        assert(is_object($reflectionAttribute));
 
         $this->assertTrue($reflectionAttributeFormatter->isHandling($reflectionAttribute));
         $this->assertSame(
@@ -134,7 +130,6 @@ class ReflectionAttributeFormatterTest extends TestCase
         );
 
         $this->assertIsObject($reflectionAttribute);
-        assert(is_object($reflectionAttribute));
 
         $this->assertTrue($reflectionAttributeFormatter->isHandling($reflectionAttribute));
         $this->assertSame(
@@ -189,7 +184,6 @@ class ReflectionAttributeFormatterTest extends TestCase
         );
 
         $this->assertIsObject($reflectionAttribute);
-        assert(is_object($reflectionAttribute));
 
         $this->assertTrue($reflectionAttributeFormatter->isHandling($reflectionAttribute));
         $this->assertSame(

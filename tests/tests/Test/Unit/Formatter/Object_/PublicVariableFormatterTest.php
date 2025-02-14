@@ -14,10 +14,8 @@ use ReflectionObject;
 use stdClass;
 use TestResource\Unit\Eboreum\Caster\Formatter\Object_\PublicVariableFormatterTest\testFormatWorksWhenObjectHasMultipleSameNamePublicVariables; // phpcs:ignore
 
-use function assert;
 use function basename;
 use function implode;
-use function is_string;
 use function preg_quote;
 use function sprintf;
 
@@ -78,7 +76,6 @@ class PublicVariableFormatterTest extends TestCase
         $this->assertTrue($publicVariableFormatter->isHandling($object));
         $formatted = $publicVariableFormatter->format($caster, $object);
         $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
         $this->assertMatchesRegularExpression(
             sprintf(
                 implode('', [
@@ -109,7 +106,6 @@ class PublicVariableFormatterTest extends TestCase
         $this->assertTrue($publicVariableFormatter->isHandling($object));
         $formatted = $publicVariableFormatter->format($caster, $object);
         $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
         $this->assertMatchesRegularExpression(
             sprintf(
                 implode('', [
@@ -141,7 +137,6 @@ class PublicVariableFormatterTest extends TestCase
         $this->assertTrue($publicVariableFormatter->isHandling($object));
         $formatted = $publicVariableFormatter->format($caster, $object);
         $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
         $this->assertMatchesRegularExpression(
             sprintf(
                 implode('', [
@@ -177,7 +172,6 @@ class PublicVariableFormatterTest extends TestCase
         $this->assertTrue($publicVariableFormatter->isHandling($object));
         $formatted = $publicVariableFormatter->format($caster, $object);
         $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
         $this->assertMatchesRegularExpression(
             sprintf(
                 implode('', [
@@ -207,7 +201,6 @@ class PublicVariableFormatterTest extends TestCase
         $this->assertTrue($publicVariableFormatter->isHandling($object));
         $formatted = $publicVariableFormatter->format($caster, $object);
         $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
         $this->assertMatchesRegularExpression(
             sprintf(
                 implode('', [
@@ -245,7 +238,6 @@ class PublicVariableFormatterTest extends TestCase
         $this->assertTrue($publicVariableFormatter->isHandling($object));
         $formatted = $publicVariableFormatter->format($caster, $object);
         $this->assertIsString($formatted);
-        assert(is_string($formatted)); // Make phpstan happy
         $this->assertSame(
             sprintf(
                 implode("\n", [

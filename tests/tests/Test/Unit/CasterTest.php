@@ -32,7 +32,11 @@ use Eboreum\Caster\Common\DataType\String_\Character;
 use Eboreum\Caster\Contract\Caster\ContextInterface;
 use Eboreum\Caster\Contract\CasterInterface;
 use Eboreum\Caster\Contract\DebugIdentifierAttributeInterface;
+use Eboreum\Caster\Contract\Formatter\ArrayFormatterInterface;
 use Eboreum\Caster\Contract\Formatter\EnumFormatterInterface;
+use Eboreum\Caster\Contract\Formatter\ObjectFormatterInterface;
+use Eboreum\Caster\Contract\Formatter\ResourceFormatterInterface;
+use Eboreum\Caster\Contract\Formatter\StringFormatterInterface;
 use Eboreum\Caster\Contract\TextuallyIdentifiableInterface;
 use Eboreum\Caster\EncryptedString;
 use Eboreum\Caster\Exception\CasterException;
@@ -188,12 +192,11 @@ class CasterTest extends TestCase
                 ]),
                 (new DateTimeImmutable('2020-01-01 00:00:00'))->diff(new DateTimeImmutable('2021-02-03 12:34:56')),
                 (static function () {
+                    /** @var array<ObjectFormatterInterface> $formatters */
+                    $formatters = [new DateIntervalFormatter()];
+
                     $caster = Caster::create();
-                    $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection([
-                            new DateIntervalFormatter(),
-                        ]),
-                    );
+                    $caster = $caster->withCustomObjectFormatterCollection(new ObjectFormatterCollection($formatters));
 
                     return $caster;
                 })(),
@@ -218,12 +221,11 @@ class CasterTest extends TestCase
                     new DateTimeImmutable('2021-02-03 12:34:56'),
                 ),
                 (static function () {
+                    /** @var array<ObjectFormatterInterface> $formatters */
+                    $formatters = [new DatePeriodFormatter()];
+
                     $caster = Caster::create();
-                    $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection([
-                            new DatePeriodFormatter(),
-                        ]),
-                    );
+                    $caster = $caster->withCustomObjectFormatterCollection(new ObjectFormatterCollection($formatters));
 
                     return $caster;
                 })(),
@@ -239,12 +241,11 @@ class CasterTest extends TestCase
                 ]),
                 new DateTimeImmutable('2021-02-03 12:34:56+00:00'),
                 (static function () {
+                    /** @var array<ObjectFormatterInterface> $formatters */
+                    $formatters = [new DateTimeInterfaceFormatter()];
+
                     $caster = Caster::create();
-                    $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection([
-                            new DateTimeInterfaceFormatter(),
-                        ]),
-                    );
+                    $caster = $caster->withCustomObjectFormatterCollection(new ObjectFormatterCollection($formatters));
 
                     return $caster;
                 })(),
@@ -261,12 +262,11 @@ class CasterTest extends TestCase
                     private string $foo = 'bar'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
                 },
                 (static function () {
+                    /** @var array<ObjectFormatterInterface> $formatters */
+                    $formatters = [new DebugIdentifierAttributeInterfaceFormatter()];
+
                     $caster = Caster::create();
-                    $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection([
-                            new DebugIdentifierAttributeInterfaceFormatter(),
-                        ]),
-                    );
+                    $caster = $caster->withCustomObjectFormatterCollection(new ObjectFormatterCollection($formatters));
 
                     return $caster;
                 })(),
@@ -276,12 +276,11 @@ class CasterTest extends TestCase
                 '/^\\\\Directory \{\$path = ".+"\}$/',
                 dir(__DIR__),
                 (static function () {
+                    /** @var array<ObjectFormatterInterface> $formatters */
+                    $formatters = [new DirectoryFormatter()];
+
                     $caster = Caster::create();
-                    $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection([
-                            new DirectoryFormatter(),
-                        ]),
-                    );
+                    $caster = $caster->withCustomObjectFormatterCollection(new ObjectFormatterCollection($formatters));
 
                     return $caster;
                 })(),
@@ -313,12 +312,11 @@ class CasterTest extends TestCase
                     protected array $bim = []; // phpcs:ignore
                 },
                 (static function () {
+                    /** @var array<ObjectFormatterInterface> $formatters */
+                    $formatters = [new PublicVariableFormatter()];
+
                     $caster = Caster::create();
-                    $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection([
-                            new PublicVariableFormatter(),
-                        ]),
-                    );
+                    $caster = $caster->withCustomObjectFormatterCollection(new ObjectFormatterCollection($formatters));
 
                     return $caster;
                 })(),
@@ -334,12 +332,11 @@ class CasterTest extends TestCase
                 ]),
                 new SplFileObject(__FILE__),
                 (static function () {
+                    /** @var array<ObjectFormatterInterface> $formatters */
+                    $formatters = [new SplFileInfoFormatter()];
+
                     $caster = Caster::create();
-                    $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection([
-                            new SplFileInfoFormatter(),
-                        ]),
-                    );
+                    $caster = $caster->withCustomObjectFormatterCollection(new ObjectFormatterCollection($formatters));
 
                     return $caster;
                 })(),
@@ -358,12 +355,11 @@ class CasterTest extends TestCase
                     }
                 },
                 (static function () {
+                    /** @var array<ObjectFormatterInterface> $formatters */
+                    $formatters = [new TextuallyIdentifiableInterfaceFormatter()];
+
                     $caster = Caster::create();
-                    $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection([
-                            new TextuallyIdentifiableInterfaceFormatter(),
-                        ]),
-                    );
+                    $caster = $caster->withCustomObjectFormatterCollection(new ObjectFormatterCollection($formatters));
 
                     return $caster;
                 })(),
@@ -402,12 +398,11 @@ class CasterTest extends TestCase
                     return new Exception('a', 0, $b);
                 })(),
                 (static function () {
+                    /** @var array<ObjectFormatterInterface> $formatters */
+                    $formatters = [new ThrowableFormatter()];
+
                     $caster = Caster::create();
-                    $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection([
-                            new ThrowableFormatter(),
-                        ]),
-                    );
+                    $caster = $caster->withCustomObjectFormatterCollection(new ObjectFormatterCollection($formatters));
 
                     return $caster;
                 })(),
@@ -428,14 +423,14 @@ class CasterTest extends TestCase
                 $class = new class extends DateTime
                 {
                 };
+
                 class_alias($class::class, 'FooBar_9f8a3c814a1d42dda2672abede7ce454');
 
+                /** @var array<ObjectFormatterInterface> $formatters */
+                $formatters = [new DateTimeInterfaceFormatter()];
+
                 $caster = Caster::create();
-                $caster = $caster->withCustomObjectFormatterCollection(
-                    new ObjectFormatterCollection([
-                        new DateTimeInterfaceFormatter(),
-                    ]),
-                );
+                $caster = $caster->withCustomObjectFormatterCollection(new ObjectFormatterCollection($formatters));
 
                 return [
                     'class_alias(...) works.',
@@ -703,11 +698,12 @@ class CasterTest extends TestCase
                 ]),
                 (new DateTimeImmutable('2020-01-01 00:00:00'))->diff(new DateTimeImmutable('2021-02-03 12:34:56')),
                 (static function () {
+                    /** @var array<ObjectFormatterInterface> $formatters */
+                    $formatters = [new DateIntervalFormatter()];
+
                     $caster = Caster::create();
                     $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection([
-                            new DateIntervalFormatter(),
-                        ]),
+                        new ObjectFormatterCollection($formatters),
                     );
 
                     return $caster;
@@ -733,11 +729,12 @@ class CasterTest extends TestCase
                     new DateTimeImmutable('2021-02-03 12:34:56'),
                 ),
                 (static function () {
+                    /** @var array<ObjectFormatterInterface> $formatters */
+                    $formatters = [new DatePeriodFormatter()];
+
                     $caster = Caster::create();
                     $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection([
-                            new DatePeriodFormatter(),
-                        ]),
+                        new ObjectFormatterCollection($formatters),
                     );
 
                     return $caster;
@@ -754,11 +751,12 @@ class CasterTest extends TestCase
                 ]),
                 new DateTimeImmutable('2021-02-03 12:34:56+00:00'),
                 (static function () {
+                    /** @var array<ObjectFormatterInterface> $formatters */
+                    $formatters = [new DateTimeInterfaceFormatter()];
+
                     $caster = Caster::create();
                     $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection([
-                            new DateTimeInterfaceFormatter(),
-                        ]),
+                        new ObjectFormatterCollection($formatters),
                     );
 
                     return $caster;
@@ -776,11 +774,12 @@ class CasterTest extends TestCase
                     private string $foo = 'bar'; // @phpstan-ignore-line Suppression code babdc1d2; see README.md
                 },
                 (static function () {
+                    /** @var array<ObjectFormatterInterface> $formatters */
+                    $formatters = [new DebugIdentifierAttributeInterfaceFormatter()];
+
                     $caster = Caster::create();
                     $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection([
-                            new DebugIdentifierAttributeInterfaceFormatter(),
-                        ]),
+                        new ObjectFormatterCollection($formatters),
                     );
 
                     return $caster;
@@ -791,11 +790,12 @@ class CasterTest extends TestCase
                 '/^\(object\) \\\\Directory \{\$path = \(string\(\d+\)\) ".+"\}$/',
                 dir(__DIR__),
                 (static function () {
+                    /** @var array<ObjectFormatterInterface> $formatters */
+                    $formatters = [new DirectoryFormatter()];
+
                     $caster = Caster::create();
                     $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection([
-                            new DirectoryFormatter(),
-                        ]),
+                        new ObjectFormatterCollection($formatters),
                     );
 
                     return $caster;
@@ -828,11 +828,12 @@ class CasterTest extends TestCase
                     protected array $bim = []; // phpcs:ignore
                 },
                 (static function () {
+                    /** @var array<ObjectFormatterInterface> $formatters */
+                    $formatters = [new PublicVariableFormatter()];
+
                     $caster = Caster::create();
                     $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection([
-                            new PublicVariableFormatter(),
-                        ]),
+                        new ObjectFormatterCollection($formatters),
                     );
 
                     return $caster;
@@ -849,11 +850,12 @@ class CasterTest extends TestCase
                 ]),
                 new SplFileObject(__FILE__),
                 (static function () {
+                    /** @var array<ObjectFormatterInterface> $formatters */
+                    $formatters = [new SplFileInfoFormatter()];
+
                     $caster = Caster::create();
                     $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection([
-                            new SplFileInfoFormatter(),
-                        ]),
+                        new ObjectFormatterCollection($formatters),
                     );
 
                     return $caster;
@@ -873,11 +875,12 @@ class CasterTest extends TestCase
                     }
                 },
                 (static function () {
+                    /** @var array<ObjectFormatterInterface> $formatters */
+                    $formatters = [new TextuallyIdentifiableInterfaceFormatter()];
+
                     $caster = Caster::create();
                     $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection([
-                            new TextuallyIdentifiableInterfaceFormatter(),
-                        ]),
+                        new ObjectFormatterCollection($formatters),
                     );
 
                     return $caster;
@@ -917,11 +920,12 @@ class CasterTest extends TestCase
                     return new Exception('a', 0, $b);
                 })(),
                 (static function () {
+                    /** @var array<ObjectFormatterInterface> $formatters */
+                    $formatters = [new ThrowableFormatter()];
+
                     $caster = Caster::create();
                     $caster = $caster->withCustomObjectFormatterCollection(
-                        new ObjectFormatterCollection([
-                            new ThrowableFormatter(),
-                        ]),
+                        new ObjectFormatterCollection($formatters),
                     );
 
                     return $caster;
@@ -1041,10 +1045,11 @@ class CasterTest extends TestCase
                     public int $foo = 42;
                 };
 
+                                /** @var array<ObjectFormatterInterface> $formatters */
+                                $formatters = [new PublicVariableFormatter()];
+
                 $caster = Caster::create()->withCustomObjectFormatterCollection(
-                    new ObjectFormatterCollection([
-                        new PublicVariableFormatter(),
-                    ]),
+                    new ObjectFormatterCollection($formatters),
                 );
 
                 return [
@@ -1083,17 +1088,15 @@ class CasterTest extends TestCase
                     }
                 };
 
-                $caster = Caster::create()->withCustomObjectFormatterCollection(
-                    new ObjectFormatterCollection([
-                        new PublicVariableFormatter(),
-                    ]),
-                );
+                /** @var array<ObjectFormatterInterface> $formatters */
+                $formatters = [new PublicVariableFormatter()];
 
-                assert(property_exists($object, 'foo'));
+                $caster = Caster::create()->withCustomObjectFormatterCollection(
+                    new ObjectFormatterCollection($formatters),
+                );
 
                 $foo = $object->foo;
 
-                assert(is_object($foo));
                 assert(property_exists($foo, 'bar'));
 
                 $bar = $foo->bar;
@@ -1125,11 +1128,14 @@ class CasterTest extends TestCase
                 '\\Closure(): void',
                 static function (): void {
                 },
-                Caster::create()->withCustomObjectFormatterCollection(
-                    new ObjectFormatterCollection([
-                        new ClosureFormatter(),
-                    ]),
-                ),
+                (static function (): Caster {
+                    /** @var array<ObjectFormatterInterface> $formatters */
+                    $formatters = [new ClosureFormatter()];
+
+                    return Caster::create()->withCustomObjectFormatterCollection(
+                        new ObjectFormatterCollection($formatters),
+                    );
+                })(),
             ],
             [
                 'A Closure with 3 arguments.',
@@ -1142,18 +1148,24 @@ class CasterTest extends TestCase
                 ]),
                 static function (int $a, float $b, bool $c): void {
                 },
-                Caster::create()->withCustomObjectFormatterCollection(
-                    new ObjectFormatterCollection([
-                        new ClosureFormatter(),
-                    ]),
-                ),
+                (static function (): Caster {
+                    /** @var array<ObjectFormatterInterface> $formatters */
+                    $formatters = [new ClosureFormatter()];
+
+                    return Caster::create()->withCustomObjectFormatterCollection(
+                        new ObjectFormatterCollection($formatters),
+                    );
+                })(),
             ],
             (static function (): array {
+                /** @var array<ObjectFormatterInterface> $formatters */
+                $formatters = [
+                    new PublicVariableFormatter(),
+                    new ClosureFormatter(),
+                ];
+
                 $caster = Caster::create()->withCustomObjectFormatterCollection(
-                    new ObjectFormatterCollection([
-                        new PublicVariableFormatter(),
-                        new ClosureFormatter(),
-                    ]),
+                    new ObjectFormatterCollection($formatters),
                 );
 
                 $object = new class
@@ -1468,8 +1480,7 @@ class CasterTest extends TestCase
             $reflectionClass->getAttributes(Attributef982a9e0c18911edafa10242ac120002::class)[0] ?? null
         );
 
-        $this->assertIsObject($reflectionAttribute);
-        assert(is_object($reflectionAttribute));
+        $this->assertIsObject($reflectionAttribute); // @phpstan-ignore-line
 
         $this->assertSame(
             sprintf(
@@ -1572,7 +1583,6 @@ class CasterTest extends TestCase
         $reflectionProperty = new ReflectionProperty(EncryptedString::class, 'salt');
 
         $this->assertIsObject($reflectionProperty->getType());
-        assert(is_object($reflectionProperty->getType()));
 
         $this->assertSame(
             'string',
@@ -1844,7 +1854,9 @@ class CasterTest extends TestCase
     public function testCastWorksWithCustomFormatters(): void
     {
         $caster = Caster::create();
-        $caster = $caster->withCustomArrayFormatterCollection(new ArrayFormatterCollection([
+
+        /** @var array<ArrayFormatterInterface> $arrayFormatters */
+        $arrayFormatters = [
             new class extends AbstractArrayFormatter
             {
                 /**
@@ -1869,8 +1881,12 @@ class CasterTest extends TestCase
                     return array_key_exists('replaceme', $array);
                 }
             },
-        ]));
-        $caster = $caster->withCustomEnumFormatterCollection(new EnumFormatterCollection([
+        ];
+
+        $caster = $caster->withCustomArrayFormatterCollection(new ArrayFormatterCollection($arrayFormatters));
+
+        /** @var array<EnumFormatterInterface> $enumFormatters */
+        $enumFormatters = [
             new class extends AbstractObjectFormatter implements EnumFormatterInterface
             {
                 public function format(CasterInterface $caster, object $enum): ?string
@@ -1905,8 +1921,12 @@ class CasterTest extends TestCase
                     return false;
                 }
             },
-        ]));
-        $caster = $caster->withCustomObjectFormatterCollection(new ObjectFormatterCollection([
+        ];
+
+        $caster = $caster->withCustomEnumFormatterCollection(new EnumFormatterCollection($enumFormatters));
+
+        /** @var array<ObjectFormatterInterface> $objectFormatters */
+        $objectFormatters = [
             new class extends AbstractObjectFormatter
             {
                 public function format(CasterInterface $caster, object $object): ?string
@@ -1954,8 +1974,12 @@ class CasterTest extends TestCase
                     return ($object instanceof Throwable);
                 }
             },
-        ]));
-        $caster = $caster->withCustomResourceFormatterCollection(new ResourceFormatterCollection([
+        ];
+
+        $caster = $caster->withCustomObjectFormatterCollection(new ObjectFormatterCollection($objectFormatters));
+
+        /** @var array<ResourceFormatterInterface> $resourceFormatters */
+        $resourceFormatters = [
             new class extends AbstractResourceFormatter
             {
                 public function format(CasterInterface $caster, Resource_ $resource): ?string
@@ -1972,8 +1996,12 @@ class CasterTest extends TestCase
                     return ('stream' === get_resource_type($resource->getResource()));
                 }
             },
-        ]));
-        $caster = $caster->withCustomStringFormatterCollection(new StringFormatterCollection([
+        ];
+
+        $caster = $caster->withCustomResourceFormatterCollection(new ResourceFormatterCollection($resourceFormatters));
+
+        /** @var array<StringFormatterInterface> $stringFormatters */
+        $stringFormatters = [
             new class extends AbstractStringFormatter
             {
                 public function format(CasterInterface $caster, string $string): ?string
@@ -1990,7 +2018,10 @@ class CasterTest extends TestCase
                     return ('foo' === $string);
                 }
             },
-        ]));
+        ];
+
+        $caster = $caster->withCustomStringFormatterCollection(new StringFormatterCollection($stringFormatters));
+
         $this->assertSame('[0 => 1]', $caster->cast([1]));
         $this->assertSame('["replaceme" => "replaced"]', $caster->cast(['replaceme' => 'original']));
         $this->assertSame(
@@ -2435,26 +2466,29 @@ class CasterTest extends TestCase
         $casterA = Caster::create();
         $arrayFormatterCollectionA = $casterA->getCustomArrayFormatterCollection();
 
-        $arrayFormatterCollectionB = new ArrayFormatterCollection([
-        new class extends AbstractArrayFormatter
-            {
-                /**
-                 * {@inheritDoc}
-                 */
-            public function format(CasterInterface $caster, array $array): ?string
-            {
-                return null;
-            }
+        /** @var array<ArrayFormatterInterface> $formatters */
+        $formatters = [
+            new class extends AbstractArrayFormatter
+                {
+                    /**
+                     * {@inheritDoc}
+                     */
+                public function format(CasterInterface $caster, array $array): ?string
+                {
+                    return null;
+                }
 
-                /**
-                 * {@inheritDoc}
-                 */
-            public function isHandling(array $array): bool
-            {
-                return true;
-            }
-        },
-        ]);
+                    /**
+                     * {@inheritDoc}
+                     */
+                public function isHandling(array $array): bool
+                {
+                    return true;
+                }
+            },
+        ];
+
+        $arrayFormatterCollectionB = new ArrayFormatterCollection($formatters);
         $casterB = $casterA->withCustomArrayFormatterCollection($arrayFormatterCollectionB);
 
         $this->assertNotSame($casterA, $casterB);
@@ -2485,20 +2519,23 @@ class CasterTest extends TestCase
         $casterA = Caster::create();
         $enumFormatterCollectionA = $casterA->getCustomEnumFormatterCollection();
 
-        $enumFormatterCollectionB = new EnumFormatterCollection([
-        new class extends AbstractEnumFormatter
-            {
-            public function format(CasterInterface $caster, object $enum): ?string
-            {
-                return null;
-            }
+        /** @var array<EnumFormatterInterface> $formatters */
+        $formatters = [
+            new class extends AbstractEnumFormatter
+                {
+                public function format(CasterInterface $caster, object $enum): ?string
+                {
+                    return null;
+                }
 
-            public function isHandling(object $enum): bool
-            {
-                return Functions::isEnum($enum);
-            }
-        },
-        ]);
+                public function isHandling(object $enum): bool
+                {
+                    return Functions::isEnum($enum);
+                }
+            },
+        ];
+
+        $enumFormatterCollectionB = new EnumFormatterCollection($formatters);
         $casterB = $casterA->withCustomEnumFormatterCollection($enumFormatterCollectionB);
 
         $this->assertNotSame($casterA, $casterB);
@@ -2529,20 +2566,24 @@ class CasterTest extends TestCase
         $casterA = Caster::create();
         $objectFormatterCollectionA = $casterA->getCustomObjectFormatterCollection();
 
-        $formatter = new class extends AbstractObjectFormatter
-        {
-            public function format(CasterInterface $caster, object $object): ?string
+        /** @var array<ObjectFormatterInterface> $formatters */
+        $formatters = [
+            new class extends AbstractObjectFormatter
             {
-                return null;
-            }
+                public function format(CasterInterface $caster, object $object): ?string
+                {
+                    return null;
+                }
 
-            public function isHandling(object $object): bool
-            {
-                return true;
-            }
-        };
+                public function isHandling(object $object): bool
+                {
+                    return true;
+                }
+            },
+        ];
 
-        $objectFormatterCollectionB = new ObjectFormatterCollection([$formatter]);
+        $objectFormatterCollectionB = new ObjectFormatterCollection($formatters);
+
         $casterB = $casterA->withCustomObjectFormatterCollection($objectFormatterCollectionB);
 
         $this->assertNotSame($casterA, $casterB);
@@ -2573,20 +2614,24 @@ class CasterTest extends TestCase
         $casterA = Caster::create();
         $resourceFormatterCollectionA = $casterA->getCustomResourceFormatterCollection();
 
-        $resourceFormatterCollectionB = new ResourceFormatterCollection([
-        new class extends AbstractResourceFormatter
-            {
-            public function format(CasterInterface $caster, Resource_ $resource): ?string
-            {
-                return null;
-            }
+        /** @var array<ResourceFormatterInterface> $formatters */
+        $formatters = [
+            new class extends AbstractResourceFormatter
+                {
+                public function format(CasterInterface $caster, Resource_ $resource): ?string
+                {
+                    return null;
+                }
 
-            public function isHandling(Resource_ $resource): bool
-            {
-                return true;
-            }
-        },
-        ]);
+                public function isHandling(Resource_ $resource): bool
+                {
+                    return true;
+                }
+            },
+        ];
+
+        $resourceFormatterCollectionB = new ResourceFormatterCollection($formatters);
+
         $casterB = $casterA->withCustomResourceFormatterCollection($resourceFormatterCollectionB);
 
         $this->assertNotSame($casterA, $casterB);
@@ -2617,20 +2662,23 @@ class CasterTest extends TestCase
         $casterA = Caster::create();
         $stringFormatterCollectionA = $casterA->getCustomStringFormatterCollection();
 
-        $stringFormatterCollectionB = new StringFormatterCollection([
-        new class extends AbstractStringFormatter
-            {
-            public function format(CasterInterface $caster, string $string): ?string
-            {
-                return null;
-            }
+        /** @var array<StringFormatterInterface> $formatters */
+        $formatters = [
+            new class extends AbstractStringFormatter
+                {
+                public function format(CasterInterface $caster, string $string): ?string
+                {
+                    return null;
+                }
 
-            public function isHandling(string $string): bool
-            {
-                return true;
-            }
-        },
-        ]);
+                public function isHandling(string $string): bool
+                {
+                    return true;
+                }
+            },
+        ];
+
+        $stringFormatterCollectionB = new StringFormatterCollection($formatters);
         $casterB = $casterA->withCustomStringFormatterCollection($stringFormatterCollectionB);
 
         $this->assertNotSame($casterA, $casterB);
@@ -2891,7 +2939,6 @@ class CasterTest extends TestCase
 
             $currentException = $currentException->getPrevious();
             $this->assertIsObject($currentException);
-            assert(is_object($currentException)); // Make phpstan happy
             $this->assertSame(CasterException::class, $currentException::class);
             $this->assertMatchesRegularExpression(
                 implode('', [
@@ -2941,7 +2988,6 @@ class CasterTest extends TestCase
 
             $currentException = $currentException->getPrevious();
             $this->assertIsObject($currentException);
-            assert(is_object($currentException)); // Make phpstan happy
             $this->assertSame(CasterException::class, $currentException::class);
             $this->assertMatchesRegularExpression(
                 implode('', [
@@ -2992,7 +3038,6 @@ class CasterTest extends TestCase
 
             $currentException = $currentException->getPrevious();
             $this->assertIsObject($currentException);
-            assert(is_object($currentException)); // Make phpstan happy
             $this->assertSame(CasterException::class, $currentException::class);
             $this->assertMatchesRegularExpression(
                 implode('', [
@@ -3084,7 +3129,6 @@ class CasterTest extends TestCase
 
             $currentException = $currentException->getPrevious();
             $this->assertIsObject($currentException);
-            assert(is_object($currentException)); // Make phpstan happy
             $this->assertSame(CasterException::class, $currentException::class);
             $this->assertMatchesRegularExpression(
                 sprintf(
