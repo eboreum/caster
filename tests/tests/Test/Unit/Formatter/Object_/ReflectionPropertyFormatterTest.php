@@ -11,7 +11,6 @@ use Eboreum\Caster\Formatter\Object_\ReflectionPropertyFormatter;
 use Eboreum\Caster\Formatter\Object_\ReflectionTypeFormatter;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use ReflectionObject;
 use ReflectionProperty;
@@ -160,7 +159,7 @@ class ReflectionPropertyFormatterTest extends TestCase
     {
         $reflectionPropertyFormatterA = new ReflectionPropertyFormatter();
         $reflectionTypeFormatterA = $reflectionPropertyFormatterA->getReflectionTypeFormatter();
-        $reflectionTypeFormatterB = $this->mockReflectionTypeFormatter();
+        $reflectionTypeFormatterB = $this->createMock(ReflectionTypeFormatter::class);
         $reflectionPropertyFormatterB = $reflectionPropertyFormatterA
             ->withReflectionTypeFormatter($reflectionTypeFormatterB);
 
@@ -177,13 +176,5 @@ class ReflectionPropertyFormatterTest extends TestCase
             $reflectionTypeFormatterB,
             $reflectionPropertyFormatterB->getReflectionTypeFormatter(),
         );
-    }
-
-    private function mockReflectionTypeFormatter(): ReflectionTypeFormatter&MockObject
-    {
-        return $this
-            ->getMockBuilder(ReflectionTypeFormatter::class)
-            ->disableOriginalConstructor()
-            ->getMock();
     }
 }

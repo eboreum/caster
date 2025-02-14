@@ -12,7 +12,6 @@ use Eboreum\Caster\Formatter\Object_\ReflectionParameterFormatter;
 use Eboreum\Caster\Formatter\Object_\ReflectionTypeFormatter;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 use ReflectionObject;
@@ -495,7 +494,7 @@ class ReflectionMethodFormatterTest extends TestCase
     {
         $reflectionMethodFormatterA = new ReflectionMethodFormatter();
         $reflectionParameterFormatterA = $reflectionMethodFormatterA->getReflectionParameterFormatter();
-        $reflectionParameterFormatterB = $this->mockReflectionParameterFormatter();
+        $reflectionParameterFormatterB = $this->createMock(ReflectionParameterFormatter::class);
         $reflectionMethodFormatterB = $reflectionMethodFormatterA
             ->withReflectionParameterFormatter($reflectionParameterFormatterB);
 
@@ -518,7 +517,7 @@ class ReflectionMethodFormatterTest extends TestCase
     {
         $reflectionMethodFormatterA = new ReflectionMethodFormatter();
         $reflectionTypeFormatterA = $reflectionMethodFormatterA->getReflectionTypeFormatter();
-        $reflectionTypeFormatterB = $this->mockReflectionTypeFormatter();
+        $reflectionTypeFormatterB = $this->createMock(ReflectionTypeFormatter::class);
         $reflectionMethodFormatterB = $reflectionMethodFormatterA
             ->withReflectionTypeFormatter($reflectionTypeFormatterB);
 
@@ -535,21 +534,5 @@ class ReflectionMethodFormatterTest extends TestCase
             $reflectionTypeFormatterB,
             $reflectionMethodFormatterB->getReflectionTypeFormatter(),
         );
-    }
-
-    private function mockReflectionParameterFormatter(): ReflectionParameterFormatter&MockObject
-    {
-        return $this
-            ->getMockBuilder(ReflectionParameterFormatter::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-    }
-
-    private function mockReflectionTypeFormatter(): ReflectionTypeFormatter&MockObject
-    {
-        return $this
-            ->getMockBuilder(ReflectionTypeFormatter::class)
-            ->disableOriginalConstructor()
-            ->getMock();
     }
 }

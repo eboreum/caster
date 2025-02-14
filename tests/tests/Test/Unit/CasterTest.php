@@ -58,7 +58,6 @@ use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use ReflectionAttribute;
 use ReflectionClass;
@@ -2290,7 +2289,7 @@ class CasterTest extends TestCase
         $caster = Caster::create();
         $object = new stdClass();
 
-        $context = $this->mockContextInterface();
+        $context = $this->createMock(ContextInterface::class);
 
         $context
             ->expects($this->exactly(2))
@@ -3145,16 +3144,5 @@ class CasterTest extends TestCase
             $expectedRegex,
             Caster::makeNormalizedClassName(new ReflectionObject($object)),
         );
-    }
-
-    /**
-     * @return ContextInterface&MockObject
-     */
-    private function mockContextInterface(): ContextInterface
-    {
-        return $this
-            ->getMockBuilder(ContextInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
     }
 }

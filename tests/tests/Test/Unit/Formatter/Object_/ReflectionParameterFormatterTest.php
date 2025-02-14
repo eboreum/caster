@@ -14,7 +14,6 @@ use Eboreum\Caster\Formatter\Object_\ReflectionTypeFormatter;
 use Exception;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use ReflectionFunction;
 use ReflectionMethod;
@@ -402,7 +401,7 @@ class ReflectionParameterFormatterTest extends TestCase
     {
         $caster = Caster::create();
         $reflectionParameterFormatter = new ReflectionParameterFormatter();
-        $reflectionParameter = $this->mockReflectionParameter();
+        $reflectionParameter = $this->createMock(ReflectionParameter::class);
 
         $reflectionParameter
             ->expects($this->once())
@@ -486,7 +485,7 @@ class ReflectionParameterFormatterTest extends TestCase
     {
         $reflectionParameterFormatterA = new ReflectionParameterFormatter();
         $reflectionTypeFormatterA = $reflectionParameterFormatterA->getReflectionTypeFormatter();
-        $reflectionTypeFormatterB = $this->mockReflectionTypeFormatter();
+        $reflectionTypeFormatterB = $this->createMock(ReflectionTypeFormatter::class);
         $reflectionParameterFormatterB = $reflectionParameterFormatterA
             ->withReflectionTypeFormatter($reflectionTypeFormatterB);
 
@@ -517,21 +516,5 @@ class ReflectionParameterFormatterTest extends TestCase
         int $foo = self::TEST_CONSTANT_2330CD52C3D911EDAFA10242AC120002,
     ): int {
         return $foo;
-    }
-
-    private function mockReflectionParameter(): ReflectionParameter&MockObject
-    {
-        return $this
-            ->getMockBuilder(ReflectionParameter::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-    }
-
-    private function mockReflectionTypeFormatter(): ReflectionTypeFormatter&MockObject
-    {
-        return $this
-            ->getMockBuilder(ReflectionTypeFormatter::class)
-            ->disableOriginalConstructor()
-            ->getMock();
     }
 }
