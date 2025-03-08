@@ -301,6 +301,14 @@ We prefer that you create a ticket and or a pull request at https://github.com/e
 
 Please do **not** require https://packagist.org/packages/eboreum/exceptional back into this project. We do not want a bidirectional dependency as eboreum/exceptional utilizes eboreum/caster.
 
+## Branch rules
+
+[`main`](https://github.com/eboreum/caster/tree/main) = `2.x` (not a tag)
+
+Previous branches:
+
+- [`1.x`](https://github.com/eboreum/caster/tree/1.x)
+
 # Credits
 
 ## Authors
