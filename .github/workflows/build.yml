@@ -97,7 +97,7 @@ jobs:
           label: PHPStan Level
           message: ${{ env.PHPSTAN_LEVEL }}
           valColorRange: ${{ env.PHPSTAN_LEVEL }}
-          maxColorRange: 9
+          maxColorRange: 10
           minColorRange: 0
 
       - name: "PHP ${{ matrix.php-version }}: Run phpcs"
