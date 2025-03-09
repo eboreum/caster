@@ -28,6 +28,8 @@ assert(is_array($split));
 
 foreach ($split as $i => &$line) {
     if ('%composer.json.description%' === trim($line)) {
+        assert(is_string($composerJsonArray['description'] ?? null));
+
         $line = (
             $composerJsonArray['description']
             . "\n"
@@ -40,11 +42,19 @@ foreach ($split as $i => &$line) {
     }
 
     if ('%composer.json.authors%' === trim($line)) {
+        assert(is_array($composerJsonArray['authors'] ?? null));
+
         $segments = [];
+
         foreach ($composerJsonArray['authors'] as $author) {
+            assert(is_array($author));
+            assert(is_string($author['name']));
+
             $homepageURL = null;
 
             if (array_key_exists('homepage', $author)) {
+                assert(is_string($author['homepage']));
+
                 $homepageURL = $author['homepage'];
             }
 
@@ -56,7 +66,7 @@ foreach ($split as $i => &$line) {
                         '/^%s\/(\w+)/',
                         preg_quote('https://github.com', '/'),
                     ),
-                    $author['homepage'],
+                    $homepageURL,
                     $match,
                 );
 
@@ -69,6 +79,8 @@ foreach ($split as $i => &$line) {
             }
 
             if (array_key_exists('email', $author)) {
+                assert(is_string($author['email']));
+
                 $segment .= '<br>E-mail: ' . sprintf(
                     '<a href="mailto:%s">%s</a>',
                     $author['email'],
@@ -103,6 +115,7 @@ foreach ($split as $i => &$line) {
         $composerJsonArrayKey = $match[1];
 
         assert(array_key_exists($composerJsonArrayKey, $composerJsonArray));
+        assert(is_array($composerJsonArray[$composerJsonArrayKey]));
 
         foreach ($composerJsonArray[$composerJsonArrayKey] as $requireName => $requireVersion) {
             assert(is_string($requireName));
