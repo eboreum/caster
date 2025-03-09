@@ -1791,6 +1791,28 @@ class CasterTest extends TestCase
         );
     }
 
+    public function testCastWorksWithEmptyArrayAndWrapping(): void
+    {
+        $caster = Caster::create();
+        $caster = $caster->withIsWrapping(true);
+
+        $this->assertSame(
+            '[]',
+            $caster->cast([]),
+        );
+
+        $this->assertSame(
+            implode("\n", [
+                '[',
+                '    0 => 1,',
+                '    1 => 2,',
+                '    2 => 3',
+                ']',
+            ]),
+            $caster->cast([1, 2, 3]),
+        );
+    }
+
     public function testCastWillCorrectlyMaskArrayKeys(): void
     {
         $caster = Caster::create();

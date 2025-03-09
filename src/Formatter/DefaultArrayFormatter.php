@@ -53,7 +53,7 @@ class DefaultArrayFormatter extends AbstractArrayFormatter
                 );
             }
 
-            if ($caster->isWrapping()) {
+            if ($array && $caster->isWrapping()) {
                 array_walk($segments, static function (string &$segment) use ($caster): void {
                     $segment = $caster->getWrappingIndentationCharacters() . $segment;
                 });
