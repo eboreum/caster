@@ -227,6 +227,8 @@ class PublicVariableFormatterTest extends TestCase
         {
             public readonly object $foo;
 
+            public int $bar = 42;
+
             public function __construct()
             {
                 $this->foo = new class
@@ -242,7 +244,8 @@ class PublicVariableFormatterTest extends TestCase
             sprintf(
                 implode("\n", [
                     '%s {',
-                    '    $foo = %s',
+                    '    $foo = %s,',
+                    '    $bar = 42',
                     '}',
                 ]),
                 Caster::makeNormalizedClassName(new ReflectionObject($object)),

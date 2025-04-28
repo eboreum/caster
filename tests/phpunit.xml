@@ -6,6 +6,16 @@
     colors="true"
     cacheDirectory=".phpunit.cache"
     requireCoverageMetadata="true"
+    beStrictAboutCoverageMetadata="false"
+    beStrictAboutOutputDuringTests="true"
+    failOnRisky="true"
+    failOnWarning="true"
+    displayDetailsOnIncompleteTests="true"
+    displayDetailsOnSkippedTests="true"
+    displayDetailsOnTestsThatTriggerDeprecations="true"
+    displayDetailsOnTestsThatTriggerErrors="true"
+    displayDetailsOnTestsThatTriggerNotices="true"
+    displayDetailsOnTestsThatTriggerWarnings="true"
     >
     <testsuites>
         <testsuite name="Integration test suite">

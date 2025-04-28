@@ -14,6 +14,7 @@ use ReflectionClass;
 use ReflectionProperty;
 use stdClass;
 // phpcs:disable
+use TestResource\Unit\Eboreum\Caster\Formatter\Object_\ReflectionAttributeFormatterTest\testFormatWorksWhenWrapping\Attribute5d7fcf99144f4ad19f4c0ddbcc504127;
 use TestResource\Unit\Eboreum\Caster\Formatter\Object_\ReflectionAttributeFormatterTest\testFormatWorksWithAReflectionAttributeWithIntegerIndexedArguments\Attributeda304392c18711edafa10242ac120002;
 use TestResource\Unit\Eboreum\Caster\Formatter\Object_\ReflectionAttributeFormatterTest\testFormatWorksWithAReflectionAttributeWithIntegerIndexedArguments\Classda304392c18711edafa10242ac120002;
 use TestResource\Unit\Eboreum\Caster\Formatter\Object_\ReflectionAttributeFormatterTest\testFormatWorksWithAReflectionAttributeWithoutArguments\Attributeda304090c18711edafa10242ac120002;
@@ -191,6 +192,47 @@ class ReflectionAttributeFormatterTest extends TestCase
                 '\\ReflectionAttribute ((attribute) \\%s (foo: %s))',
                 Attribute5773ba9c73ed11eeb9620242ac120002::class,
                 CasterInterface::SENSITIVE_MESSAGE_DEFAULT,
+            ),
+            $reflectionAttributeFormatter->format($caster, $reflectionAttribute),
+        );
+    }
+
+    public function testFormatWorksWhenWrapping(): void
+    {
+        $caster = Caster::create()->withIsWrapping(true);
+        $reflectionAttributeFormatter = new ReflectionAttributeFormatter();
+
+        $object = new class
+        {
+            #[Attribute5d7fcf99144f4ad19f4c0ddbcc504127(foo: 'lorem', bar: [42])]
+            // @phpstan-ignore-next-line
+            private int $lorem = 42;
+        };
+
+        $reflectionProperty = new ReflectionProperty($object, 'lorem');
+
+        /** @var ReflectionAttribute<Attribute5d7fcf99144f4ad19f4c0ddbcc504127>|null $reflectionAttribute */
+        $reflectionAttribute = (
+            $reflectionProperty->getAttributes(Attribute5d7fcf99144f4ad19f4c0ddbcc504127::class)[0] ?? null
+        );
+
+        $this->assertIsObject($reflectionAttribute);
+
+        $this->assertTrue($reflectionAttributeFormatter->isHandling($reflectionAttribute));
+        $this->assertSame(
+            sprintf(
+                implode(
+                    "\n",
+                    [
+                        '\\ReflectionAttribute (\\%s (',
+                        '    foo: "lorem",',
+                        '    bar: [',
+                        '        0 => 42',
+                        '    ]',
+                        '))',
+                    ],
+                ),
+                Attribute5d7fcf99144f4ad19f4c0ddbcc504127::class,
             ),
             $reflectionAttributeFormatter->format($caster, $reflectionAttribute),
         );

@@ -110,7 +110,7 @@ class PublicVariableFormatter extends AbstractObjectFormatter implements Wrappab
                 $segment = $caster->getWrappingIndentationCharacters() . $segment;
             });
 
-            return implode("\n,", $segments);
+            return implode(",\n", $segments);
         }
 
         return implode(', ', $segments);

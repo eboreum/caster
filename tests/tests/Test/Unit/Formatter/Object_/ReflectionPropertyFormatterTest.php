@@ -12,6 +12,7 @@ use Eboreum\Caster\Formatter\Object_\ReflectionTypeFormatter;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 use ReflectionObject;
 use ReflectionProperty;
 use stdClass;
@@ -140,6 +141,57 @@ class ReflectionPropertyFormatterTest extends TestCase
 
         $this->assertIsString($formatted);
         $this->assertMatchesRegularExpression($expectedRegex, $formatted, $message);
+    }
+
+    public function testFormatWorksWhenWrapping(): void
+    {
+        $caster = Caster::create()->withIsWrapping(true);
+        $reflectionPropertyFormatter = new ReflectionPropertyFormatter();
+
+        $reflectionClassDeclaringClass = $this->createMock(ReflectionClass::class);
+        $reflectionProperty = $this->createMock(ReflectionProperty::class);
+
+        $reflectionProperty
+            ->expects($this->once())
+            ->method('getDeclaringClass')
+            ->willReturn($reflectionClassDeclaringClass);
+
+        $reflectionProperty
+            ->expects($this->once())
+            ->method('getAttributes')
+            ->with(SensitiveProperty::class)
+            ->willReturn([]);
+
+        $reflectionProperty
+            ->expects($this->once())
+            ->method('hasDefaultValue')
+            ->willReturn(true);
+
+        $reflectionProperty
+            ->expects($this->once())
+            ->method('getDefaultValue')
+            ->willReturn(42);
+
+        $reflectionProperty
+            ->expects($this->once())
+            ->method('getName')
+            ->willReturn('foo');
+
+        $reflectionClassDeclaringClass
+            ->expects($this->atLeastOnce())
+            ->method('getName')
+            ->willReturn('IAmAClass');
+
+        $formatted = $reflectionPropertyFormatter->format($caster, $reflectionProperty);
+
+        $this->assertIsString($formatted);
+        $this->assertSame(
+            sprintf(
+                '%s (\\IAmAClass->$foo = 42)',
+                Caster::makeNormalizedClassName(new ReflectionObject($reflectionProperty)),
+            ),
+            $formatted,
+        );
     }
 
     public function testWithIsWrappingInClassNameWorks(): void

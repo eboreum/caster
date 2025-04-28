@@ -30,7 +30,7 @@ class DebugInfoFormatterTest extends TestCase
         $this->assertNull($debugInfoFormatter->format($caster, $object));
     }
 
-    public function testFormatWorks(): void
+    public function testFormatWorksWithoutWrapping(): void
     {
         $caster = Caster::create();
         $debugInfoFormatter = new DebugInfoFormatter();
@@ -56,6 +56,42 @@ class DebugInfoFormatterTest extends TestCase
                     '^',
                     'class@anonymous\/in\/.+\/%s\:\d+ \(\[',
                         '"foo" \=\> "bar"',
+                    '\]\)',
+                    '$',
+                    '/',
+                ]),
+                preg_quote(basename(__FILE__), '/'),
+            ),
+            $formatted,
+        );
+    }
+
+    public function testFormatWorksWithWrapping(): void
+    {
+        $caster = Caster::create()->withIsWrapping(true);
+        $debugInfoFormatter = new DebugInfoFormatter();
+
+        $object = new class
+        {
+            /**
+             * @return array<string, string>
+             */
+            public function __debugInfo(): array
+            {
+                return ['foo' => 'bar'];
+            }
+        };
+
+        $this->assertTrue($debugInfoFormatter->isHandling($object));
+        $formatted = $debugInfoFormatter->format($caster, $object);
+        $this->assertIsString($formatted);
+        $this->assertMatchesRegularExpression(
+            sprintf(
+                implode('', [
+                    '/',
+                    '^',
+                    'class@anonymous\/in\/.+\/%s\:\d+ \(\[\n',
+                        '    "foo" \=\> "bar"\n',
                     '\]\)',
                     '$',
                     '/',

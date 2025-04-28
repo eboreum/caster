@@ -270,6 +270,56 @@ class ReflectionParameterFormatterTest extends TestCase
         $this->assertMatchesRegularExpression($expectedRegex, $formatted, $message);
     }
 
+    public function testFormatWorksWhenWrapping(): void
+    {
+        $caster = Caster::create()->withIsWrapping(true);
+        $reflectionParameterFormatter = new ReflectionParameterFormatter();
+        $reflectionParameter = $this->createMock(ReflectionParameter::class);
+
+        $reflectionParameter
+            ->expects($this->exactly(2))
+            ->method('isDefaultValueAvailable')
+            ->with()
+            ->willReturn(true);
+
+        $reflectionParameter
+            ->expects($this->once())
+            ->method('isDefaultValueConstant')
+            ->with()
+            ->willReturn(false);
+
+        $reflectionParameter
+            ->expects($this->once())
+            ->method('getDefaultValue')
+            ->with()
+            ->willReturn(['bar' => [42]]);
+
+        $reflectionParameter
+            ->expects($this->any())
+            ->method('getName')
+            ->with()
+            ->willReturn('foo');
+
+        $formatted = $reflectionParameterFormatter->format($caster, $reflectionParameter);
+
+        $this->assertSame(
+            sprintf(
+                implode(
+                    "\n",
+                    [
+                        '%s ($foo = [',
+                        '    "bar" => [',
+                        '        0 => 42',
+                        '    ]',
+                        '])',
+                    ],
+                ),
+                Caster::makeNormalizedClassName(new ReflectionObject($reflectionParameter)),
+            ),
+            $formatted,
+        );
+    }
+
     public function testFormatDefaultValueThrowsExceptionWhenNoDefaultValueIsAvailableOnFunction(): void
     {
         $caster = Caster::create();

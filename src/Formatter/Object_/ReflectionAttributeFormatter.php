@@ -6,6 +6,7 @@ namespace Eboreum\Caster\Formatter\Object_;
 
 use Eboreum\Caster\Abstraction\Formatter\AbstractObjectFormatter;
 use Eboreum\Caster\Caster;
+use Eboreum\Caster\Common\DataType\Integer\PositiveInteger;
 use Eboreum\Caster\Contract\CasterInterface;
 use ReflectionAttribute;
 use ReflectionClass;
@@ -13,6 +14,7 @@ use ReflectionMethod;
 use ReflectionParameter;
 use SensitiveParameter;
 
+use function array_map;
 use function assert;
 use function implode;
 use function is_string;
@@ -52,6 +54,10 @@ class ReflectionAttributeFormatter extends AbstractObjectFormatter
         /** @var array<string> $argumentsAsStrings */
         $argumentsAsStrings = [];
 
+        $casterInner = $caster->withDepthCurrent(
+            new PositiveInteger($caster->getDepthCurrent()->toInteger() + 1)
+        );
+
         foreach ($object->getArguments() as $key => $value) {
             /** @var bool $isSensitive */
             $isSensitive = false;
@@ -81,19 +87,30 @@ class ReflectionAttributeFormatter extends AbstractObjectFormatter
                 $argumentsAsStrings[] = sprintf(
                     '%s: %s',
                     $key,
-                    $caster->getSensitiveMessage(),
+                    $casterInner->getSensitiveMessage(),
                 );
             } else {
                 $argumentsAsStrings[] = sprintf(
                     '%s: %s',
                     $key,
-                    $caster->cast($value),
+                    $casterInner->cast($value),
                 );
             }
         }
 
         if ($argumentsAsStrings) {
-            $str .= sprintf(' (%s)', implode(', ', $argumentsAsStrings));
+            if ($caster->isWrapping()) {
+                $argumentsAsStrings = array_map(
+                    static function (string $argument) use ($caster): string {
+                        return $caster->getWrappingIndentationCharacters() . $argument;
+                    },
+                    $argumentsAsStrings,
+                );
+
+                $str .= sprintf(" (\n%s\n)", implode(",\n", $argumentsAsStrings));
+            } else {
+                $str .= sprintf(' (%s)', implode(', ', $argumentsAsStrings));
+            }
         }
 
         if ($this->isWrappingInClassName()) {
